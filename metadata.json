@@ -1,0 +1,6 @@
+{
+  "name": "Direito Constitucional Landing Page",
+  "description": "A landing page for a study guide on Constitutional Law",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
