@@ -1,11 +1,13 @@
 build-tools: /usr/local/lib/android/sdk/build-tools/37.0.0
 platform: /usr/local/lib/android/sdk/platforms/android-34
-app/src/main/java/com/auxano/quita/MainActivity.java:110: error: cannot find symbol
-        web.evaluateJavascript("window.quitaBack ? window.quitaBack() : false", value -> {
-                                                                                ^
-  symbol:   method metafactory(Lookup,String,MethodType,MethodType,MethodHandle,MethodType)
-  location: interface LambdaMetafactory
 Note: app/src/main/java/com/auxano/quita/MainActivity.java uses or overrides a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
-1 error
-Fatal Error: Unable to find method metafactory
+V3.0 Signer: certificate DN: CN=Auxano, O=Auxano, C=BR
+V3.0 Signer: certificate SHA-256 digest: 3864b282b2ddb7b01c8f069fa0d8af53a5b65beeae0e0de3b46cf4504ed97677
+V3.0 Signer: certificate SHA-1 digest: df513c20c643c5fe1e7cb8d665b349e8c3e6bdfa
+total 80
+drwxr-xr-x 2 runner runner  4096 Sep 26 19:27 .
+drwxr-xr-x 9 runner runner  4096 Sep 26 19:27 ..
+-rw-r--r-- 1 runner runner 58385 Sep 26 19:27 Quita-v1.0.0.apk
+-rw-r--r-- 1 runner runner  5538 Sep 26 19:27 Quita-v1.0.0.apk.idsig
+-rw-r--r-- 1 runner runner   506 Sep 26 19:27 build.log
