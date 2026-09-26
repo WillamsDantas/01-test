@@ -189,6 +189,19 @@ nav.bottom button.on svg{background:var(--brand-soft);border-radius:99px;padding
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .pos{color:var(--good)}.neg{color:var(--bad)}
 svg text{font-family:inherit}
+.chk{width:34px;height:34px;border-radius:10px;border:2px solid #CFD8D5;display:grid;place-items:center;color:transparent;flex:0 0 34px;background:#fff}
+.chk svg{width:18px;height:18px}
+.chk.on{background:var(--good);border-color:var(--good);color:#fff}
+.parc.done .grow b,.parc.done .val{color:var(--ink-3)}
+.parc.done .val{text-decoration:line-through}
+.badge-day.late{background:var(--bad-soft);color:var(--bad)}
+.tot-row{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:10px;margin-top:2px}
+.alert{background:var(--bad-soft);color:#7E2518;font-size:14px}
+.today-link{display:block;font-size:11px;font-weight:600;color:var(--brand);text-transform:none;text-align:center}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:right;font-weight:600;color:var(--ink-3);font-size:12px;padding:0 0 6px}
+.tbl td{text-align:right;padding:7px 0;border-top:1px solid var(--line)}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
 </style>
 </head>
 <body>
@@ -320,6 +333,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
+var VERSION = '1.1.0';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -332,16 +346,16 @@ function r2(v){return Math.round((v||0)*100)/100}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function pad(n){return (n<10?'0':'')+n}
 function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
-function parseISO(s){if(!s)return null;var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function parseISO(s){if(!s)return null;var p=s.split('-');return new Date(+p[0],+p[1]-1,+(p[2]||1))}
 function today(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
 function todayISO(){return iso(today())}
-function addDays(s,n){var d=parseISO(s);d.setDate(d.getDate()+n);return iso(d)}
 function diffDays(a,b){return Math.round((parseISO(b)-parseISO(a))/864e5)}
 function br(s){if(!s)return '—';var p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0]}
-function brShort(s){if(!s)return '—';var p=s.split('-');return p[2]+'/'+p[1]}
 function ym(s){return s.slice(0,7)}
 function ymLabel(k){var p=k.split('-');return MESES[+p[1]-1]+' '+p[0]}
+function ymShort(k){var p=k.split('-');return MES_CURTO[+p[1]-1]+'/'+p[0].slice(2)}
 function ymAdd(k,n){var p=k.split('-');var d=new Date(+p[0],+p[1]-1+n,1);return d.getFullYear()+'-'+pad(d.getMonth()+1)}
+function ymDiff(a,b){var x=a.split('-'),y=b.split('-');return (+y[0]-x[0])*12+(+y[1]-x[1])}
 function parseMoney(s){
   if(typeof s==='number')return s;
   s=String(s||'').replace(/[R$\s]/g,'');
@@ -351,9 +365,10 @@ function parseMoney(s){
 }
 function moneyInput(v){return v?String(r2(v)).replace('.',','):''}
 function plural(n,s,p){return n+' '+(Math.abs(n)===1?s:p)}
+function curYM(){return ym(todayISO())}
 
 /* ---------------- dados ---------------- */
-var DEFAULT = {v:1,dividas:[],pagamentos:[],receitas:[],ajustes:{url:'',auto:true,estrategia:'avalanche',ultimoSync:'',pendente:false,erro:''}};
+var DEFAULT = {v:2,dividas:[],pagamentos:[],receitas:[],ajustes:{url:'',auto:true,estrategia:'avalanche',ultimoSync:'',pendente:false,erro:''}};
 var S;
 function load(){
   var raw='';
@@ -362,50 +377,75 @@ function load(){
   if(!S||!S.dividas){S=JSON.parse(JSON.stringify(DEFAULT))}
   S.ajustes=Object.assign({},DEFAULT.ajustes,S.ajustes||{});
   S.pagamentos=S.pagamentos||[];S.receitas=S.receitas||[];
+  migrate();
+}
+/* v1 (prazo em dias) → v2 (parcelas) */
+function migrate(){
+  if(S.v>=2)return;
+  S.dividas.forEach(function(d){
+    if(d.totalParcelas)return;
+    var pago=0;S.pagamentos.forEach(function(p){if(p.dividaId===d.id)pago+=p.valor});
+    var saldo=Math.max(0,(d.saldoInicial||0)-pago);
+    var parc=d.parcela>0?d.parcela:saldo;
+    var rest=parc>0?Math.ceil(saldo/parc-0.001):0;
+    var pagasAntes=0;
+    if(d.valorTotal>0&&parc>0){pagasAntes=Math.max(0,Math.round((d.valorTotal-saldo)/parc))}
+    d.parcela=r2(parc);d.totalParcelas=Math.max(1,pagasAntes+rest);d.pagasAntes=pagasAntes;
+    d.primeiraMes=ymAdd(curYM(),-pagasAntes);d.diaVenc=d.diaVenc||10;d.dataCompra=d.dataCompra||'';
+    delete d.saldoInicial;delete d.prazoDias;delete d.dataMeta;delete d.valorTotal;delete d.dataInicio;
+  });
+  // pagamentos antigos (sem nº de parcela) ficam só como histórico
+  S.pagamentos.forEach(function(p){if(!p.parcela)p.legado=true});
+  S.v=2;persist();
 }
 function persist(){
   var json=JSON.stringify(S);
   try{ if(HAS_NATIVE){Android.save(json)} else {localStorage.setItem('quita',json)} }catch(e){}
 }
-function commit(){ // salva + agenda sincronização
+function commit(){
   if(S.ajustes.url){S.ajustes.pendente=true}
   persist(); renderAll();
   if(S.ajustes.url&&S.ajustes.auto){scheduleSync()}
 }
+function debtById(id){return S.dividas.filter(function(x){return x.id===id})[0]}
 
-/* ---------------- cálculos ---------------- */
-function pagosDe(id){var t=0;S.pagamentos.forEach(function(p){if(p.dividaId===id)t+=p.valor});return t}
-function calc(d){
-  var hoje=todayISO();
-  var pago=pagosDe(d.id);
-  var saldo=Math.max(0,r2(d.saldoInicial-pago));
-  var meta=d.dataMeta||addDays(d.dataInicio,d.prazoDias||0);
-  var dias=diffDays(hoje,meta);
-  var porDia=saldo>0?saldo/Math.max(dias,1):0;
-  var porMes=Math.min(saldo,porDia*30);
-  var i=(d.jurosMes||0)/100, P=d.parcela||0, meses=Infinity;
-  if(saldo<=0)meses=0;
-  else if(P>0){
-    if(i>0){ if(P>i*saldo){meses=-Math.log(1-i*saldo/P)/Math.log(1+i)} }
-    else meses=saldo/P;
-  }
-  var status;
-  if(saldo<=0.005)status='quitada';
-  else if(dias<0)status='atrasada';
-  else if(P>0&&P>=porMes-0.01&&meses*30<=dias+30)status='noprazo';
-  else status='apertado';
-  var prog=d.valorTotal>0?Math.min(1,Math.max(0,(d.valorTotal-saldo)/d.valorTotal)):(saldo<=0?1:0);
-  var prox=null;
-  if(d.diaVenc&&saldo>0){
-    var t=today(),y=t.getFullYear(),m=t.getMonth();
-    var mk=function(y,m){var last=new Date(y,m+1,0).getDate();return new Date(y,m,Math.min(d.diaVenc,last))};
-    var dt=mk(y,m); if(dt<t)dt=mk(y,m+1); prox=iso(dt);
-  }
-  return {pago:pago,saldo:saldo,meta:meta,dias:dias,porDia:porDia,porMes:porMes,meses:meses,diasEst:isFinite(meses)?Math.ceil(meses*30):Infinity,status:status,prog:prog,prox:prox};
+/* ---------------- parcelas ---------------- */
+function mesDaParcela(d,n){return ymAdd(d.primeiraMes,n-1)}
+function vencDaParcela(d,n){
+  var k=mesDaParcela(d,n),p=k.split('-');
+  var last=new Date(+p[0],+p[1],0).getDate();
+  return k+'-'+pad(Math.min(d.diaVenc||10,last));
 }
-var STATUS={quitada:['Quitada','done'],noprazo:['No prazo','good'],apertado:['Apertado','warn'],atrasada:['Atrasada','bad']};
+function pagamentoDa(d,n){return S.pagamentos.filter(function(p){return p.dividaId===d.id&&p.parcela===n})[0]}
+function isPaga(d,n){return n<=(d.pagasAntes||0)||!!pagamentoDa(d,n)}
+function calc(d){
+  var hoje=todayISO(),T=d.totalParcelas||1,pagas=0,atrasadas=0,valorAtraso=0,prox=null;
+  for(var n=1;n<=T;n++){
+    if(isPaga(d,n)){pagas++;continue}
+    var v=vencDaParcela(d,n);
+    if(v<hoje){atrasadas++;valorAtraso+=d.parcela}
+    if(!prox)prox={n:n,venc:v};
+  }
+  var rest=T-pagas;
+  var status=rest===0?'quitada':atrasadas>0?'atrasada':'emdia';
+  return {total:T,pagas:pagas,rest:rest,saldo:r2(rest*d.parcela),valorTotal:r2(T*d.parcela),pago:r2(pagas*d.parcela),
+    prog:T?pagas/T:1,ultimoMes:mesDaParcela(d,T),prox:prox,atrasadas:atrasadas,valorAtraso:valorAtraso,status:status};
+}
+var STATUS={quitada:['Quitada','done'],emdia:['Em dia','good'],atrasada:['Atrasada','bad']};
 function pill(st){var s=STATUS[st];return '<span class="pill '+s[1]+'">'+s[0]+'</span>'}
-
+function parcelasDoMes(k){
+  var out=[],hoje=todayISO();
+  S.dividas.forEach(function(d){
+    var n=ymDiff(d.primeiraMes,k)+1;
+    if(n>=1&&n<=(d.totalParcelas||1)){
+      var v=vencDaParcela(d,n),paga=isPaga(d,n);
+      out.push({d:d,n:n,valor:d.parcela,venc:v,paga:paga,atrasada:!paga&&v<hoje});
+    }
+  });
+  return out.sort(function(a,b){return a.venc<b.venc?-1:a.venc>b.venc?1:0});
+}
+function parcelasMes(k){return parcelasDoMes(k).reduce(function(a,x){return a+x.valor},0)}
+function pagoMes(k){return parcelasDoMes(k).reduce(function(a,x){return a+(x.paga?x.valor:0)},0)}
 function receitaMes(k){
   var t=0;
   S.receitas.forEach(function(r){
@@ -419,21 +459,21 @@ function receitasDoMes(k){
     return r.tipo==='fixa' ? (ym(r.data)<=k&&(!r.fim||ym(r.fim)>=k)) : ym(r.data)===k;
   });
 }
-function pagoMes(k){var t=0;S.pagamentos.forEach(function(p){if(ym(p.data)===k)t+=p.valor});return t}
-function abertas(){return S.dividas.filter(function(d){return calc(d).saldo>0})}
-function parcelasMes(){var t=0;abertas().forEach(function(d){t+=d.parcela||0});return t}
+function abertas(){return S.dividas.filter(function(d){return calc(d).rest>0})}
 function totalDevido(){var t=0;S.dividas.forEach(function(d){t+=calc(d).saldo});return t}
+function totalAtraso(){var t=0,n=0;S.dividas.forEach(function(d){var c=calc(d);t+=c.valorAtraso;n+=c.atrasadas});return {valor:t,n:n}}
+function fimDeTudo(){var m='';abertas().forEach(function(d){var u=calc(d).ultimoMes;if(u>m)m=u});return m}
 function ordemSugerida(){
   var list=abertas().map(function(d){return {d:d,c:calc(d)}});
   if(S.ajustes.estrategia==='bola'){list.sort(function(a,b){return a.c.saldo-b.c.saldo})}
-  else{list.sort(function(a,b){return (b.d.jurosMes||0)-(a.d.jurosMes||0)||a.c.dias-b.c.dias})}
+  else{list.sort(function(a,b){return (b.d.jurosMes||0)-(a.d.jurosMes||0)||a.c.saldo-b.c.saldo})}
   return list;
 }
-function comprometimento(k){var r=receitaMes(k);var p=parcelasMes();return r>0?p/r:(p>0?Infinity:0)}
+function comprometimento(k){var r=receitaMes(k);var p=parcelasMes(k);return r>0?p/r:(p>0?Infinity:0)}
 function faixa(pct){if(!isFinite(pct))return ['Sem receita cadastrada','bad'];if(pct<=0.30)return ['Saudável','good'];if(pct<=0.50)return ['Atenção','warn'];return ['Crítico','bad']}
 
 /* ---------------- UI base ---------------- */
-var curTab='painel', curMonth=ym(todayISO()), debtFilter='abertas';
+var curTab='painel', curMonth=curYM(), debtFilter='abertas';
 var ICON={
   prev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
   next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
@@ -442,18 +482,19 @@ var ICON={
   share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>',
   file:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>',
   sync:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/></svg>',
-  pay:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
   wallet:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="16" width="48" height="36" rx="6"/><path d="M8 26h48M44 38h4"/><path d="M16 16l24-8 4 8"/></svg>',
   up:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 48l14-14 10 10 20-22"/><path d="M42 22h12v12"/></svg>'
 };
 function monthBar(){
-  return '<div class="month"><button data-m="-1" aria-label="Mês anterior">'+ICON.prev+'</button><b>'+ymLabel(curMonth)+'</b><button data-m="1" aria-label="Próximo mês">'+ICON.next+'</button></div>';
+  var hoje=curMonth===curYM();
+  return '<div class="month"><button data-m="-1" aria-label="Mês anterior">'+ICON.prev+'</button><b>'+ymLabel(curMonth)+(hoje?'':' <small class="today-link" data-today>voltar a hoje</small>')+'</b><button data-m="1" aria-label="Próximo mês">'+ICON.next+'</button></div>';
 }
 function bindMonth(el){
   $$('[data-m]',el).forEach(function(b){b.onclick=function(){curMonth=ymAdd(curMonth,+b.dataset.m);renderAll()}});
+  var t=$('[data-today]',el);if(t)t.onclick=function(){curMonth=curYM();renderAll()};
 }
 function toast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on')},2600)}
-
 function setTab(t){
   curTab=t;
   $$('nav.bottom button').forEach(function(b){b.classList.toggle('on',b.dataset.tab===t)});
@@ -461,6 +502,37 @@ function setTab(t){
   $('#fab').classList.toggle('hide',!(t==='dividas'||t==='receitas'));
   window.scrollTo(0,0);
   renderAll();
+}
+
+/* marcar / desmarcar parcela */
+function toggleParcela(id,n){
+  var d=debtById(id);if(!d)return;
+  if(isPaga(d,n)){
+    var p=pagamentoDa(d,n);
+    if(p){S.pagamentos=S.pagamentos.filter(function(x){return x!==p})}
+    else{ // estava entre as "já pagas" do cadastro
+      var old=d.pagasAntes;d.pagasAntes=n-1;
+      for(var k=n+1;k<=old;k++){if(!pagamentoDa(d,k))S.pagamentos.push({id:uid(),dividaId:d.id,parcela:k,valor:d.parcela,data:vencDaParcela(d,k)})}
+    }
+    commit();toast('Parcela '+n+' desmarcada');
+  } else {
+    S.pagamentos.push({id:uid(),dividaId:d.id,parcela:n,valor:d.parcela,data:todayISO()});
+    commit();
+    toast(calc(d).rest===0?'Dívida quitada! 🎉':'Parcela '+n+'/'+d.totalParcelas+' paga ✓');
+  }
+}
+function parcelaRow(x,showMonth){
+  var p=x.venc.split('-'),dd=diffDays(todayISO(),x.venc);
+  var sub=x.paga?'paga':x.atrasada?'<span class="neg">atrasada há '+plural(-dd,'dia','dias')+'</span>':dd===0?'vence hoje':dd===1?'vence amanhã':dd<=31?'vence em '+dd+' dias':'vence '+br(x.venc);
+  return '<div class="list-row parc'+(x.paga?' done':'')+'">'+
+    '<div class="badge-day'+(x.atrasada?' late':'')+'">'+p[2]+'<small>'+MES_CURTO[+p[1]-1]+'</small></div>'+
+    (showMonth?'<div class="grow"><b>Parcela '+x.n+'/'+x.d.totalParcelas+'</b><span>'+ymLabel(ym(x.venc))+' · '+sub+'</span></div>':'<div class="grow" data-debt="'+x.d.id+'"><b>'+esc(x.d.nome)+'</b><span>Parcela '+x.n+'/'+x.d.totalParcelas+' · '+sub+'</span></div>')+
+    '<div class="val num">'+money(x.valor)+'</div>'+
+    '<button class="chk'+(x.paga?' on':'')+'" data-tog="'+x.d.id+'" data-n="'+x.n+'" aria-label="'+(x.paga?'Desmarcar':'Marcar como paga')+'">'+ICON.check+'</button></div>';
+}
+function bindRows(el){
+  $$('[data-tog]',el).forEach(function(b){b.onclick=function(e){e.stopPropagation();toggleParcela(b.dataset.tog,+b.dataset.n);if(sheetOpen&&b.closest('#sheet'))openDebtDetail(b.dataset.tog)}});
+  $$('[data-debt]',el).forEach(function(r){r.onclick=function(){openDebtDetail(r.dataset.debt)}});
 }
 
 /* ---------------- gráficos (SVG) ---------------- */
@@ -476,23 +548,22 @@ function gaugeSVG(pct){
     '<text x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" font-size="24" font-weight="700" fill="#16211E">'+txt+'</text>'+
     '<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="10" fill="#8A9792">da renda</text></svg>';
 }
+/* 6 meses a partir do mês selecionado: receita × parcelas */
 function barsSVG(k){
-  var months=[];for(var i=5;i>=0;i--)months.push(ymAdd(k,-i));
-  var inc=months.map(receitaMes), out=months.map(pagoMes);
-  var parc=parcelasMes();
-  var max=Math.max.apply(null,inc.concat(out).concat([parc,1]));
-  var W=320,H=170,pl=4,pr=4,pt=14,pb=24,ch=H-pt-pb,gw=(W-pl-pr)/6,bw=Math.min(16,gw/3.2);
-  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Receita e pagamentos dos últimos 6 meses">';
+  var months=[];for(var i=0;i<6;i++)months.push(ymAdd(k,i));
+  var inc=months.map(receitaMes), out=months.map(parcelasMes);
+  var max=Math.max.apply(null,inc.concat(out).concat([1]));
+  var W=320,H=176,pl=4,pr=4,pt=16,pb=24,ch=H-pt-pb,gw=(W-pl-pr)/6,bw=Math.min(16,gw/3.2);
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Receita e parcelas dos próximos 6 meses">';
   for(var g=0;g<=3;g++){var y=pt+ch*g/3;s+='<line x1="0" x2="'+W+'" y1="'+y+'" y2="'+y+'" stroke="#EEF2F1"/>'}
-  // linha de parcelas previstas
-  if(parc>0){var yp=pt+ch*(1-parc/max);s+='<line x1="0" x2="'+W+'" y1="'+yp+'" y2="'+yp+'" stroke="#C8412F" stroke-width="1.5" stroke-dasharray="4 4"/>'}
   months.forEach(function(m,j){
     var x=pl+gw*j+gw/2;
     var h1=ch*inc[j]/max,h2=ch*out[j]/max;
     s+='<rect x="'+(x-bw-1.5)+'" y="'+(pt+ch-h1)+'" width="'+bw+'" height="'+Math.max(h1,0)+'" rx="3" fill="#1B8A5A"><title>Receita '+money(inc[j])+'</title></rect>';
-    s+='<rect x="'+(x+1.5)+'" y="'+(pt+ch-h2)+'" width="'+bw+'" height="'+Math.max(h2,0)+'" rx="3" fill="#E0A526"><title>Pago '+money(out[j])+'</title></rect>';
+    s+='<rect x="'+(x+1.5)+'" y="'+(pt+ch-h2)+'" width="'+bw+'" height="'+Math.max(h2,0)+'" rx="3" fill="#E0A526"><title>Parcelas '+money(out[j])+'</title></rect>';
+    if(out[j]>inc[j]&&out[j]>0)s+='<circle cx="'+x+'" cy="'+(pt+ch-Math.max(h1,h2)-7)+'" r="3" fill="#C8412F"/>';
     var p=m.split('-');
-    s+='<text x="'+x+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+(m===k?'#16211E':'#8A9792')+'" font-weight="'+(m===k?700:400)+'">'+MES_CURTO[+p[1]-1]+'</text>';
+    s+='<text x="'+x+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+(j===0?'#16211E':'#8A9792')+'" font-weight="'+(j===0?700:400)+'">'+MES_CURTO[+p[1]-1]+'</text>';
   });
   s+='<text x="'+(W-2)+'" y="10" text-anchor="end" font-size="10" fill="#8A9792">máx. '+moneyShort(max)+'</text>';
   return s+'</svg>';
@@ -502,68 +573,64 @@ function barsSVG(k){
 function renderPainel(){
   var el=$('#tab-painel');
   if(!S.dividas.length&&!S.receitas.length){
-    el.innerHTML='<div class="card empty">'+ICON.wallet+'<h2>Vamos organizar suas dívidas</h2><p>Cadastre cada dívida com o prazo em dias para quitar. Depois lance suas receitas para ver quanto da renda está comprometido.</p><div class="stack"><button class="btn pri" id="e1">Cadastrar primeira dívida</button><button class="btn sec" id="e2">Cadastrar uma receita</button></div></div>';
+    el.innerHTML='<div class="card empty">'+ICON.wallet+'<h2>Vamos organizar suas dívidas</h2><p>Cadastre cada dívida com o valor e a quantidade de parcelas. O app mostra, mês a mês, o que vence e quanto sobra da sua receita.</p><div class="stack"><button class="btn pri" id="e1">Cadastrar primeira dívida</button><button class="btn sec" id="e2">Cadastrar uma receita</button></div></div>';
     $('#e1').onclick=function(){openDebtForm()};$('#e2').onclick=function(){openIncomeForm()};
     return;
   }
-  var rec=receitaMes(curMonth), parc=parcelasMes(), sobra=rec-parc, pct=comprometimento(curMonth), f=faixa(pct);
-  var ab=abertas(), tot=totalDevido(), pm=pagoMes(curMonth);
-  var calcs=ab.map(function(d){return {d:d,c:calc(d)}});
-  var prazoProx=calcs.slice().sort(function(a,b){return a.c.dias-b.c.dias})[0];
+  var k=curMonth, rec=receitaMes(k), parcs=parcelasDoMes(k), parc=parcs.reduce(function(a,x){return a+x.valor},0);
+  var pm=pagoMes(k), sobra=rec-parc, pct=comprometimento(k), f=faixa(pct);
+  var ab=abertas(), fim=fimDeTudo(), atr=totalAtraso();
   var h=monthBar();
-  h+='<div class="card hero"><div class="lbl">Sobra do mês (receita − parcelas)</div><div class="big num">'+money(sobra)+'</div>'+
+  h+='<div class="card hero"><div class="lbl">Sobra de '+MESES[+k.split('-')[1]-1]+' (receita − parcelas)</div><div class="big num">'+money(sobra)+'</div>'+
      '<div class="row"><div><span>Receita</span><b class="num">'+money(rec)+'</b></div><div><span>Parcelas</span><b class="num">'+money(parc)+'</b></div></div></div>';
+  if(atr.n>0&&k===curYM())h+='<div class="card alert"><b>'+plural(atr.n,'parcela atrasada','parcelas atrasadas')+'</b> somando '+money(atr.valor)+'. Marque com ✓ as que já pagou.</div>';
+  // parcelas do mês
+  h+='<div class="card"><h3>Parcelas de '+MESES[+k.split('-')[1]-1]+(parcs.length?'<span class="r">'+parcs.filter(function(x){return x.paga}).length+' de '+parcs.length+' pagas</span>':'')+'</h3>';
+  if(parcs.length){
+    h+='<div class="bar" style="margin:-2px 0 8px"><i style="width:'+(parc?pm/parc*100:0).toFixed(1)+'%"></i></div>';
+    h+=parcs.map(function(x){return parcelaRow(x)}).join('');
+    h+='<div class="tot-row"><span>Pago '+money(pm)+'</span><span>Falta '+money(parc-pm)+'</span></div>';
+  } else h+='<p class="muted" style="margin:0">Nenhuma parcela neste mês. '+(ab.length?'':'')+'</p>';
+  h+='</div>';
   h+='<div class="card"><h3>Renda comprometida</h3><div class="gauge-wrap">'+gaugeSVG(pct)+'<div class="gauge-txt"><p>'+pill2(f)+'</p><p>Até 30% saudável · 30–50% atenção · acima de 50% crítico.</p></div></div></div>';
   h+='<div class="grid2">'+
-     '<div class="stat"><span>Total devido</span><b class="num">'+money(tot)+'</b><em>'+plural(ab.length,'dívida em aberto','dívidas em aberto')+'</em></div>'+
-     '<div class="stat"><span>Pago no mês</span><b class="num">'+money(pm)+'</b><em>'+(parc>0?Math.round(pm/parc*100)+'% das parcelas':'—')+'</em></div>'+
-     '<div class="stat"><span>Prazo mais próximo</span><b>'+(prazoProx?(prazoProx.c.dias<0?'Vencido':plural(prazoProx.c.dias,'dia','dias')):'—')+'</b><em>'+(prazoProx?esc(prazoProx.d.nome):'Nenhuma dívida aberta')+'</em></div>'+
-     '<div class="stat"><span>Precisa por mês</span><b class="num">'+money(calcs.reduce(function(a,x){return a+x.c.porMes},0))+'</b><em>para cumprir todos os prazos</em></div>'+
+     '<div class="stat"><span>Total devido</span><b class="num">'+money(totalDevido())+'</b><em>'+plural(ab.length,'dívida em aberto','dívidas em aberto')+'</em></div>'+
+     '<div class="stat"><span>Livre de dívidas em</span><b>'+(fim?ymShort(fim):'—')+'</b><em>'+(fim?'última parcela em '+ymLabel(fim):'nenhuma em aberto')+'</em></div>'+
      '</div>';
-  h+='<div class="card"><h3>Receita × pagamentos</h3>'+barsSVG(curMonth)+
-     '<div class="legend"><span><i style="background:#1B8A5A"></i>Receita</span><span><i style="background:#E0A526"></i>Pago em dívidas</span>'+(parc>0?'<span><i style="background:#C8412F;height:2px;vertical-align:3px"></i>Parcelas previstas</span>':'')+'</div></div>';
-  if(calcs.length){
+  h+='<div class="card"><h3>Receita × parcelas <span class="r" style="color:var(--ink-3)">próximos 6 meses</span></h3>'+barsSVG(k)+
+     '<div class="legend"><span><i style="background:#1B8A5A"></i>Receita</span><span><i style="background:#E0A526"></i>Parcelas</span><span><i style="background:#C8412F;border-radius:50%"></i>Parcelas > receita</span></div></div>';
+  if(ab.length){
     h+='<div class="card"><h3>Progresso das dívidas</h3>';
-    calcs.sort(function(a,b){return a.c.dias-b.c.dias}).forEach(function(x){
-      h+='<div class="prog-item" data-debt="'+x.d.id+'"><div class="t"><b>'+esc(x.d.nome)+'</b><span>'+Math.round(x.c.prog*100)+'% · '+(x.c.dias<0?'prazo vencido':'faltam '+plural(x.c.dias,'dia','dias'))+'</span></div><div class="bar"><i style="width:'+(x.c.prog*100).toFixed(1)+'%;background:'+barColor(x.c.status)+'"></i></div></div>';
+    ab.map(function(d){return {d:d,c:calc(d)}}).sort(function(a,b){return a.c.ultimoMes<b.c.ultimoMes?-1:1}).forEach(function(x){
+      h+='<div class="prog-item" data-debt="'+x.d.id+'"><div class="t"><b>'+esc(x.d.nome)+'</b><span>'+x.c.pagas+'/'+x.c.total+' · termina '+ymShort(x.c.ultimoMes)+'</span></div><div class="bar"><i style="width:'+(x.c.prog*100).toFixed(1)+'%;background:'+barColor(x.c.status)+'"></i></div></div>';
     });
     h+='</div>';
   }
-  var venc=calcs.filter(function(x){return x.c.prox}).sort(function(a,b){return a.c.prox<b.c.prox?-1:1}).slice(0,5);
-  if(venc.length){
-    h+='<div class="card"><h3>Próximos vencimentos</h3>';
-    venc.forEach(function(x){
-      var p=x.c.prox.split('-');var dd=diffDays(todayISO(),x.c.prox);
-      h+='<div class="list-row" data-debt="'+x.d.id+'"><div class="badge-day">'+p[2]+'<small>'+MES_CURTO[+p[1]-1]+'</small></div><div class="grow"><b>'+esc(x.d.nome)+'</b><span>'+(dd===0?'vence hoje':dd===1?'vence amanhã':'em '+dd+' dias')+'</span></div><div class="val num">'+money(x.d.parcela||0)+'</div></div>';
-    });
-    h+='</div>';
-  }
-  el.innerHTML=h; bindMonth(el);
-  $$('[data-debt]',el).forEach(function(r){r.onclick=function(){openDebtDetail(r.dataset.debt)}});
+  el.innerHTML=h; bindMonth(el); bindRows(el);
 }
 function pill2(f){return '<span class="pill '+f[1]+'">'+f[0]+'</span>'}
-function barColor(st){return st==='atrasada'?'#C8412F':st==='apertado'?'#E0A526':st==='quitada'?'#8A9792':'#1B8A5A'}
+function barColor(st){return st==='atrasada'?'#C8412F':st==='quitada'?'#8A9792':'#1B8A5A'}
 
 /* ---------------- Dívidas ---------------- */
 function renderDividas(){
   var el=$('#tab-dividas');
   if(!S.dividas.length){
-    el.innerHTML='<div class="card empty">'+ICON.wallet+'<h2>Nenhuma dívida cadastrada</h2><p>Toque em + para cadastrar. Informe o saldo, a parcela e em quantos dias quer quitar.</p><button class="btn pri" id="e1">Cadastrar dívida</button></div>';
+    el.innerHTML='<div class="card empty">'+ICON.wallet+'<h2>Nenhuma dívida cadastrada</h2><p>Toque em + para cadastrar. Informe o valor da parcela, quantas parcelas são e o dia do vencimento.</p><button class="btn pri" id="e1">Cadastrar dívida</button></div>';
     $('#e1').onclick=function(){openDebtForm()};return;
   }
   var all=S.dividas.map(function(d){return {d:d,c:calc(d)}});
-  var list=all.filter(function(x){return debtFilter==='todas'||(debtFilter==='abertas'?x.c.saldo>0:x.c.saldo<=0)});
-  list.sort(function(a,b){if((a.c.saldo>0)!==(b.c.saldo>0))return a.c.saldo>0?-1:1;return a.c.dias-b.c.dias});
-  var nq=all.filter(function(x){return x.c.saldo<=0}).length;
+  var list=all.filter(function(x){return debtFilter==='todas'||(debtFilter==='abertas'?x.c.rest>0:x.c.rest===0)});
+  list.sort(function(a,b){if((a.c.rest>0)!==(b.c.rest>0))return a.c.rest>0?-1:1;return a.c.ultimoMes<b.c.ultimoMes?-1:1});
+  var nq=all.filter(function(x){return x.c.rest===0}).length;
   var h='<div class="sumline"><span>Total devido</span><b class="num">'+money(totalDevido())+'</b></div>';
   h+='<div class="chips">'+[['abertas','Em aberto ('+(all.length-nq)+')'],['quitadas','Quitadas ('+nq+')'],['todas','Todas']].map(function(c){return '<button class="chip'+(debtFilter===c[0]?' on':'')+'" data-f="'+c[0]+'">'+c[1]+'</button>'}).join('')+'</div>';
   if(!list.length)h+='<div class="card empty"><p>Nada aqui por enquanto.</p></div>';
   list.forEach(function(x){
     var d=x.d,c=x.c;
-    h+='<button class="debt" data-debt="'+d.id+'"><div class="h"><div><b>'+esc(d.nome)+'</b><small>'+esc(d.credor||'')+(d.jurosMes?(d.credor?' · ':'')+String(d.jurosMes).replace('.',',')+'% a.m.':'')+'</small></div>'+pill(c.status)+'</div>'+
-       '<div class="mid"><div><span class="muted">Saldo</span><div class="saldo num">'+money(c.saldo)+'</div></div><div class="days">'+(c.saldo<=0?'<b>✓</b>quitada':c.dias<0?'<b class="neg">'+Math.abs(c.dias)+'</b>dias de atraso':'<b>'+c.dias+'</b>dias restantes')+'</div></div>'+
+    h+='<button class="debt" data-debt="'+d.id+'"><div class="h"><div><b>'+esc(d.nome)+'</b><small>'+esc(d.credor||'')+(d.credor?' · ':'')+plural(c.total,'parcela','parcelas')+' de '+money(d.parcela)+'</small></div>'+pill(c.status)+'</div>'+
+       '<div class="mid"><div><span class="muted">Saldo</span><div class="saldo num">'+money(c.saldo)+'</div></div><div class="days">'+(c.rest===0?'<b>✓</b>quitada':'<b>'+c.rest+'</b>'+(c.rest===1?'parcela restante':'parcelas restantes'))+'</div></div>'+
        '<div class="bar"><i style="width:'+(c.prog*100).toFixed(1)+'%;background:'+barColor(c.status)+'"></i></div>'+
-       '<div class="foot"><span>'+Math.round(c.prog*100)+'% pago · meta '+br(c.meta)+'</span><span>'+(c.saldo>0?'precisa '+money(c.porMes)+'/mês':'')+'</span></div></button>';
+       '<div class="foot"><span>'+c.pagas+'/'+c.total+' pagas · termina em '+ymShort(c.ultimoMes)+'</span><span>'+(c.prox?'próx. '+br(c.prox.venc).slice(0,5):'')+'</span></div></button>';
   });
   el.innerHTML=h;
   $$('[data-f]',el).forEach(function(b){b.onclick=function(){debtFilter=b.dataset.f;renderDividas()}});
@@ -576,7 +643,7 @@ function renderReceitas(){
   var el=$('#tab-receitas');
   var list=receitasDoMes(curMonth);
   var h=monthBar();
-  h+='<div class="card hero"><div class="lbl">Receita de '+ymLabel(curMonth)+'</div><div class="big num" style="margin-bottom:4px">'+money(receitaMes(curMonth))+'</div><div class="lbl">'+plural(list.length,'lançamento','lançamentos')+' · parcelas do mês '+money(parcelasMes())+'</div></div>';
+  h+='<div class="card hero"><div class="lbl">Receita de '+ymLabel(curMonth)+'</div><div class="big num" style="margin-bottom:4px">'+money(receitaMes(curMonth))+'</div><div class="lbl">'+plural(list.length,'lançamento','lançamentos')+' · parcelas do mês '+money(parcelasMes(curMonth))+'</div></div>';
   if(!S.receitas.length){
     h+='<div class="card empty">'+ICON.up+'<h2>Cadastre suas receitas</h2><p>Receitas fixas (salário, contratos) contam todo mês. Receitas avulsas contam só no mês da data.</p><button class="btn pri" id="e1">Cadastrar receita</button></div>';
     el.innerHTML=h;bindMonth(el);$('#e1').onclick=function(){openIncomeForm()};return;
@@ -592,32 +659,33 @@ function renderReceitas(){
 /* ---------------- Relatório ---------------- */
 function renderRelatorio(){
   var el=$('#tab-relatorio');
-  var k=ym(todayISO());
-  var rec=receitaMes(k),parc=parcelasMes(),sobra=rec-parc,pct=comprometimento(k),f=faixa(pct);
-  var ord=ordemSugerida();
-  var precisa=ord.reduce(function(a,x){return a+x.c.porMes},0);
+  var k=curYM();
+  var rec=receitaMes(k),parc=parcelasMes(k),sobra=rec-parc,pct=comprometimento(k),f=faixa(pct);
+  var ord=ordemSugerida(), atr=totalAtraso(), fim=fimDeTudo();
   var h='<div class="card diag"><h3>Diagnóstico de '+ymLabel(k)+'</h3>';
   if(!S.dividas.length&&!S.receitas.length){h+='<p>Cadastre dívidas e receitas para gerar o relatório.</p></div>';el.innerHTML=h;return}
   h+='<p>Receita do mês: <b class="num">'+money(rec)+'</b>. Parcelas: <b class="num">'+money(parc)+'</b> ('+(isFinite(pct)?Math.round(pct*100)+'%':'—')+' da renda) '+pill2(f)+'</p>';
   h+='<p>Sobra depois das parcelas: <b class="num '+(sobra<0?'neg':'pos')+'">'+money(sobra)+'</b>.</p>';
-  if(ord.length){
-    var gap=rec-precisa;
-    h+='<p>Para cumprir <b>todos</b> os prazos você precisa separar <b class="num">'+money(precisa)+'</b> por mês ('+money(precisa/30)+' por dia). '+
-       (rec>0?(gap>=0?'Sua receita cobre isso e ainda sobram <b class="num pos">'+money(gap)+'</b>.':'Faltam <b class="num neg">'+money(-gap)+'</b> por mês: considere aumentar prazos ou a receita.'):'')+'</p>';
-  } else if(S.dividas.length){h+='<p><b>Todas as dívidas estão quitadas.</b> 🎉</p>'}
+  if(atr.n)h+='<p class="neg"><b>'+plural(atr.n,'parcela atrasada','parcelas atrasadas')+'</b> ('+money(atr.valor)+').</p>';
+  if(ord.length)h+='<p>Total devido: <b class="num">'+money(totalDevido())+'</b>. Mantendo as parcelas, você fica livre das dívidas em <b>'+ymLabel(fim)+'</b>.</p>';
+  else if(S.dividas.length)h+='<p><b>Todas as dívidas estão quitadas.</b> 🎉</p>';
   h+='</div>';
+  // próximos 6 meses
+  h+='<div class="card"><h3>Próximos 6 meses</h3><table class="tbl"><thead><tr><th>Mês</th><th>Receita</th><th>Parcelas</th><th>Sobra</th></tr></thead><tbody>';
+  for(var i=0;i<6;i++){var m=ymAdd(k,i),r=receitaMes(m),p=parcelasMes(m);h+='<tr><td>'+ymShort(m)+'</td><td class="num">'+moneyShort(r)+'</td><td class="num">'+moneyShort(p)+'</td><td class="num '+(r-p<0?'neg':'pos')+'">'+moneyShort(r-p)+'</td></tr>'}
+  h+='</tbody></table></div>';
   if(ord.length){
     h+='<div class="card"><h3>Ordem sugerida <span class="r">'+(S.ajustes.estrategia==='bola'?'Bola de neve':'Avalanche')+'</span></h3>';
-    h+='<p class="muted" style="margin:-4px 0 12px">'+(S.ajustes.estrategia==='bola'?'Menor saldo primeiro: vitórias rápidas para manter a motivação.':'Maior juros primeiro: paga menos juros no total.')+' Mude em Ajustes.</p>';
+    h+='<p class="muted" style="margin:-4px 0 12px">'+(S.ajustes.estrategia==='bola'?'Menor saldo primeiro: vitórias rápidas para manter a motivação.':'Maior juros primeiro: paga menos juros no total.')+' Se sobrar dinheiro, adiante parcelas nesta ordem. Mude em Ajustes.</p>';
     ord.forEach(function(x,i){
       var c=x.c,d=x.d;
       h+='<div class="rep-item" data-debt="'+d.id+'"><div class="t"><div class="n">'+(i+1)+'</div><b>'+esc(d.nome)+'</b>'+pill(c.status)+'</div><div class="kv">'+
         '<div><span>Saldo</span><b class="num">'+money(c.saldo)+'</b></div>'+
-        '<div><span>Dias restantes</span><b>'+(c.dias<0?Math.abs(c.dias)+' de atraso':c.dias)+'</b></div>'+
-        '<div><span>Precisa por dia</span><b class="num">'+money(c.porDia)+'</b></div>'+
-        '<div><span>Precisa por mês</span><b class="num">'+money(c.porMes)+'</b></div>'+
-        '<div><span>Parcela atual</span><b class="num">'+money(d.parcela||0)+'</b></div>'+
-        '<div><span>Pela parcela, quita em</span><b>'+(isFinite(c.diasEst)?plural(c.diasEst,'dia','dias'):'nunca (juros > parcela)')+'</b></div>'+
+        '<div><span>Parcelas restantes</span><b>'+c.rest+' de '+c.total+'</b></div>'+
+        '<div><span>Parcela</span><b class="num">'+money(d.parcela)+'</b></div>'+
+        '<div><span>Termina em</span><b>'+ymLabel(c.ultimoMes)+'</b></div>'+
+        (c.prox?'<div><span>Próxima parcela</span><b>'+br(c.prox.venc)+'</b></div>':'')+
+        (d.jurosMes?'<div><span>Juros</span><b>'+String(d.jurosMes).replace('.',',')+'% a.m.</b></div>':'')+
         '</div></div>';
     });
     h+='</div>';
@@ -629,22 +697,25 @@ function renderRelatorio(){
   $$('[data-debt]',el).forEach(function(r){r.onclick=function(){openDebtDetail(r.dataset.debt)}});
 }
 function reportText(){
-  var k=ym(todayISO());
-  var rec=receitaMes(k),parc=parcelasMes(),pct=comprometimento(k);
+  var k=curYM();
+  var rec=receitaMes(k),parc=parcelasMes(k),pct=comprometimento(k),atr=totalAtraso();
   var t='*Relatório Quita — '+br(todayISO())+'*\n\n';
   t+='Receita do mês: '+money(rec)+'\n';
   t+='Parcelas do mês: '+money(parc)+' ('+(isFinite(pct)?Math.round(pct*100)+'%':'—')+' da renda)\n';
   t+='Sobra: '+money(rec-parc)+'\n';
   t+='Total devido: '+money(totalDevido())+'\n';
+  if(atr.n)t+='Atrasadas: '+atr.n+' ('+money(atr.valor)+')\n';
   var ord=ordemSugerida();
   if(ord.length){
     t+='\n*Dívidas (ordem sugerida: '+(S.ajustes.estrategia==='bola'?'bola de neve':'avalanche')+')*\n';
     ord.forEach(function(x,i){
       var c=x.c;
-      t+=(i+1)+'. '+x.d.nome+' — saldo '+money(c.saldo)+'; '+(c.dias<0?Math.abs(c.dias)+' dias de atraso':'faltam '+c.dias+' dias (meta '+br(c.meta)+')')+'; precisa '+money(c.porMes)+'/mês; '+STATUS[c.status][0]+'\n';
+      t+=(i+1)+'. '+x.d.nome+' — '+c.rest+'/'+c.total+' parcelas restantes de '+money(x.d.parcela)+' (saldo '+money(c.saldo)+'); termina em '+ymLabel(c.ultimoMes)+'; '+STATUS[c.status][0]+'\n';
     });
-    t+='\nPara cumprir todos os prazos: '+money(ord.reduce(function(a,x){return a+x.c.porMes},0))+' por mês.\n';
+    t+='\nLivre das dívidas em: '+ymLabel(fimDeTudo())+'\n';
   }
+  t+='\n*Próximos meses (receita / parcelas / sobra)*\n';
+  for(var i=0;i<6;i++){var m=ymAdd(k,i),r=receitaMes(m),p=parcelasMes(m);t+=ymShort(m)+': '+money(r)+' / '+money(p)+' / '+money(r-p)+'\n'}
   return t;
 }
 function shareReport(){
@@ -656,14 +727,25 @@ function shareReport(){
 function csvCell(v){v=v==null?'':String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
 function csvNum(v){return String(r2(v)).replace('.',',')}
 function exportCSV(){
-  var rows=[['Nome','Credor','Valor total','Saldo','Pago','% pago','Parcela','Juros % a.m.','Dia venc.','Início','Prazo (dias)','Data-meta','Dias restantes','Precisa por dia','Precisa por mês','Status']];
-  S.dividas.forEach(function(d){var c=calc(d);rows.push([d.nome,d.credor,csvNum(d.valorTotal),csvNum(c.saldo),csvNum(c.pago),Math.round(c.prog*100),csvNum(d.parcela),csvNum(d.jurosMes||0),d.diaVenc||'',br(d.dataInicio),d.prazoDias,br(c.meta),c.dias,csvNum(c.porDia),csvNum(c.porMes),STATUS[c.status][0]])});
+  var rows=[['Nome','Credor','Data da compra','Valor da parcela','Nº de parcelas','Pagas','Restantes','Valor total','Saldo','Juros % a.m.','Dia venc.','1ª parcela','Última parcela','Status']];
+  S.dividas.forEach(function(d){var c=calc(d);rows.push([d.nome,d.credor,d.dataCompra?br(d.dataCompra):'',csvNum(d.parcela),c.total,c.pagas,c.rest,csvNum(c.valorTotal),csvNum(c.saldo),csvNum(d.jurosMes||0),d.diaVenc,ymShort(d.primeiraMes),ymShort(c.ultimoMes),STATUS[c.status][0]])});
+  rows.push([]);rows.push(['Parcelas']);rows.push(['Mês','Dívida','Parcela','Valor','Vencimento','Situação']);
+  todasParcelas().forEach(function(r){rows.push([r[0],r[1],r[2],csvNum(r[3]),r[4],r[5]])});
   rows.push([]);rows.push(['Receitas']);rows.push(['Descrição','Valor','Tipo','Data/início','Fim','Categoria']);
   S.receitas.forEach(function(r){rows.push([r.descricao,csvNum(r.valor),r.tipo==='fixa'?'Fixa':'Avulsa',br(r.data),r.fim?br(r.fim):'',r.categoria])});
-  rows.push([]);rows.push(['Pagamentos']);rows.push(['Data','Dívida','Valor','Observação']);
-  S.pagamentos.forEach(function(p){var d=S.dividas.filter(function(x){return x.id===p.dividaId})[0];rows.push([br(p.data),d?d.nome:'(excluída)',csvNum(p.valor),p.obs||''])});
   var csv='﻿'+rows.map(function(r){return r.map(csvCell).join(';')}).join('\n');
   saveFile('quita-'+todayISO()+'.csv','text/csv',csv);
+}
+function todasParcelas(){
+  var out=[],hoje=todayISO();
+  S.dividas.forEach(function(d){
+    for(var n=1;n<=d.totalParcelas;n++){
+      var v=vencDaParcela(d,n),paga=isPaga(d,n);
+      out.push([ymShort(mesDaParcela(d,n)),d.nome,n+'/'+d.totalParcelas,r2(d.parcela),br(v),paga?'Paga':v<hoje?'Atrasada':'Em aberto',v]);
+    }
+  });
+  out.sort(function(a,b){return a[6]<b[6]?-1:a[6]>b[6]?1:0});
+  return out;
 }
 function saveFile(name,mime,content){
   if(HAS_NATIVE){var m=Android.exportFile(name,mime,content);toast(m.indexOf('ERRO')===0?'Não foi possível salvar: '+m.slice(6):m)}
@@ -671,10 +753,12 @@ function saveFile(name,mime,content){
 }
 
 /* ---------------- Sheet (formulários) ---------------- */
-var sheetOpen=false, sheetStack=[];
+var sheetOpen=false;
 function openSheet(html,onMount){
+  var keep=sheetOpen?$('#sheet').scrollTop:0;
   $('#sheetBody').innerHTML=html;
-  $('#scrim').classList.add('on');$('#sheet').classList.add('on');$('#sheet').scrollTop=0;sheetOpen=true;
+  $('#scrim').classList.add('on');$('#sheet').classList.add('on');sheetOpen=true;
+  $('#sheet').scrollTop=onMount&&onMount.keepScroll?keep:0;
   var c=$('[data-close]',$('#sheet'));if(c)c.onclick=closeSheet;
   if(onMount)onMount($('#sheetBody'));
 }
@@ -689,60 +773,62 @@ function confirmBox(msg,okText,cb){
 
 /* dívida: formulário */
 function openDebtForm(id){
-  var d=id?S.dividas.filter(function(x){return x.id===id})[0]:null;
-  var c=d?calc(d):null;
-  var inicio=d?d.dataInicio:todayISO(), prazo=d?d.prazoDias:365;
+  var d=id?debtById(id):null;
+  var pagasAgora=d?calc(d).pagas:0;
+  var prim=d?d.primeiraMes:curYM();
   var h=head(d?'Editar dívida':'Nova dívida')+
-  '<div class="field"><label>Nome da dívida *</label><input id="fNome" placeholder="Ex.: Cartão Nubank, Empréstimo" value="'+esc(d?d.nome:'')+'"></div>'+
-  '<div class="field"><label>Credor</label><input id="fCredor" placeholder="Banco, loja ou pessoa" value="'+esc(d?d.credor:'')+'"></div>'+
-  '<div class="two"><div class="field"><label>Valor total original</label><div class="prefix"><input id="fTotal" inputmode="decimal" placeholder="0,00" value="'+(d?moneyInput(d.valorTotal):'')+'"></div></div>'+
-  '<div class="field"><label>Saldo atual (quanto falta) *</label><div class="prefix"><input id="fSaldo" inputmode="decimal" placeholder="0,00" value="'+(d?moneyInput(c.saldo):'')+'"></div></div></div>'+
-  '<div class="two"><div class="field"><label>Parcela mensal</label><div class="prefix"><input id="fParcela" inputmode="decimal" placeholder="0,00" value="'+(d?moneyInput(d.parcela):'')+'"></div></div>'+
-  '<div class="field"><label>Juros ao mês (%)</label><input id="fJuros" inputmode="decimal" placeholder="Opcional" value="'+(d&&d.jurosMes?String(d.jurosMes).replace('.',','):'')+'"></div></div>'+
-  '<div class="two"><div class="field"><label>Dia do vencimento</label><input id="fDia" type="number" min="1" max="31" inputmode="numeric" placeholder="1 a 31" value="'+(d&&d.diaVenc?d.diaVenc:'')+'"></div>'+
-  '<div class="field"><label>Início da contagem</label><input id="fInicio" type="date" value="'+inicio+'"></div></div>'+
-  '<div class="two"><div class="field"><label>Prazo para quitar (dias) *</label><input id="fPrazo" type="number" min="1" inputmode="numeric" value="'+prazo+'"></div>'+
-  '<div class="field"><label>Data-meta</label><input id="fMeta" type="date" value="'+addDays(inicio,prazo)+'"></div></div>'+
+  '<div class="field"><label>Nome da dívida *</label><input id="fNome" placeholder="Ex.: Cartão Nubank, Geladeira" value="'+esc(d?d.nome:'')+'"></div>'+
+  '<div class="two"><div class="field"><label>Credor / loja</label><input id="fCredor" placeholder="Opcional" value="'+esc(d?d.credor:'')+'"></div>'+
+  '<div class="field"><label>Data da compra</label><input id="fCompra" type="date" value="'+(d&&d.dataCompra?d.dataCompra:'')+'"><div class="hint">Opcional</div></div></div>'+
+  '<div class="two"><div class="field"><label>Valor da parcela *</label><div class="prefix"><input id="fParcela" inputmode="decimal" placeholder="0,00" value="'+(d?moneyInput(d.parcela):'')+'"></div></div>'+
+  '<div class="field"><label>Nº de parcelas *</label><input id="fTotal" type="number" min="1" max="600" inputmode="numeric" placeholder="Ex.: 12" value="'+(d?d.totalParcelas:'')+'"></div></div>'+
+  '<div class="two"><div class="field"><label>Já pagas</label><input id="fPagas" type="number" min="0" inputmode="numeric" value="'+pagasAgora+'"><div class="hint">Quantas já quitou</div></div>'+
+  '<div class="field"><label>Dia do vencimento *</label><input id="fDia" type="number" min="1" max="31" inputmode="numeric" value="'+(d?d.diaVenc:10)+'"></div></div>'+
+  '<div class="field"><label>Mês da 1ª parcela *</label><input id="fPrim" type="month" value="'+prim+'"><div class="hint">Com isso o app sabe em que mês cai cada parcela.</div></div>'+
+  '<div class="field"><label>Juros ao mês (%)</label><input id="fJuros" inputmode="decimal" placeholder="Opcional — usado na ordem sugerida" value="'+(d&&d.jurosMes?String(d.jurosMes).replace('.',','):'')+'"></div>'+
   '<div class="field" id="fSug"></div>'+
   '<div class="field"><label>Observação</label><textarea id="fObs" placeholder="Opcional">'+esc(d?d.obs:'')+'</textarea></div>'+
   '<div class="stack"><button class="btn pri" id="fSave">Salvar dívida</button>'+(d?'<button class="btn danger" id="fDel">'+ICON.trash+'Excluir dívida</button>':'')+'</div>';
   openSheet(h,function(el){
-    var ini=$('#fInicio',el),pz=$('#fPrazo',el),mt=$('#fMeta',el),sug=$('#fSug',el);
-    function updSug(){
-      var saldo=parseMoney($('#fSaldo',el).value),p=parseInt(pz.value,10)||0;
-      var pr=parseMoney($('#fParcela',el).value);
-      if(saldo>0&&p>0){
-        var dd=Math.max(1,diffDays(todayISO(),addDays(ini.value||todayISO(),p)));
-        var txt='Para quitar no prazo: <b>'+money(saldo/dd)+'</b> por dia · <b>'+money(saldo/dd*30)+'</b> por mês.';
-        if(pr>0){var dEst=Math.ceil(saldo/pr*30);txt+='<br>Só com a parcela atual (sem juros): cerca de '+plural(dEst,'dia','dias')+'.'}
-        sug.innerHTML='<div class="note" style="margin:0">'+txt+'</div>';
+    var primTouched=!!d;
+    var compra=$('#fCompra',el),prm=$('#fPrim',el),sug=$('#fSug',el);
+    compra.onchange=function(){if(!primTouched&&compra.value){prm.value=ymAdd(ym(compra.value),1)}upd()};
+    prm.onchange=function(){primTouched=true;upd()};
+    function upd(){
+      var v=parseMoney($('#fParcela',el).value),T=parseInt($('#fTotal',el).value,10)||0,pg=Math.min(T,parseInt($('#fPagas',el).value,10)||0);
+      if(v>0&&T>0&&prm.value){
+        var fim=ymAdd(prm.value,T-1),rest=T-pg;
+        sug.innerHTML='<div class="note" style="margin:0">Total: <b>'+money(v*T)+'</b> · falta pagar <b>'+money(v*rest)+'</b> ('+plural(rest,'parcela','parcelas')+').<br>Parcelas de '+ymLabel(prm.value)+' até <b>'+ymLabel(fim)+'</b>.</div>';
       } else sug.innerHTML='';
     }
-    pz.oninput=function(){var n=parseInt(pz.value,10);if(n>0&&ini.value)mt.value=addDays(ini.value,n);updSug()};
-    mt.onchange=function(){if(mt.value&&ini.value){var n=diffDays(ini.value,mt.value);if(n>0)pz.value=n}updSug()};
-    ini.onchange=function(){var n=parseInt(pz.value,10);if(n>0&&ini.value)mt.value=addDays(ini.value,n);updSug()};
-    $('#fSaldo',el).oninput=updSug;$('#fParcela',el).oninput=updSug;
-    $('#fTotal',el).onblur=function(){if(!$('#fSaldo',el).value)$('#fSaldo',el).value=$('#fTotal',el).value;updSug()};
-    updSug();
+    ['#fParcela','#fTotal','#fPagas'].forEach(function(s){$(s,el).oninput=upd});
+    upd();
     $('#fSave',el).onclick=function(){
-      var nome=$('#fNome',el).value.trim(), saldo=parseMoney($('#fSaldo',el).value), total=parseMoney($('#fTotal',el).value);
-      var p=parseInt(pz.value,10);
+      var nome=$('#fNome',el).value.trim(), v=parseMoney($('#fParcela',el).value), T=parseInt($('#fTotal',el).value,10);
+      var pg=parseInt($('#fPagas',el).value,10)||0, dia=parseInt($('#fDia',el).value,10);
       if(!nome){toast('Informe o nome da dívida');return}
-      if(!(saldo>0)&&!d){toast('Informe o saldo atual');return}
-      if(!(p>0)){toast('Informe o prazo em dias');return}
-      if(!total||total<saldo)total=saldo+(d?pagosDe(d.id):0);
-      var dia=parseInt($('#fDia',el).value,10);
+      if(!(v>0)){toast('Informe o valor da parcela');return}
+      if(!(T>0)){toast('Informe o número de parcelas');return}
+      if(!(dia>=1&&dia<=31)){toast('Dia do vencimento entre 1 e 31');return}
+      if(!prm.value){toast('Informe o mês da 1ª parcela');return}
+      pg=Math.max(0,Math.min(T,pg));
       var o=d||{id:uid(),criadoEm:new Date().toISOString()};
-      o.nome=nome;o.credor=$('#fCredor',el).value.trim();o.valorTotal=r2(total);
-      o.saldoInicial=r2(saldo+(d?pagosDe(d.id):0));
-      o.parcela=r2(parseMoney($('#fParcela',el).value));o.jurosMes=parseMoney($('#fJuros',el).value)||0;
-      o.diaVenc=dia>=1&&dia<=31?dia:null;o.dataInicio=ini.value||todayISO();o.prazoDias=p;o.dataMeta=addDays(o.dataInicio,p);
-      o.obs=$('#fObs',el).value.trim();
+      o.nome=nome;o.credor=$('#fCredor',el).value.trim();o.dataCompra=compra.value||'';
+      o.parcela=r2(v);o.totalParcelas=T;o.diaVenc=dia;o.primeiraMes=prm.value;
+      o.jurosMes=parseMoney($('#fJuros',el).value)||0;o.obs=$('#fObs',el).value.trim();
+      // "Já pagas": se o número mudou, as primeiras N parcelas ficam pagas e as marcações são refeitas
+      if(!d||pg!==pagasAgora){
+        S.pagamentos=S.pagamentos.filter(function(p){return !(p.dividaId===o.id&&p.parcela)});
+        o.pagasAntes=pg;
+      } else {
+        S.pagamentos=S.pagamentos.filter(function(p){return !(p.dividaId===o.id&&p.parcela&&p.parcela>T)});
+        o.pagasAntes=Math.min(o.pagasAntes||0,T);
+      }
       if(!d)S.dividas.push(o);
       closeSheet();commit();toast(d?'Dívida atualizada':'Dívida cadastrada');
     };
     if(d)$('#fDel',el).onclick=function(){
-      confirmBox('Excluir <b>'+esc(d.nome)+'</b> e todos os pagamentos dela?','Excluir',function(){
+      confirmBox('Excluir <b>'+esc(d.nome)+'</b> e todas as parcelas dela?','Excluir',function(){
         S.dividas=S.dividas.filter(function(x){return x.id!==d.id});
         S.pagamentos=S.pagamentos.filter(function(p){return p.dividaId!==d.id});
         commit();toast('Dívida excluída');
@@ -751,62 +837,40 @@ function openDebtForm(id){
   });
 }
 
-/* dívida: detalhe */
-function openDebtDetail(id){
-  var d=S.dividas.filter(function(x){return x.id===id})[0];if(!d)return;
-  var c=calc(d);
-  var pays=S.pagamentos.filter(function(p){return p.dividaId===id}).sort(function(a,b){return a.data<b.data?1:-1});
+/* dívida: detalhe com todas as parcelas */
+function openDebtDetail(id,keepScroll){
+  var d=debtById(id);if(!d)return;
+  var c=calc(d),hoje=todayISO();
   var h=head(esc(d.nome))+
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin:-6px 0 12px"><span class="muted">'+esc(d.credor||'')+'</span>'+pill(c.status)+'</div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin:-6px 0 12px"><span class="muted">'+esc(d.credor||'')+(d.dataCompra?(d.credor?' · ':'')+'compra em '+br(d.dataCompra):'')+'</span>'+pill(c.status)+'</div>'+
     '<div class="bar" style="height:10px;margin-bottom:6px"><i style="width:'+(c.prog*100).toFixed(1)+'%;background:'+barColor(c.status)+'"></i></div>'+
-    '<p class="muted" style="margin:0 0 14px">'+Math.round(c.prog*100)+'% pago de '+money(d.valorTotal)+'</p>'+
+    '<p class="muted" style="margin:0 0 14px">'+c.pagas+' de '+c.total+' parcelas pagas ('+Math.round(c.prog*100)+'%)</p>'+
     '<div class="detail-grid">'+
-    '<div><span>Saldo atual</span><b class="num">'+money(c.saldo)+'</b></div>'+
-    '<div><span>Já pago</span><b class="num">'+money(c.pago+(d.valorTotal-d.saldoInicial>0?d.valorTotal-d.saldoInicial:0))+'</b></div>'+
-    '<div><span>Dias restantes</span><b>'+(c.saldo<=0?'—':c.dias<0?Math.abs(c.dias)+' de atraso':c.dias)+'</b></div>'+
-    '<div><span>Data-meta</span><b>'+br(c.meta)+'</b></div>'+
-    '<div><span>Precisa por dia</span><b class="num">'+money(c.porDia)+'</b></div>'+
-    '<div><span>Precisa por mês</span><b class="num">'+money(c.porMes)+'</b></div>'+
-    '<div><span>Parcela mensal</span><b class="num">'+money(d.parcela||0)+'</b></div>'+
-    '<div><span>Pela parcela, quita em</span><b>'+(c.saldo<=0?'—':isFinite(c.diasEst)?plural(c.diasEst,'dia','dias'):'nunca')+'</b></div>'+
+    '<div><span>Saldo</span><b class="num">'+money(c.saldo)+'</b></div>'+
+    '<div><span>Já pago</span><b class="num">'+money(c.pago)+'</b></div>'+
+    '<div><span>Parcela</span><b class="num">'+money(d.parcela)+'</b></div>'+
+    '<div><span>Valor total</span><b class="num">'+money(c.valorTotal)+'</b></div>'+
+    '<div><span>Faltam</span><b>'+plural(c.rest,'parcela','parcelas')+'</b></div>'+
+    '<div><span>Termina em</span><b>'+ymShort(c.ultimoMes)+'</b></div>'+
+    (c.prox?'<div><span>Próxima parcela</span><b>'+br(c.prox.venc)+'</b></div>':'')+
     (d.jurosMes?'<div><span>Juros</span><b>'+String(d.jurosMes).replace('.',',')+'% a.m.</b></div>':'')+
-    (c.prox?'<div><span>Próximo vencimento</span><b>'+br(c.prox)+'</b></div>':'')+
     '</div>'+
     (d.obs?'<p class="muted" style="margin:-4px 0 14px">'+esc(d.obs)+'</p>':'')+
-    '<div class="stack">'+(c.saldo>0?'<button class="btn pri" id="dPay">'+ICON.pay+'Registrar pagamento</button>':'')+'<button class="btn sec" id="dEdit">Editar dívida</button></div>'+
-    '<div class="sec-title">Pagamentos ('+pays.length+')</div>'+
-    (pays.length?pays.map(function(p){return '<div class="pay-row"><div class="grow"><b class="num">'+money(p.valor)+'</b><span>'+br(p.data)+(p.obs?' · '+esc(p.obs):'')+'</span></div><button data-delpay="'+p.id+'" aria-label="Excluir pagamento">'+ICON.trash+'</button></div>'}).join(''):'<p class="muted">Nenhum pagamento registrado ainda.</p>');
-  openSheet(h,function(el){
-    var b=$('#dPay',el);if(b)b.onclick=function(){openPayForm(id)};
+    '<button class="btn sec" id="dEdit">Editar dívida</button>'+
+    '<div class="sec-title">Parcelas — toque no ✓ para marcar</div>';
+  for(var n=1;n<=c.total;n++){
+    var v=vencDaParcela(d,n),paga=isPaga(d,n);
+    h+=parcelaRow({d:d,n:n,valor:d.parcela,venc:v,paga:paga,atrasada:!paga&&v<hoje},true);
+  }
+  var legado=S.pagamentos.filter(function(p){return p.dividaId===id&&p.legado});
+  if(legado.length)h+='<div class="sec-title">Pagamentos da versão anterior</div>'+legado.map(function(p){return '<div class="pay-row"><div class="grow"><b class="num">'+money(p.valor)+'</b><span>'+br(p.data)+'</span></div></div>'}).join('');
+  var mount=function(el){
     $('#dEdit',el).onclick=function(){openDebtForm(id)};
-    $$('[data-delpay]',el).forEach(function(x){x.onclick=function(){
-      S.pagamentos=S.pagamentos.filter(function(p){return p.id!==x.dataset.delpay});
-      commit();openDebtDetail(id);toast('Pagamento removido');
-    }});
-  });
-}
-
-/* pagamento */
-function openPayForm(id){
-  var d=S.dividas.filter(function(x){return x.id===id})[0];var c=calc(d);
-  var sugest=Math.min(c.saldo,d.parcela||c.saldo);
-  var h=head('Registrar pagamento')+'<p class="muted" style="margin:-6px 0 14px">'+esc(d.nome)+' · saldo '+money(c.saldo)+'</p>'+
-    '<div class="field"><label>Valor pago *</label><div class="prefix"><input id="pVal" inputmode="decimal" value="'+moneyInput(sugest)+'"></div></div>'+
-    '<div class="field"><label>Data</label><input id="pData" type="date" value="'+todayISO()+'"></div>'+
-    '<div class="field"><label>Observação</label><input id="pObs" placeholder="Opcional"></div>'+
-    '<div class="btn-row"><button class="btn ghost" id="pBack">Voltar</button><button class="btn pri" id="pSave">Salvar</button></div>';
-  openSheet(h,function(el){
-    $('#pBack',el).onclick=function(){openDebtDetail(id)};
-    $('#pSave',el).onclick=function(){
-      var v=parseMoney($('#pVal',el).value);
-      if(!(v>0)){toast('Informe o valor pago');return}
-      S.pagamentos.push({id:uid(),dividaId:id,valor:r2(v),data:$('#pData',el).value||todayISO(),obs:$('#pObs',el).value.trim()});
-      commit();
-      var nc=calc(d);
-      if(nc.saldo<=0)toast('Dívida quitada! 🎉');else toast('Pagamento registrado');
-      openDebtDetail(id);
-    };
-  });
+    $$('[data-tog]',el).forEach(function(b){b.onclick=function(){toggleParcela(id,+b.dataset.n);openDebtDetail(id,true)}});
+    $$('.grow[data-debt]',el).forEach(function(g){g.removeAttribute('data-debt')});
+  };
+  mount.keepScroll=!!keepScroll;
+  openSheet(h,mount);
 }
 
 /* receita */
@@ -817,7 +881,7 @@ function openIncomeForm(id){
     '<div class="field"><div class="seg" id="iTipo"><button data-t="fixa">Fixa (todo mês)</button><button data-t="avulsa">Avulsa</button></div></div>'+
     '<div class="field"><label>Descrição *</label><input id="iDesc" placeholder="Ex.: Salário, Cliente X" value="'+esc(r?r.descricao:'')+'"></div>'+
     '<div class="field"><label>Valor *</label><div class="prefix"><input id="iVal" inputmode="decimal" placeholder="0,00" value="'+(r?moneyInput(r.valor):'')+'"></div></div>'+
-    '<div class="two"><div class="field"><label id="iDataL">Começa em</label><input id="iData" type="date" value="'+(r?r.data:(curMonth===ym(todayISO())?todayISO():curMonth+'-01'))+'"></div>'+
+    '<div class="two"><div class="field"><label id="iDataL">Começa em</label><input id="iData" type="date" value="'+(r?r.data:(curMonth===curYM()?todayISO():curMonth+'-01'))+'"></div>'+
     '<div class="field" id="iFimW"><label>Termina em</label><input id="iFim" type="date" value="'+(r&&r.fim?r.fim:'')+'"><div class="hint">Vazio = sem fim</div></div></div>'+
     '<div class="field"><label>Categoria</label><select id="iCat">'+CATS.map(function(c){return '<option'+(r&&r.categoria===c?' selected':'')+'>'+c+'</option>'}).join('')+'</select></div>'+
     '<div class="stack"><button class="btn pri" id="iSave">Salvar receita</button>'+(r?'<button class="btn danger" id="iDel">'+ICON.trash+'Excluir receita</button>':'')+'</div>';
@@ -862,7 +926,7 @@ function openSettings(){
     '<p class="muted">O backup é salvo em Downloads/Quita.</p>'+
     '<div class="sec-title">Zona de perigo</div>'+
     '<button class="btn danger" id="sWipe">'+ICON.trash+'Apagar todos os dados</button>'+
-    '<p class="muted" style="text-align:center;margin-top:16px">Quita v'+(HAS_NATIVE?Android.version():'1.0.0')+' · Auxano</p>';
+    '<p class="muted" style="text-align:center;margin-top:16px">Quita v'+(HAS_NATIVE?Android.version():VERSION)+' · Auxano</p>';
   openSheet(h,function(el){
     function setE(e){$$('#sEst button',el).forEach(function(b){b.classList.toggle('on',b.dataset.e===e)})}
     setE(a.estrategia);
@@ -890,14 +954,14 @@ function openSettings(){
           var o=JSON.parse(rd.result);
           if(!o||!Array.isArray(o.dividas))throw 0;
           confirmBox('Substituir os dados atuais por este backup ('+plural(o.dividas.length,'dívida','dívidas')+', '+plural((o.receitas||[]).length,'receita','receitas')+')?','Restaurar',function(){
-            var keepUrl=S.ajustes;S=o;S.pagamentos=S.pagamentos||[];S.receitas=S.receitas||[];S.ajustes=Object.assign({},DEFAULT.ajustes,keepUrl,o.ajustes||{});
-            commit();toast('Backup restaurado');
+            var keep=S.ajustes;S=o;S.pagamentos=S.pagamentos||[];S.receitas=S.receitas||[];S.ajustes=Object.assign({},DEFAULT.ajustes,keep,o.ajustes||{});
+            migrate();commit();toast('Backup restaurado');
           });
         }catch(e){toast('Arquivo de backup inválido')}
       };
       rd.readAsText(f);
     };
-    $('#sWipe',el).onclick=function(){confirmBox('Apagar <b>todas</b> as dívidas, pagamentos e receitas deste celular? A planilha online não é apagada.','Apagar tudo',function(){
+    $('#sWipe',el).onclick=function(){confirmBox('Apagar <b>todas</b> as dívidas, parcelas e receitas deste celular? A planilha online não é apagada.','Apagar tudo',function(){
       var aj=S.ajustes;S=JSON.parse(JSON.stringify(DEFAULT));S.ajustes=aj;commit();toast('Dados apagados');
     })};
   });
@@ -912,29 +976,34 @@ function request(url,body,cb){
   else{
     fetch(url,{method:'POST',body:JSON.stringify(body),headers:{'Content-Type':'text/plain;charset=utf-8'}})
       .then(function(r){return r.json()}).then(function(j){window.quitaCb(id,!!j.ok,j.msg||'')})
-      .catch(function(e){window.quitaCb(id,false,'No navegador a sincronização pode ser bloqueada; use o app.')});
+      .catch(function(){window.quitaCb(id,false,'No navegador a sincronização pode ser bloqueada; use o app.')});
   }
 }
 function buildPayload(){
-  var k=ym(todayISO());
-  var dv=[['Nome','Credor','Valor total','Saldo atual','Pago','% pago','Parcela mensal','Juros % a.m.','Dia venc.','Início','Prazo (dias)','Data-meta','Dias restantes','Precisa por dia','Precisa por mês','Status','Observação']];
-  S.dividas.forEach(function(d){var c=calc(d);dv.push([d.nome,d.credor||'',r2(d.valorTotal),r2(c.saldo),r2(c.pago),r2(c.prog*100),r2(d.parcela),d.jurosMes||0,d.diaVenc||'',br(d.dataInicio),d.prazoDias,br(c.meta),c.saldo>0?c.dias:'',r2(c.porDia),r2(c.porMes),STATUS[c.status][0],d.obs||''])});
-  var pg=[['Data','Dívida','Valor','Observação']];
-  S.pagamentos.slice().sort(function(a,b){return a.data<b.data?1:-1}).forEach(function(p){var d=S.dividas.filter(function(x){return x.id===p.dividaId})[0];pg.push([br(p.data),d?d.nome:'(excluída)',r2(p.valor),p.obs||''])});
+  var k=curYM();
+  var dv=[['Nome','Credor','Data da compra','Valor da parcela','Nº de parcelas','Pagas','Restantes','Valor total','Saldo','% pago','Juros % a.m.','Dia venc.','1ª parcela','Última parcela','Próxima parcela','Status','Observação']];
+  S.dividas.forEach(function(d){var c=calc(d);dv.push([d.nome,d.credor||'',d.dataCompra?br(d.dataCompra):'',r2(d.parcela),c.total,c.pagas,c.rest,c.valorTotal,c.saldo,r2(c.prog*100),d.jurosMes||0,d.diaVenc,ymShort(d.primeiraMes),ymShort(c.ultimoMes),c.prox?br(c.prox.venc):'',STATUS[c.status][0],d.obs||''])});
+  var pc=[['Mês','Dívida','Parcela','Valor','Vencimento','Situação']];
+  todasParcelas().forEach(function(r){pc.push(r.slice(0,6))});
+  var pm=[['Mês','Receita','Parcelas','Sobra','% comprometido']];
+  var last=fimDeTudo()||k, n=Math.max(12,Math.min(60,ymDiff(k,last)+1));
+  for(var i=0;i<n;i++){var m=ymAdd(k,i),r=receitaMes(m),p=parcelasMes(m);pm.push([ymShort(m),r2(r),r2(p),r2(r-p),r>0?r2(p/r*100):''])}
   var rc=[['Descrição','Valor','Tipo','Data / início','Fim','Categoria']];
   S.receitas.forEach(function(r){rc.push([r.descricao,r2(r.valor),r.tipo==='fixa'?'Fixa':'Avulsa',br(r.data),r.fim?br(r.fim):'',r.categoria||''])});
-  var rec=receitaMes(k),parc=parcelasMes(),pct=comprometimento(k),ord=ordemSugerida();
+  var rec=receitaMes(k),parc=parcelasMes(k),pct=comprometimento(k),ord=ordemSugerida(),atr=totalAtraso();
   var rs=[['Indicador','Valor'],
     ['Atualizado em',br(todayISO())+' '+new Date().toTimeString().slice(0,5)],
     ['Mês de referência',ymLabel(k)],
     ['Receita do mês',r2(rec)],['Parcelas do mês',r2(parc)],['Sobra do mês',r2(rec-parc)],
     ['% da renda comprometida',isFinite(pct)?r2(pct*100):''],['Situação',faixa(pct)[0]],
-    ['Total devido',r2(totalDevido())],['Pago no mês',r2(pagoMes(k))],['Dívidas em aberto',ord.length],
-    ['Precisa por mês para cumprir todos os prazos',r2(ord.reduce(function(a,x){return a+x.c.porMes},0))],
+    ['Pago no mês',r2(pagoMes(k))],['Parcelas atrasadas',atr.n],['Valor em atraso',r2(atr.valor)],
+    ['Total devido',r2(totalDevido())],['Dívidas em aberto',ord.length],
+    ['Livre das dívidas em',fimDeTudo()?ymLabel(fimDeTudo()):'—'],
     ['Estratégia',S.ajustes.estrategia==='bola'?'Bola de neve':'Avalanche'],
-    ['',''],['Ordem sugerida','']];
-  ord.forEach(function(x,i){rs.push([(i+1)+'º '+x.d.nome,r2(x.c.saldo)])});
-  return {action:'sync',order:['Resumo','Dívidas','Pagamentos','Receitas'],sheets:{'Resumo':rs,'Dívidas':dv,'Pagamentos':pg,'Receitas':rc},
+    ['',''],['Ordem sugerida','Saldo']];
+  ord.forEach(function(x,i){rs.push([(i+1)+'º '+x.d.nome,x.c.saldo])});
+  return {action:'sync',order:['Resumo','Dívidas','Parcelas','Por mês','Receitas'],
+    sheets:{'Resumo':rs,'Dívidas':dv,'Parcelas':pc,'Por mês':pm,'Receitas':rc},
     historico:{data:br(todayISO()),totalDevido:r2(totalDevido()),receitaMes:r2(rec),parcelasMes:r2(parc),comprometido:isFinite(pct)?r2(pct*100):'',pagoMes:r2(pagoMes(k)),abertas:ord.length}};
 }
 function scheduleSync(){clearTimeout(syncTimer);syncTimer=setTimeout(function(){syncNow(false)},1500)}

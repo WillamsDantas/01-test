@@ -1,6 +1,6 @@
 # Quita — controle e quitação de dívidas (v1)
 
-App Android para cadastrar dívidas com prazo em dias, registrar pagamentos e receitas,
+App Android para cadastrar dívidas por parcelas (valor × quantidade), marcar cada parcela como paga e receitas,
 ver o painel de comprometimento da renda, gerar relatório e espelhar tudo numa planilha do Google.
 
 - `app/` — código do app (Java nativo + interface HTML/JS em `app/src/main/assets/index.html`)
