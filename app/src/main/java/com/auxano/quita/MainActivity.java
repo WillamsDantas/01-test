@@ -107,9 +107,16 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        web.evaluateJavascript("window.quitaBack ? window.quitaBack() : false", value -> {
-            if (!"true".equals(value)) MainActivity.super.onBackPressed();
+        web.evaluateJavascript("window.quitaBack ? window.quitaBack() : false", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
+                if (!"true".equals(value)) superBack();
+            }
         });
+    }
+
+    private void superBack() {
+        super.onBackPressed();
     }
 
     @Override
@@ -120,7 +127,12 @@ public class MainActivity extends Activity {
 
     private void callback(final String cbId, final boolean ok, final String msg) {
         final String js = "window.quitaCb && window.quitaCb(" + JSONObject.quote(cbId) + "," + ok + "," + JSONObject.quote(msg == null ? "" : msg) + ")";
-        runOnUiThread(() -> web.evaluateJavascript(js, null));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                web.evaluateJavascript(js, null);
+            }
+        });
     }
 
     private static String readAll(InputStream in) throws Exception {
@@ -206,34 +218,34 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public void share(final String text) {
-            runOnUiThread(() -> {
+            runOnUiThread(new Runnable() { @Override public void run() {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_TEXT, text);
                 startActivity(Intent.createChooser(i, "Compartilhar relatório"));
-            });
+            }});
         }
 
         @JavascriptInterface
         public void copy(final String text) {
-            runOnUiThread(() -> {
+            runOnUiThread(new Runnable() { @Override public void run() {
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 cm.setPrimaryClip(ClipData.newPlainText("Quita", text));
-            });
+            }});
         }
 
         @JavascriptInterface
         public void toast(final String text) {
-            runOnUiThread(() -> Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show());
+            runOnUiThread(new Runnable() { @Override public void run() { Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show(); } });
         }
 
         @JavascriptInterface
         public void openUrl(final String url) {
-            runOnUiThread(() -> {
+            runOnUiThread(new Runnable() { @Override public void run() {
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                 } catch (Exception ignored) { }
-            });
+            }});
         }
 
         /** Saves a file into Downloads/Quita. Returns a short message. */
@@ -270,7 +282,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public void sync(final String url, final String body, final String cbId) {
-            new Thread(() -> {
+            new Thread(new Runnable() { @Override public void run() {
                 try {
                     String resp = postJson(url, body);
                     boolean ok = false;
@@ -288,7 +300,7 @@ public class MainActivity extends Activity {
                 } catch (Exception e) {
                     callback(cbId, false, "Sem conexão com a planilha (" + e.getMessage() + ")");
                 }
-            }).start();
+            }}).start();
         }
 
         @JavascriptInterface
