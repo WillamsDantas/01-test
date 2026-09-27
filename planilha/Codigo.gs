@@ -64,7 +64,7 @@ function writeSheet(ss, name, rows) {
 function appendHistorico(ss, h) {
   var name = 'Histórico';
   var sh = ss.getSheetByName(name);
-  var header = ['Data', 'Total devido', 'Receita do mês', 'Parcelas do mês', '% comprometido', 'Pago no mês', 'Dívidas em aberto'];
+  var header = ['Data', 'Total devido', 'Receitas do mês', 'Despesas do mês', 'Parcelas do mês', '% comprometido', 'Parcelas pagas no mês', 'Dívidas em aberto'];
   if (!sh) {
     sh = ss.insertSheet(name);
     sh.getRange(1, 1, 1, header.length).setValues([header])
@@ -72,7 +72,7 @@ function appendHistorico(ss, h) {
     sh.setFrozenRows(1);
     sh.getRange('A:A').setNumberFormat('@');
   }
-  var row = [h.data, h.totalDevido, h.receitaMes, h.parcelasMes, h.comprometido, h.pagoMes, h.abertas];
+  var row = [h.data, h.totalDevido, h.receitaMes, h.despesasMes || 0, h.parcelasMes, h.comprometido, h.pagoMes, h.abertas];
   var last = sh.getLastRow();
   if (last >= 2 && String(sh.getRange(last, 1).getDisplayValue()) === String(h.data)) {
     sh.getRange(last, 1, 1, row.length).setValues([row]);
