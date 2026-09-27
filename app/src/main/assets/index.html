@@ -343,7 +343,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.3.0';
+var VERSION = '1.3.1';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -995,14 +995,15 @@ function openLancForm(kind,id){
       '<button data-md="diante">De '+ymShort(k)+' em diante</button><button data-md="mes">Só em '+ymShort(k)+'</button><button data-md="todos">Todos os meses</button></div>'+
       '<div class="hint" id="iModoH"></div></div>'+
     '<div class="two"><div class="field"><label id="iDataL">Começa em</label><input id="iData" type="date" value="'+(r?r.data:(k===curYM()?todayISO():k+'-01'))+'"></div>'+
-    '<div class="field" id="iFimW"><label>Termina em</label><input id="iFim" type="date" value="'+(r&&r.fim?r.fim:'')+'"><div class="hint">Vazio = sem fim</div></div></div>'+
-    (kind==='despesa'?'<div class="field" id="iDiaW"><label>Dia do vencimento</label><input id="iDia" type="number" min="1" max="31" inputmode="numeric" placeholder="Ex.: 10" value="'+(r&&r.diaVenc?r.diaVenc:'')+'"><div class="hint">Usado nos alertas. Vazio = dia da data de início.</div></div>':'')+
+    (kind==='despesa'
+      ?'<div class="field" id="iDiaW"><label>Vencimento (dia)</label><input id="iDia" type="number" min="1" max="31" inputmode="numeric" placeholder="Ex.: 10" value="'+(r&&r.diaVenc?r.diaVenc:'')+'"><div class="hint">Todo mês neste dia</div></div></div>'
+      :'<div class="field" id="iFimW"><label>Termina em</label><input id="iFim" type="date" value="'+(r&&r.fim?r.fim:'')+'"><div class="hint">Vazio = sem fim</div></div></div>')+
     '<div class="field"><label>Categoria</label><select id="iCat">'+CATS[kind].map(function(c){return '<option'+(r&&r.categoria===c?' selected':'')+'>'+c+'</option>'}).join('')+'</select></div>'+
     (r&&r.tipo==='fixa'?historicoHTML(r):'')+
     '<div class="stack"><button class="btn pri" id="iSave">Salvar '+K.um+'</button>'+(r?'<button class="btn danger" id="iDel">'+ICON.trash+'Excluir '+K.um+'</button>':'')+'</div>';
   openSheet(h,function(el){
     var modo='diante';
-    function setT(t){tipo=t;$$('#iTipo button',el).forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});$('#iFimW',el).style.display=t==='fixa'?'':'none';$('#iDataL',el).textContent=t==='fixa'?'Começa em':(kind==='despesa'?'Vencimento':'Data');if($('#iDiaW',el))$('#iDiaW',el).style.display=t==='fixa'?'':'none';$('#iValL',el).textContent=t==='fixa'&&r?'Valor em '+ymLabel(k)+' *':'Valor *';updModo()}
+    function setT(t){tipo=t;$$('#iTipo button',el).forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});if($('#iFimW',el))$('#iFimW',el).style.display=t==='fixa'?'':'none';$('#iDataL',el).textContent=t==='fixa'?'Começa em':(kind==='despesa'?'Vencimento':'Data');if($('#iDiaW',el))$('#iDiaW',el).style.display=t==='fixa'?'':'none';$('#iValL',el).textContent=t==='fixa'&&r?'Valor em '+ymLabel(k)+' *':'Valor *';updModo()}
     function setM(m){modo=m;$$('#iModo button',el).forEach(function(b){b.classList.toggle('on',b.dataset.md===m)});
       $('#iModoH',el).textContent=m==='diante'?'Os meses antes de '+ymLabel(k)+' continuam com o valor antigo.':m==='mes'?'Só '+ymLabel(k)+' muda; os outros meses continuam como estão.':'Corrige o valor em todos os meses, inclusive os anteriores.'}
     function updModo(){
@@ -1019,7 +1020,7 @@ function openLancForm(kind,id){
       if(!(v>0)){toast('Informe o valor');return}
       var o=r||{id:uid()};
       var eraFixa=r&&r.tipo==='fixa';
-      o.descricao=desc;o.tipo=tipo;o.data=$('#iData',el).value||todayISO();o.fim=tipo==='fixa'?($('#iFim',el).value||''):'';o.categoria=$('#iCat',el).value;
+      o.descricao=desc;o.tipo=tipo;o.data=$('#iData',el).value||todayISO();o.fim=tipo==='fixa'?($('#iFim',el)?($('#iFim',el).value||''):(o.fim||'')):'';o.categoria=$('#iCat',el).value;
       if(kind==='despesa'){var dv=parseInt(($('#iDia',el)||{}).value,10);o.diaVenc=tipo==='fixa'&&dv>=1&&dv<=31?dv:null}
       var msg=r?(K.titulo+' atualizada'):(K.titulo+' cadastrada');
       if(tipo==='fixa'){
