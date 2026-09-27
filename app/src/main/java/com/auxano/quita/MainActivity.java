@@ -10,6 +10,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.content.pm.PackageManager;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
@@ -39,6 +43,8 @@ public class MainActivity extends Activity {
     private static final String DATA_FILE = "quita-data.json";
 
     private WebView web;
+    private WebView printView;
+    private static final int REQ_NOTIF = 7;
     private ValueCallback<Uri[]> fileCallback;
 
     @Override
@@ -103,6 +109,41 @@ public class MainActivity extends Activity {
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQ_NOTIF) {
+            boolean ok = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            web.evaluateJavascript("window.quitaNotifPerm && window.quitaNotifPerm(" + ok + ")", null);
+        }
+    }
+
+    private boolean notifAllowed() {
+        if (Build.VERSION.SDK_INT >= 33) {
+            return checkSelfPermission("android.permission.POST_NOTIFICATIONS") == PackageManager.PERMISSION_GRANTED;
+        }
+        android.app.NotificationManager nm = (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        return nm == null || nm.areNotificationsEnabled();
+    }
+
+    /** Renderiza o HTML do relatório numa WebView fora da tela e abre a tela de impressão (Salvar como PDF). */
+    private void printHtml(final String html, final String name) {
+        printView = new WebView(this);
+        printView.getSettings().setJavaScriptEnabled(false);
+        printView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                PrintManager pm = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                PrintDocumentAdapter ad = view.createPrintDocumentAdapter(name);
+                PrintAttributes attrs = new PrintAttributes.Builder()
+                        .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                        .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
+                        .build();
+                pm.print(name, ad, attrs);
+            }
+        });
+        printView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
     }
 
     @Override
@@ -304,8 +345,52 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public void printPdf(final String html, final String name) {
+            runOnUiThread(new Runnable() { @Override public void run() { printHtml(html, name); } });
+        }
+
+        @JavascriptInterface
+        public void setAlerts(String json) {
+            AlertReceiver.saveSchedule(MainActivity.this, json);
+        }
+
+        @JavascriptInterface
+        public String notifStatus() {
+            return notifAllowed() ? "granted" : "denied";
+        }
+
+        @JavascriptInterface
+        public void requestNotif() {
+            runOnUiThread(new Runnable() { @Override public void run() {
+                if (Build.VERSION.SDK_INT >= 33 && !notifAllowed()) {
+                    requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, REQ_NOTIF);
+                } else if (!notifAllowed()) {
+                    Intent i = new Intent("android.settings.APP_NOTIFICATION_SETTINGS");
+                    i.putExtra("android.provider.extra.APP_PACKAGE", getPackageName());
+                    try { startActivity(i); } catch (Exception ignored) { }
+                } else {
+                    web.evaluateJavascript("window.quitaNotifPerm && window.quitaNotifPerm(true)", null);
+                }
+            }});
+        }
+
+        @JavascriptInterface
+        public void openNotifSettings() {
+            runOnUiThread(new Runnable() { @Override public void run() {
+                Intent i = new Intent("android.settings.APP_NOTIFICATION_SETTINGS");
+                i.putExtra("android.provider.extra.APP_PACKAGE", getPackageName());
+                try { startActivity(i); } catch (Exception ignored) { }
+            }});
+        }
+
+        @JavascriptInterface
+        public void testAlert(String title, String text) {
+            AlertReceiver.notify(MainActivity.this, 99999, title, text);
+        }
+
+        @JavascriptInterface
         public String version() {
-            return "1.2.0";
+            return "1.3.0";
         }
     }
 }

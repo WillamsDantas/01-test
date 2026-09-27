@@ -343,7 +343,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.2.0';
+var VERSION = '1.3.0';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -416,7 +416,7 @@ function persist(){
 }
 function commit(){
   if(S.ajustes.url){S.ajustes.pendente=true}
-  persist(); renderAll();
+  persist(); renderAll(); syncAlerts();
   if(S.ajustes.url&&S.ajustes.auto){scheduleSync()}
 }
 function debtById(id){return S.dividas.filter(function(x){return x.id===id})[0]}
@@ -646,7 +646,10 @@ function renderPainel(){
     });
     h+='</div>';
   }
+  var ac=alertCfg();
+  if(!ac.on&&!ac.dispensado)h+='<div class="card note-card"><b>Quer ser avisado antes dos vencimentos?</b><p class="muted" style="margin:4px 0 10px">O Quita manda uma notificação antes do vencimento e no dia de cada parcela e despesa.</p><div class="btn-row"><button class="btn ghost" id="alNo">Agora não</button><button class="btn pri" id="alYes">Ativar alertas</button></div></div>';
   el.innerHTML=h; bindMonth(el); bindRows(el); bindLanc('despesa',el);
+  var ay=$('#alYes',el);if(ay){ay.onclick=ativarAlertas;$('#alNo',el).onclick=function(){ac.dispensado=true;persist();renderAll()}}
   var ad=$('#addDesp',el);if(ad)ad.onclick=function(e){e.preventDefault();openLancForm('despesa')};
 }
 function pill2(f){return '<span class="pill '+f[1]+'">'+f[0]+'</span>'}
@@ -696,7 +699,7 @@ function lancRow(kind,r,k){
     if(r.overrides&&r.overrides[k]!=null)tag=' · <b style="color:var(--warn)">valor só deste mês</b>';
     else{var vs=r.valores||[];if(vs.some(function(x){return x.desde===k})&&vs.length>1&&ym(r.data)!==k)tag=' · <b style="color:var(--brand)">novo valor a partir daqui</b>'}
   }
-  var sub=esc(r.categoria||'')+' · '+(rec?'todo mês'+(r.fim?' até '+ymShort(ym(r.fim)):''):br(r.data))+tag;
+  var sub=esc(r.categoria||'')+' · '+(rec?(kind==='despesa'?'vence dia '+diaVencDesp(r):'todo mês')+(r.fim?' até '+ymShort(ym(r.fim)):''):(kind==='despesa'?'vence ':'')+br(r.data))+tag;
   var chk='';
   if(kind==='despesa'){var pg=despPaga(r,k);chk='<button class="chk'+(pg?' on':'')+'" data-desp="'+r.id+'" aria-label="'+(pg?'Desmarcar':'Marcar como paga')+'">'+ICON.check+'</button>'}
   return '<div class="list-row'+(kind==='despesa'&&despPaga(r,k)?' parc done':'')+'"><div class="grow" data-lanc="'+r.id+'"><b>'+esc(r.descricao)+'</b><span>'+sub+'</span></div><div class="val num '+KIND[kind].cor+'" data-lanc="'+r.id+'">'+money(v)+'</div>'+chk+'</div>';
@@ -767,10 +770,10 @@ function renderRelatorio(){
     });
     h+='</div>';
   }
-  h+='<div class="stack"><button class="btn pri" id="rShare">'+ICON.share+'Compartilhar relatório</button><div class="btn-row"><button class="btn ghost" id="rCsv">'+ICON.file+'Exportar CSV</button><button class="btn ghost" id="rSync">'+ICON.sync+'Sincronizar</button></div></div>';
+  h+='<div class="stack"><div class="btn-row"><button class="btn pri" id="rPdf">'+ICON.file+'Exportar PDF</button><button class="btn sec" id="rShare">'+ICON.share+'Compartilhar</button></div><div class="btn-row"><button class="btn ghost" id="rCsv">'+ICON.file+'Exportar CSV</button><button class="btn ghost" id="rSync">'+ICON.sync+'Sincronizar</button></div></div>';
   h+='<p class="muted" style="text-align:center;margin-top:12px">'+syncText()+'</p>';
   el.innerHTML=h;
-  $('#rShare').onclick=shareReport; $('#rCsv').onclick=exportCSV; $('#rSync').onclick=function(){syncNow(true)};
+  $('#rShare').onclick=shareReport; $('#rPdf').onclick=exportPDF; $('#rCsv').onclick=exportCSV; $('#rSync').onclick=function(){syncNow(true)};
   $$('[data-debt]',el).forEach(function(r){r.onclick=function(){openDebtDetail(r.dataset.debt)}});
 }
 function reportText(){
@@ -993,12 +996,13 @@ function openLancForm(kind,id){
       '<div class="hint" id="iModoH"></div></div>'+
     '<div class="two"><div class="field"><label id="iDataL">Começa em</label><input id="iData" type="date" value="'+(r?r.data:(k===curYM()?todayISO():k+'-01'))+'"></div>'+
     '<div class="field" id="iFimW"><label>Termina em</label><input id="iFim" type="date" value="'+(r&&r.fim?r.fim:'')+'"><div class="hint">Vazio = sem fim</div></div></div>'+
+    (kind==='despesa'?'<div class="field" id="iDiaW"><label>Dia do vencimento</label><input id="iDia" type="number" min="1" max="31" inputmode="numeric" placeholder="Ex.: 10" value="'+(r&&r.diaVenc?r.diaVenc:'')+'"><div class="hint">Usado nos alertas. Vazio = dia da data de início.</div></div>':'')+
     '<div class="field"><label>Categoria</label><select id="iCat">'+CATS[kind].map(function(c){return '<option'+(r&&r.categoria===c?' selected':'')+'>'+c+'</option>'}).join('')+'</select></div>'+
     (r&&r.tipo==='fixa'?historicoHTML(r):'')+
     '<div class="stack"><button class="btn pri" id="iSave">Salvar '+K.um+'</button>'+(r?'<button class="btn danger" id="iDel">'+ICON.trash+'Excluir '+K.um+'</button>':'')+'</div>';
   openSheet(h,function(el){
     var modo='diante';
-    function setT(t){tipo=t;$$('#iTipo button',el).forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});$('#iFimW',el).style.display=t==='fixa'?'':'none';$('#iDataL',el).textContent=t==='fixa'?'Começa em':'Data';$('#iValL',el).textContent=t==='fixa'&&r?'Valor em '+ymLabel(k)+' *':'Valor *';updModo()}
+    function setT(t){tipo=t;$$('#iTipo button',el).forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});$('#iFimW',el).style.display=t==='fixa'?'':'none';$('#iDataL',el).textContent=t==='fixa'?'Começa em':(kind==='despesa'?'Vencimento':'Data');if($('#iDiaW',el))$('#iDiaW',el).style.display=t==='fixa'?'':'none';$('#iValL',el).textContent=t==='fixa'&&r?'Valor em '+ymLabel(k)+' *':'Valor *';updModo()}
     function setM(m){modo=m;$$('#iModo button',el).forEach(function(b){b.classList.toggle('on',b.dataset.md===m)});
       $('#iModoH',el).textContent=m==='diante'?'Os meses antes de '+ymLabel(k)+' continuam com o valor antigo.':m==='mes'?'Só '+ymLabel(k)+' muda; os outros meses continuam como estão.':'Corrige o valor em todos os meses, inclusive os anteriores.'}
     function updModo(){
@@ -1016,6 +1020,7 @@ function openLancForm(kind,id){
       var o=r||{id:uid()};
       var eraFixa=r&&r.tipo==='fixa';
       o.descricao=desc;o.tipo=tipo;o.data=$('#iData',el).value||todayISO();o.fim=tipo==='fixa'?($('#iFim',el).value||''):'';o.categoria=$('#iCat',el).value;
+      if(kind==='despesa'){var dv=parseInt(($('#iDia',el)||{}).value,10);o.diaVenc=tipo==='fixa'&&dv>=1&&dv<=31?dv:null}
       var msg=r?(K.titulo+' atualizada'):(K.titulo+' cadastrada');
       if(tipo==='fixa'){
         if(!eraFixa){o.valor=v;o.valores=[{desde:ym(o.data),valor:v}];o.overrides={};o.pagos=o.pagos||{}}
@@ -1079,6 +1084,7 @@ function openSettings(){
     '<div class="btn-row" style="margin-bottom:6px"><button class="btn ghost" id="sTest">Testar conexão</button><button class="btn pri" id="sSaveUrl">Salvar link</button></div>'+
     '<label class="switch"><span>Sincronizar automaticamente<br><span class="muted">Envia para a planilha a cada alteração</span></span><input type="checkbox" id="sAuto"'+(a.auto?' checked':'')+'></label>'+
     '<p class="muted" style="margin:0">'+syncText()+'</p>'+
+    alertasHTML()+
     '<div class="sec-title">Estratégia de quitação</div>'+
     '<div class="seg" id="sEst"><button data-e="avalanche">Avalanche (maior juros)</button><button data-e="bola">Bola de neve (menor saldo)</button></div>'+
     '<div class="sec-title">Backup</div>'+
@@ -1089,6 +1095,7 @@ function openSettings(){
     '<button class="btn danger" id="sWipe">'+ICON.trash+'Apagar todos os dados</button>'+
     '<p class="muted" style="text-align:center;margin-top:16px">Quita v'+(HAS_NATIVE?Android.version():VERSION)+' · Auxano</p>';
   openSheet(h,function(el){
+    bindAlertas(el);
     function setE(e){$$('#sEst button',el).forEach(function(b){b.classList.toggle('on',b.dataset.e===e)})}
     setE(a.estrategia);
     $$('#sEst button',el).forEach(function(b){b.onclick=function(){a.estrategia=b.dataset.e;setE(a.estrategia);persist();renderAll()}});
@@ -1126,6 +1133,155 @@ function openSettings(){
       var aj=S.ajustes;S=JSON.parse(JSON.stringify(DEFAULT));S.ajustes=aj;commit();toast('Dados apagados');
     })};
   });
+}
+
+/* ---------------- Alertas de vencimento ---------------- */
+function alertCfg(){var c=S.ajustes.alertas;if(!c||typeof c!=='object'){c=S.ajustes.alertas={}}var d={on:false,antes:1,hora:'09:00',dispensado:false};for(var k in d)if(c[k]===undefined)c[k]=d[k];return c}
+function diaVencDesp(r){return r.diaVenc||+r.data.slice(8,10)||10}
+/* todas as contas em aberto com vencimento entre hoje e +dias */
+function contasAVencer(dias){
+  var hoje=todayISO(), fimISO=iso(new Date(today().getTime()+dias*864e5)), out=[];
+  S.dividas.forEach(function(d){
+    for(var n=1;n<=d.totalParcelas;n++){
+      var v=vencDaParcela(d,n);
+      if(v<hoje||v>fimISO||isPaga(d,n))continue;
+      out.push({data:v,nome:d.nome+' ('+n+'/'+d.totalParcelas+')',valor:d.parcela,tipo:'parcela'});
+    }
+  });
+  var k0=ym(hoje),k1=ym(fimISO);
+  S.despesas.forEach(function(r){
+    if(r.tipo==='fixa'){
+      for(var k=k0;k<=k1;k=ymAdd(k,1)){
+        if(!ativoNoMes(r,k)||despPaga(r,k))continue;
+        var p=k.split('-'),last=new Date(+p[0],+p[1],0).getDate(),v=k+'-'+pad(Math.min(diaVencDesp(r),last));
+        if(v<hoje||v>fimISO)continue;
+        out.push({data:v,nome:r.descricao,valor:valorNoMes(r,k),tipo:'despesa'});
+      }
+    } else if(!r.paga&&r.data>=hoje&&r.data<=fimISO){
+      out.push({data:r.data,nome:r.descricao,valor:r.valor,tipo:'despesa'});
+    }
+  });
+  return out.sort(function(a,b){return a.data<b.data?-1:a.data>b.data?1:0});
+}
+function buildAlerts(){
+  var cfg=alertCfg(); if(!cfg.on)return [];
+  var hm=(cfg.hora||'09:00').split(':'), H=+hm[0]||9, M=+hm[1]||0, now=Date.now();
+  var porData={};
+  contasAVencer(120).forEach(function(c){(porData[c.data]=porData[c.data]||[]).push(c)});
+  var fires={};
+  function add(when,label,itens,data){
+    if(when<=now)return;
+    var f=fires[when]=fires[when]||{when:when,grupos:[]};
+    f.grupos.push({label:label,itens:itens,data:data});
+  }
+  Object.keys(porData).forEach(function(dt){
+    var itens=porData[dt], D=parseISO(dt);
+    var hoje=new Date(D.getFullYear(),D.getMonth(),D.getDate(),H,M).getTime();
+    add(hoje,'hoje',itens,dt);
+    if(cfg.antes>0){
+      var antes=new Date(D.getFullYear(),D.getMonth(),D.getDate()-cfg.antes,H,M).getTime();
+      add(antes,cfg.antes===1?'amanhã':'em '+cfg.antes+' dias',itens,dt);
+    }
+  });
+  return Object.keys(fires).map(function(k){
+    var f=fires[k], n=0, tot=0, linhas=[];
+    f.grupos.forEach(function(g){g.itens.forEach(function(c){n++;tot+=c.valor;linhas.push((g.label==='hoje'?'Hoje':br(g.data).slice(0,5))+' · '+c.nome+' — '+money(c.valor))})});
+    var g0=f.grupos[0];
+    var title=f.grupos.length===1?(n===1?g0.itens[0].nome+' vence '+g0.label:n+' contas vencem '+g0.label)+' — '+money(tot):n+' contas perto do vencimento — '+money(tot);
+    return {when:f.when,title:title,text:linhas.join('\n')};
+  }).sort(function(a,b){return a.when-b.when}).slice(0,300);
+}
+function syncAlerts(){
+  if(!HAS_NATIVE||!Android.setAlerts)return;
+  try{Android.setAlerts(JSON.stringify(buildAlerts()))}catch(e){}
+}
+window.quitaNotifPerm=function(ok){
+  var c=alertCfg();
+  if(ok){c.on=true;persist();syncAlerts();toast('Alertas ativados ✓')}
+  else{c.on=false;persist();syncAlerts();toast('Sem permissão de notificação. Ative nas configurações do Android.')}
+  if(sheetOpen&&$('#aOn'))openSettings();else renderAll();
+};
+function ativarAlertas(){
+  if(!HAS_NATIVE){var c=alertCfg();c.on=true;persist();toast('Alertas funcionam no app instalado');renderAll();return}
+  Android.requestNotif();
+}
+function alertasHTML(){
+  var c=alertCfg();
+  var st=HAS_NATIVE&&c.on&&Android.notifStatus&&Android.notifStatus()!=='granted';
+  var prox=contasAVencer(7);
+  return '<div class="sec-title">Alertas de vencimento</div>'+
+    '<label class="switch"><span>Avisar antes do vencimento<br><span class="muted">Parcelas de dívidas e despesas ainda não pagas</span></span><input type="checkbox" id="aOn"'+(c.on?' checked':'')+'></label>'+
+    (st?'<div class="note" style="background:var(--bad-soft);color:#7E2518">As notificações do Quita estão bloqueadas no Android. <a href="#" id="aSet" style="color:inherit;font-weight:700">Abrir configurações</a></div>':'')+
+    '<div class="two"><div class="field"><label>Avisar</label><select id="aAntes">'+[[0,'Só no dia'],[1,'1 dia antes'],[2,'2 dias antes'],[3,'3 dias antes'],[5,'5 dias antes']].map(function(o){return '<option value="'+o[0]+'"'+(c.antes===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'+
+    '<div class="field"><label>Horário</label><input id="aHora" type="time" value="'+esc(c.hora)+'"></div></div>'+
+    '<p class="muted" style="margin:-6px 0 10px">Além do aviso antecipado, o Quita avisa também no dia do vencimento.</p>'+
+    '<button class="btn ghost" id="aTest">Enviar alerta de teste</button>'+
+    '<p class="muted">'+(prox.length?'Próximos 7 dias: '+plural(prox.length,'conta','contas')+' somando '+money(prox.reduce(function(a,x){return a+x.valor},0))+'.':'Nenhuma conta vencendo nos próximos 7 dias.')+'</p>';
+}
+function bindAlertas(el){
+  var c=alertCfg();
+  $('#aOn',el).onchange=function(){if(this.checked)ativarAlertas();else{c.on=false;persist();syncAlerts();toast('Alertas desativados')}};
+  $('#aAntes',el).onchange=function(){c.antes=+this.value;persist();syncAlerts();toast('Aviso ajustado')};
+  $('#aHora',el).onchange=function(){if(this.value){c.hora=this.value;persist();syncAlerts();toast('Horário: '+c.hora)}};
+  var s=$('#aSet',el);if(s)s.onclick=function(e){e.preventDefault();Android.openNotifSettings()};
+  $('#aTest',el).onclick=function(){
+    var prox=contasAVencer(30), t='Quita: alerta de teste', x=prox.length?'Próxima conta: '+prox[0].nome+' — '+money(prox[0].valor)+' em '+br(prox[0].data):'Nenhuma conta vencendo nos próximos 30 dias.';
+    if(HAS_NATIVE){if(Android.notifStatus()!=='granted'){Android.requestNotif();return}Android.testAlert(t,x);toast('Alerta enviado')}else toast(x);
+  };
+}
+
+/* ---------------- PDF ---------------- */
+function pdfHTML(){
+  var k=curYM(), rec=receitaMes(k), desp=despesaMes(k), parc=parcelasMes(k), sobra=rec-desp-parc, pct=comprometimento(k), f=faixa(pct);
+  var ord=ordemSugerida(), atr=totalAtraso(), fim=fimDeTudo();
+  function t(rows,cls){return '<table'+(cls?' class="'+cls+'"':'')+'><thead><tr>'+rows[0].map(function(c){return '<th>'+esc(c)+'</th>'}).join('')+'</tr></thead><tbody>'+rows.slice(1).map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table>'}
+  var h='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><style>'+
+    '@page{size:A4;margin:14mm 12mm}*{box-sizing:border-box}body{font-family:Roboto,Arial,sans-serif;color:#16211E;font-size:10.5pt;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+    'header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #0F5C4D;padding-bottom:8px;margin-bottom:14px}'+
+    'h1{font-size:20pt;margin:0;color:#0F5C4D}header p{margin:2px 0 0;color:#51605B}h2{font-size:12pt;color:#0F5C4D;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.5px}'+
+    '.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.kpi{border:1px solid #E3E8E6;border-radius:8px;padding:8px 10px}.kpi span{display:block;font-size:8.5pt;color:#51605B}.kpi b{font-size:13pt}'+
+    '.kpi.hl{background:#0F5C4D;color:#fff;border-color:#0F5C4D}.kpi.hl span{color:#CFE7DF}'+
+    'table{width:100%;border-collapse:collapse;font-size:9.5pt;page-break-inside:auto}th{background:#E3F1EC;color:#0B4A3E;text-align:left;padding:5px 6px;font-weight:600}td{padding:5px 6px;border-bottom:1px solid #E3E8E6}tr{page-break-inside:avoid}'+
+    'td.n,th.n{text-align:right}.neg{color:#C8412F}.pos{color:#1B8A5A}.muted{color:#8A9792;font-size:9pt}.diag p{margin:4px 0}footer{margin-top:18px;color:#8A9792;font-size:8.5pt;text-align:center}'+
+    '</style></head><body>';
+  h+='<header><div><h1>Quita — Relatório financeiro</h1><p>'+ymLabel(k).replace(/^./,function(c){return c.toUpperCase()})+'</p></div><p>Gerado em '+br(todayISO())+' às '+new Date().toTimeString().slice(0,5)+'</p></header>';
+  h+='<div class="kpis"><div class="kpi"><span>Receitas do mês</span><b>'+money(rec)+'</b></div><div class="kpi"><span>Despesas do mês</span><b>'+money(desp)+'</b></div><div class="kpi"><span>Parcelas de dívidas</span><b>'+money(parc)+'</b></div><div class="kpi hl"><span>Sobra do mês</span><b>'+money(sobra)+'</b></div></div>';
+  h+='<div class="diag"><p><b>Saídas:</b> '+pctTxt(pct)+' da receita ('+f[0]+'); só dívidas: '+pctTxt(pctDividas(k))+'.</p>'+
+    '<p><b>Total devido:</b> '+money(totalDevido())+' em '+plural(ord.length,'dívida','dívidas')+(fim?' · livre das dívidas em '+ymLabel(fim):'')+'.</p>'+
+    (atr.n?'<p class="neg"><b>'+plural(atr.n,'parcela atrasada','parcelas atrasadas')+':</b> '+money(atr.valor)+'.</p>':'')+'</div>';
+  // contas do mês
+  var contas=[['Vencimento','Conta','Tipo','Valor','Situação']];
+  parcelasDoMes(k).forEach(function(x){contas.push([br(x.venc),esc(x.d.nome)+' ('+x.n+'/'+x.d.totalParcelas+')','Parcela','<span class="n">'+money(x.valor)+'</span>',x.paga?'<span class="pos">Paga</span>':x.atrasada?'<span class="neg">Atrasada</span>':'Em aberto'])});
+  doMes(S.despesas,k).forEach(function(r){var p=k.split('-'),last=new Date(+p[0],+p[1],0).getDate(),v=r.tipo==='fixa'?k+'-'+pad(Math.min(diaVencDesp(r),last)):r.data,pg=despPaga(r,k);
+    contas.push([br(v),esc(r.descricao),r.tipo==='fixa'?'Despesa fixa':'Despesa avulsa',money(valorNoMes(r,k)),pg?'<span class="pos">Paga</span>':v<todayISO()?'<span class="neg">Atrasada</span>':'Em aberto'])});
+  var head=contas[0], body=contas.slice(1).sort(function(a,b){var x=a[0].split('/').reverse().join(''),y=b[0].split('/').reverse().join('');return x<y?-1:1});
+  if(body.length)h+='<h2>Contas do mês</h2>'+t([head].concat(body));
+  // próximos 12 meses
+  var pm=[['Mês','Receitas','Despesas','Parcelas','Sobra','% saídas']];
+  for(var i=0;i<12;i++){var m=ymAdd(k,i),r=receitaMes(m),dd=despesaMes(m),pp=parcelasMes(m),so=r-dd-pp;pm.push([ymShort(m),money(r),money(dd),money(pp),'<span class="'+(so<0?'neg':'pos')+'">'+money(so)+'</span>',r>0?Math.round((dd+pp)/r*100)+'%':'—'])}
+  h+='<h2>Próximos 12 meses</h2>'+t(pm);
+  if(S.dividas.length){
+    var dv=[['#','Dívida','Parcela','Pagas','Saldo','Termina','Status']];
+    ord.forEach(function(x,i){dv.push([i+1,esc(x.d.nome)+(x.d.credor?' <span class="muted">· '+esc(x.d.credor)+'</span>':''),money(x.d.parcela),x.c.pagas+'/'+x.c.total,money(x.c.saldo),ymShort(x.c.ultimoMes),STATUS[x.c.status][0]])});
+    S.dividas.filter(function(d){return calc(d).rest===0}).forEach(function(d){var c=calc(d);dv.push(['✓',esc(d.nome),money(d.parcela),c.pagas+'/'+c.total,money(0),ymShort(c.ultimoMes),'Quitada'])});
+    h+='<h2>Dívidas <span class="muted" style="text-transform:none;letter-spacing:0">(ordem sugerida: '+(S.ajustes.estrategia==='bola'?'bola de neve':'avalanche')+')</span></h2>'+t(dv);
+  }
+  function lanc(list,kind){
+    var rows=[['Descrição','Categoria','Tipo','Valor em '+ymShort(k),'Observação']];
+    list.forEach(function(r){var v=r.tipo==='fixa'?valorNoMes(r,k):r.valor;if(r.tipo!=='fixa'&&ym(r.data)!==k)return;if(r.tipo==='fixa'&&!ativoNoMes(r,k))return;
+      rows.push([esc(r.descricao),esc(r.categoria||''),r.tipo==='fixa'?(kind==='receita'?'Recorrente':'Fixa'):'Avulsa ('+br(r.data).slice(0,5)+')',money(v),esc(histTxt(r))])});
+    return rows.length>1?t(rows):'<p class="muted">Nenhuma neste mês.</p>';
+  }
+  h+='<h2>Receitas do mês</h2>'+lanc(S.receitas,'receita');
+  h+='<h2>Despesas do mês</h2>'+lanc(S.despesas,'despesa');
+  h+='<footer>Quita v'+VERSION+' · Auxano</footer></body></html>';
+  return h;
+}
+function exportPDF(){
+  var name='Quita-relatorio-'+todayISO();
+  var html=pdfHTML();
+  if(HAS_NATIVE&&Android.printPdf){Android.printPdf(html,name);toast('Escolha "Salvar como PDF" na próxima tela')}
+  else{var w=window.open('','_blank');if(w){w.document.write(html);w.document.close();setTimeout(function(){w.print()},300)}else saveFile(name+'.html','text/html',html)}
 }
 
 /* ---------------- sincronização ---------------- */
@@ -1208,6 +1364,7 @@ window.quitaResume=function(){renderAll();if(S.ajustes.url&&S.ajustes.pendente&&
 
 load();
 setTab('painel');
+syncAlerts();
 if(S.ajustes.url&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync();
 })();
 </script>
