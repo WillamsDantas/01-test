@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- três círculos sobrepostos (R, G, B) sobre uma linha -->
+    <path android:fillColor="#E5484D" android:fillAlpha="0.9"
+        android:pathData="M54,41m-12,0a12,12 0,1 1,24 0a12,12 0,1 1,-24 0" />
+    <path android:fillColor="#3E63DD" android:fillAlpha="0.85"
+        android:pathData="M46,55m-12,0a12,12 0,1 1,24 0a12,12 0,1 1,-24 0" />
+    <path android:fillColor="#F0A247" android:fillAlpha="0.85"
+        android:pathData="M62,55m-12,0a12,12 0,1 1,24 0a12,12 0,1 1,-24 0" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="3" android:strokeLineCap="round"
+        android:fillColor="#00000000" android:pathData="M40,74 L68,74" />
+</vector>

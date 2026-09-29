@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="color-scheme" content="dark">
+<title>Tonalize</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <button id="btnOpen" class="chip">+ Mídia</button>
+  <button id="btnName" class="title" title="Renomear">Sem título</button>
+  <button id="btnLib" class="iconbtn" aria-label="Biblioteca"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button>
+  <button id="btnExport" class="chip accent">Exportar</button>
+</header>
+
+<section class="stage" id="stage">
+  <canvas id="view"></canvas>
+  <div id="splitLine" class="split hidden"><span>antes · depois</span></div>
+  <div class="stage-tools">
+    <button id="btnCompare" class="chip small">Comparar</button>
+    <button id="btnBefore" class="chip small">Segure p/ ver antes</button>
+  </div>
+  <div id="mediaTag" class="media-tag">Imagem de exemplo</div>
+  <div id="videoBar" class="videobar hidden">
+    <button id="btnPlay" class="play" aria-label="Reproduzir">▶</button>
+    <input type="range" id="seek" min="0" max="1000" value="0">
+    <span id="vtime">0:00</span>
+  </div>
+  <div id="busy" class="busy hidden">
+    <div class="spinner"></div>
+    <div id="busyText">Processando…</div>
+    <div class="bar"><i id="busyBar"></i></div>
+    <button id="busyCancel" class="chip small hidden">Cancelar</button>
+  </div>
+</section>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="ref" class="on">Referência</button>
+  <button data-tab="luz">Luz</button>
+  <button data-tab="cor">Cor</button>
+  <button data-tab="rodas">Rodas</button>
+  <button data-tab="curvas">Curvas</button>
+  <button data-tab="hsl">HSL</button>
+</nav>
+<main class="panel" id="panel"></main>
+
+<div id="sheet" class="sheet hidden"><div class="sheet-body" id="sheetBody"></div></div>
+<div id="toast" class="toast"></div>
+
+<input type="file" id="fileMedia" accept="image/*,video/*" hidden>
+<input type="file" id="fileRef" accept="image/*,video/*" hidden>
+<input type="file" id="fileCube" accept=".cube" hidden>
+<script src="app.js"></script>
+</body>
+</html>
