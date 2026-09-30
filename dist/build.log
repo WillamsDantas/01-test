@@ -5,9 +5,11 @@ Note: Recompile with -Xlint:deprecation for details.
 V3.0 Signer: certificate DN: CN=Auxano, O=Auxano, C=BR
 V3.0 Signer: certificate SHA-256 digest: 8eac10ae8c042b80b797c7a6963c799b0e19843954501dd8ff70175db92b0639
 V3.0 Signer: certificate SHA-1 digest: 813e6dd7e3b68f9cc77c4fac556f56f5cabea212
-total 96
-drwxr-xr-x 2 runner runner  4096 Sep 29 04:06 .
-drwxr-xr-x 8 runner runner  4096 Sep 29 04:06 ..
--rw-r--r-- 1 runner runner 74896 Sep 29 04:06 Tonalize-v1.0.0.apk
--rw-r--r-- 1 runner runner  5539 Sep 29 04:06 Tonalize-v1.0.0.apk.idsig
--rw-r--r-- 1 runner runner   509 Sep 29 04:06 build.log
+total 236
+drwxr-xr-x 2 runner runner   4096 Sep 30 23:49 .
+drwxr-xr-x 8 runner runner   4096 Sep 30 23:48 ..
+-rw-r--r-- 1 runner runner  74896 Sep 30 23:48 Tonalize-v1.0.0.apk
+-rw-r--r-- 1 runner runner   5539 Sep 30 23:48 Tonalize-v1.0.0.apk.idsig
+-rw-r--r-- 1 runner runner 132544 Sep 30 23:49 Tonalize-v1.1.0.apk
+-rw-r--r-- 1 runner runner   5539 Sep 30 23:49 Tonalize-v1.1.0.apk.idsig
+-rw-r--r-- 1 runner runner    509 Sep 30 23:49 build.log
