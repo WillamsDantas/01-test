@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Compila o APK do Tonalize usando só o Android SDK (sem Gradle).
 set -euo pipefail
-VERSION=1.0.0
-CODE=1
+VERSION=1.1.0
+CODE=2
 SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
 [ -n "$SDK" ] || { echo "Defina ANDROID_HOME"; exit 1; }
 BT=$(ls -d "$SDK"/build-tools/* | sort -V | tail -1)

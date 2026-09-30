@@ -8,7 +8,8 @@ App Android (APK) para criar color grades, copiar o look de uma foto ou vídeo d
 
 ## Estrutura
 - `app/src/main/assets/` — interface e motor de cor (HTML/JS/WebGL)
-  - `app.js` — editor manual, extração de look (Lab + casamento de histograma), geração do LUT, prévia na GPU, biblioteca, exportações
+  - `app.js` — tela inicial + editor, extração de look v2 (modo Essência: pontos de preto/branco, tingimento por faixa medido nos tons neutros e saturação; modo Cópia fiel: histograma + transferência de covariância por faixa), proteção de pele, geração do LUT, prévia na GPU, Meus looks, exportações
+  - `fonts/` — Plus Jakarta Sans (SIL Open Font License)
 - `app/src/main/java/.../MainActivity.java` — WebView, seletor de arquivos, gravação na galeria/Downloads, biblioteca interna
 - `build.sh` — compila com o Android SDK (sem Gradle)
 - `.github/workflows/build-apk.yml` — compila no GitHub a cada push no branch `tonalize-app` e salva o APK em `dist/`

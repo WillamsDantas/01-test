@@ -86,7 +86,6 @@ const HSL_BANDS = [
   ['Roxos', 275, '#8e4ec6'], ['Magentas', 320, '#d6409f']
 ];
 const CX = [0, 0.25, 0.5, 0.75, 1];
-const REF_DEFAULT = { amount: 100, tone: 70, color: 100 };
 
 function defaults() {
   return {
@@ -220,54 +219,204 @@ function manual(r, g, b, c, o) {
 }
 
 /* =====================================================================
-   Extração de look (estatísticas em Lab + casamento de histograma)
+   Extração de look v2
+   - 5 faixas tonais (pretos → brancos)
+   - cor por faixa com média + covariância em a/b (transferência MKL):
+     copia tingimento, saturação e "direção" das cores de cada faixa
+   - casamento de histograma de luminância (curva de contraste)
+   - ignora tarjas pretas (letterbox) e pixels estourados
+   - paleta dominante e descrição do look para a interface
    ===================================================================== */
-const BC = [15, 50, 85], BS = 18;
+const BC = [8, 29, 50, 71, 92], BS = 12, NB = BC.length;
 function bandW(L, o) {
   let s = 0;
-  for (let k = 0; k < 3; k++) { const d = (L - BC[k]) / BS; o[k] = Math.exp(-0.5 * d * d); s += o[k]; }
-  for (let k = 0; k < 3; k++) o[k] /= s;
+  for (let k = 0; k < NB; k++) { const d = (L - BC[k]) / BS; o[k] = Math.exp(-0.5 * d * d); s += o[k]; }
+  for (let k = 0; k < NB; k++) o[k] /= s;
   return o;
 }
-const dot3 = (w, v) => w[0] * v[0] + w[1] * v[1] + w[2] * v[2];
 
-function statsFromData(datas) {
+/* marca linhas/colunas quase pretas nas bordas (tarjas de cinema) */
+function borderMask(d, w, h) {
+  const rowMax = new Float32Array(h), colMax = new Float32Array(w);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4, v = d[i] + d[i + 1] + d[i + 2];
+    if (v > rowMax[y]) rowMax[y] = v;
+    if (v > colMax[x]) colMax[x] = v;
+  }
+  const T = 40;
+  let top = 0, bot = h - 1, lef = 0, rig = w - 1;
+  while (top < h * 0.3 && rowMax[top] < T) top++;
+  while (bot > h * 0.7 && rowMax[bot] < T) bot--;
+  while (lef < w * 0.3 && colMax[lef] < T) lef++;
+  while (rig > w * 0.7 && colMax[rig] < T) rig--;
+  return { top, bot, lef, rig };
+}
+
+function kmeans(pts, K) {
+  const n = pts.length / 3;
+  if (n < K * 4) return [];
+  let seed = 12345;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const C = [], d2 = new Float64Array(n).fill(1e12);
+  let j = Math.floor(rnd() * n);
+  C.push([pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2]]);
+  while (C.length < K) {
+    const c = C[C.length - 1]; let s = 0;
+    for (let i = 0; i < n; i++) {
+      const dl = pts[i * 3] - c[0], da = pts[i * 3 + 1] - c[1], db = pts[i * 3 + 2] - c[2];
+      const d = dl * dl * 0.5 + da * da + db * db;
+      if (d < d2[i]) d2[i] = d; s += d2[i];
+    }
+    let r = rnd() * s; j = 0;
+    while (j < n - 1 && (r -= d2[j]) > 0) j++;
+    C.push([pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2]]);
+  }
+  const as = new Int32Array(n), cnt = new Float64Array(K);
+  for (let it = 0; it < 12; it++) {
+    const acc = C.map(() => [0, 0, 0]); cnt.fill(0);
+    for (let i = 0; i < n; i++) {
+      let best = 0, bd = 1e18;
+      for (let k = 0; k < K; k++) {
+        const dl = pts[i * 3] - C[k][0], da = pts[i * 3 + 1] - C[k][1], db = pts[i * 3 + 2] - C[k][2];
+        const d = dl * dl * 0.5 + da * da + db * db;
+        if (d < bd) { bd = d; best = k; }
+      }
+      as[i] = best; cnt[best]++;
+      acc[best][0] += pts[i * 3]; acc[best][1] += pts[i * 3 + 1]; acc[best][2] += pts[i * 3 + 2];
+    }
+    for (let k = 0; k < K; k++) if (cnt[k]) C[k] = acc[k].map(v => v / cnt[k]);
+  }
+  const o = [0, 0, 0];
+  return C.map((c, k) => {
+    labToRgb(c[0], c[1], c[2], o);
+    const hx = '#' + o.map(v => Math.round(v * 255).toString(16).padStart(2, '0')).join('');
+    return { hex: hx, w: +(cnt[k] / n).toFixed(3), L: c[0] };
+  }).filter(p => p.w >= 0.03).sort((a, b) => a.L - b.L).map(p => ({ hex: p.hex, w: p.w }));
+}
+
+/* frames: [{data, w, h}] */
+function statsFromData(frames) {
   const hist = new Float64Array(256);
-  const W = [0, 0, 0], A = [0, 0, 0], B = [0, 0, 0], A2 = [0, 0, 0], B2 = [0, 0, 0];
-  const w = [0, 0, 0], lab = [0, 0, 0];
-  let n = 0, ga = 0, gb = 0;
-  for (const d of datas) {
-    for (let i = 0; i < d.length; i += 4) {
+  const W = new Float64Array(NB), A = new Float64Array(NB), B = new Float64Array(NB);
+  const AA = new Float64Array(NB), AB = new Float64Array(NB), BB = new Float64Array(NB);
+  const GW = new Float64Array(NB), GA = new Float64Array(NB), GB = new Float64Array(NB), chist = new Float64Array(160);
+  const w = new Float64Array(NB), lab = [0, 0, 0];
+  let n = 0, nc = 0, ga = 0, gb = 0, gaa = 0, gab = 0, gbb = 0, sumC = 0;
+  let total = 0; for (const f of frames) total += f.w * f.h;
+  const step = Math.max(1, Math.ceil(total / 4000)), pal = [];
+  let pc = 0;
+  for (const f of frames) {
+    const d = f.data, m = borderMask(d, f.w, f.h);
+    for (let y = m.top; y <= m.bot; y++) for (let x = m.lef; x <= m.rig; x++) {
+      const i = (y * f.w + x) * 4;
       linToLab(LIN8[d[i]], LIN8[d[i + 1]], LIN8[d[i + 2]], lab);
       const L = lab[0], a = lab[1], b = lab[2];
-      hist[clamp(Math.round(L * 2.55), 0, 255)]++;
+      hist[clamp(Math.round(L * 2.55), 0, 255)]++; n++;
+      if (L < 3 || L > 97) continue;            // pretos/brancos estourados não dizem nada sobre cor
       bandW(L, w);
-      for (let k = 0; k < 3; k++) {
-        W[k] += w[k]; A[k] += w[k] * a; B[k] += w[k] * b; A2[k] += w[k] * a * a; B2[k] += w[k] * b * b;
+      const C = Math.hypot(a, b), gq = Math.exp(-C / 1.5);   // peso de "pixel quase neutro"
+      for (let k = 0; k < NB; k++) {
+        const q = w[k];
+        W[k] += q; A[k] += q * a; B[k] += q * b; AA[k] += q * a * a; AB[k] += q * a * b; BB[k] += q * b * b;
+        const g = q * gq; GW[k] += g; GA[k] += g * a; GB[k] += g * b;
       }
-      ga += a; gb += b; n++;
+      chist[Math.min(159, Math.round(C))]++;
+      ga += a; gb += b; gaa += a * a; gab += a * b; gbb += b * b; sumC += C; nc++;
+      if (pc++ % step === 0) pal.push(L, a, b);
     }
   }
   if (!n) throw new Error('imagem vazia');
-  ga /= n; gb /= n;
-  const reg = 0.03 * n, a = [], b = [];
-  let spread = 0;
-  for (let k = 0; k < 3; k++) {
+  const NC = Math.max(1, nc);
+  ga /= NC; gb /= NC;
+  const gca = Math.max(1, gaa / NC - ga * ga), gcb = gab / NC - ga * gb, gcc = Math.max(1, gbb / NC - gb * gb);
+  const reg = 0.04 * NC, bands = [];
+  for (let k = 0; k < NB; k++) {
     const Wk = W[k] + reg;
-    a[k] = (A[k] + reg * ga) / Wk;
-    b[k] = (B[k] + reg * gb) / Wk;
-    const va = Math.max(0, (A2[k] + reg * ga * ga) / Wk - a[k] * a[k]);
-    const vb = Math.max(0, (B2[k] + reg * gb * gb) / Wk - b[k] * b[k]);
-    spread += (W[k] / n) * (va + vb);
+    const ma = (A[k] + reg * ga) / Wk, mb = (B[k] + reg * gb) / Wk;
+    const caa = (AA[k] + reg * (gca + ga * ga)) / Wk - ma * ma;
+    const cab = (AB[k] + reg * (gcb + ga * gb)) / Wk - ma * mb;
+    const cbb = (BB[k] + reg * (gcc + gb * gb)) / Wk - mb * mb;
+    bands.push({ a: +ma.toFixed(3), b: +mb.toFixed(3), caa: +Math.max(1, caa).toFixed(3), cab: +cab.toFixed(3), cbb: +Math.max(1, cbb).toFixed(3) });
   }
   const h = []; for (let i = 0; i < 256; i++) h.push(+(hist[i] / n).toFixed(6));
-  return { hist: h, a: a.map(v => +v.toFixed(3)), b: b.map(v => +v.toFixed(3)), spread: Math.max(2, Math.sqrt(spread)) };
+  // tingimento real do "grade": média dos pixels quase neutros em cada faixa (cinzas, brancos, pretos)
+  const tint = [];
+  for (let k = 0; k < NB; k++) {
+    const wk = GW[k] + 1e-6 * NC;
+    tint.push([+(GA[k] / wk).toFixed(3), +(GB[k] / wk).toFixed(3)]);
+  }
+  return { v: 2, hist: h, bands, meanC: +(sumC / NC).toFixed(2), palette: kmeans(new Float32Array(pal), 6),
+    Q: quantiles(h), tint, C90: pctOf(chist, 0.9) };
 }
+function pctOf(hh, p) {
+  let t = 0, s = 0;
+  for (const v of hh) t += v;
+  for (let i = 0; i < hh.length; i++) { s += hh[i]; if (s >= p * t) return i; }
+  return hh.length - 1;
+}
+const QP = [0.005, 0.1, 0.5, 0.9, 0.995];
+const quantiles = hist => QP.map(p => +(pctOf(hist, p) / 2.55).toFixed(2));
+
+/* estatísticas antigas (v1: 3 faixas, só média) → v2 */
+function upgradeStats(s) {
+  if (!s || s.v === 2) return s;
+  const C3 = [15, 50, 85], w = [0, 0, 0];
+  const bw3 = L => { let t = 0; for (let k = 0; k < 3; k++) { const d = (L - C3[k]) / 18; w[k] = Math.exp(-0.5 * d * d); t += w[k]; } for (let k = 0; k < 3; k++) w[k] /= t; return w; };
+  const v = Math.max(4, (s.spread || 16) * (s.spread || 16) / 2);
+  const bands = BC.map(L => { const q = bw3(L); return { a: q[0] * s.a[0] + q[1] * s.a[1] + q[2] * s.a[2], b: q[0] * s.b[0] + q[1] * s.b[1] + q[2] * s.b[2], caa: v, cab: 0, cbb: v }; });
+  return { v: 2, hist: s.hist, bands, meanC: null, palette: [], Q: quantiles(s.hist), tint: bands.map(b => [b.a * 0.5, b.b * 0.5]), C90: null };
+}
+
+/* mídia "neutra" típica, usada quando o usuário ainda não abriu a mídia dele */
 const DEFAULT_SRC = (() => {
   const h = []; let s = 0;
   for (let i = 0; i < 256; i++) { const L = i / 2.55, d = (L - 50) / 24; const v = Math.exp(-0.5 * d * d); h.push(v); s += v; }
-  return { hist: h.map(v => v / s), a: [0, 0, 0], b: [0, 0, 0], spread: 16 };
+  return { v: 2, hist: h.map(v => v / s), bands: BC.map(() => ({ a: 0, b: 0, caa: 110, cab: 0, cbb: 110 })),
+    Q: [1, 12, 45, 85, 99], tint: BC.map(() => [0, 2]), C90: 40 };
 })();
+
+/* cúbica monotônica por nós (Fritsch–Carlson) */
+function monoFn(xs, ys) {
+  const n = xs.length, d = [], m = new Array(n);
+  for (let k = 0; k < n - 1; k++) d.push((ys[k + 1] - ys[k]) / (xs[k + 1] - xs[k]));
+  m[0] = d[0]; m[n - 1] = d[n - 2];
+  for (let k = 1; k < n - 1; k++) m[k] = d[k - 1] * d[k] <= 0 ? 0 : (d[k - 1] + d[k]) / 2;
+  return x => {
+    if (x <= xs[0]) return ys[0] + (x - xs[0]) * m[0];
+    if (x >= xs[n - 1]) return ys[n - 1] + (x - xs[n - 1]) * m[n - 1];
+    let k = 0; while (x > xs[k + 1]) k++;
+    const h = xs[k + 1] - xs[k], t = (x - xs[k]) / h, t2 = t * t, t3 = t2 * t;
+    return (2 * t3 - 3 * t2 + 1) * ys[k] + (t3 - 2 * t2 + t) * h * m[k] + (-2 * t3 + 3 * t2) * ys[k + 1] + (t3 - t2) * h * m[k + 1];
+  };
+}
+
+/* ---- álgebra 2×2 simétrica ---- */
+function eig2(a, b, c) {             // [[a,b],[b,c]]
+  const t = (a + c) / 2, d = Math.sqrt(Math.max(0, (a - c) * (a - c) / 4 + b * b));
+  const l1 = t + d, l2 = t - d;
+  let vx, vy;
+  if (Math.abs(b) > 1e-9) { vx = l1 - c; vy = b; } else if (a >= c) { vx = 1; vy = 0; } else { vx = 0; vy = 1; }
+  const n = Math.hypot(vx, vy); vx /= n; vy /= n;
+  return [l1, l2, vx, vy];
+}
+function fn2(a, b, c, f) {           // aplica f aos autovalores
+  const [l1, l2, x, y] = eig2(a, b, c), f1 = f(l1), f2 = f(l2);
+  return [f1 * x * x + f2 * y * y, (f1 - f2) * x * y, f1 * y * y + f2 * x * x];
+}
+function mkl(s, r) {
+  // T = S^-½ (S^½ R S^½)^½ S^-½ — leva a distribuição de cor da mídia para a da referência
+  const Sh = fn2(s.caa, s.cab, s.cbb, v => Math.sqrt(Math.max(v, 1e-6)));
+  const Si = fn2(s.caa, s.cab, s.cbb, v => 1 / Math.sqrt(Math.max(v, 1e-6)));
+  const M = full(Sh), R = [[r.caa, r.cab], [r.cab, r.cbb]];
+  const X = mm(mm(M, R), M);
+  const Xh = fn2(X[0][0], (X[0][1] + X[1][0]) / 2, X[1][1], v => Math.sqrt(Math.max(v, 0)));
+  const I = full(Si);
+  const T = mm(mm(I, full(Xh)), I);
+  // limita o ganho de saturação para não estourar
+  return fn2(T[0][0], (T[0][1] + T[1][0]) / 2, T[1][1], v => clamp(v, 0.3, 2.4));
+}
+function full(s) { return [[s[0], s[1]], [s[1], s[2]]]; }
+function mm(p, q) { return [[p[0][0] * q[0][0] + p[0][1] * q[1][0], p[0][0] * q[0][1] + p[0][1] * q[1][1]], [p[1][0] * q[0][0] + p[1][1] * q[1][0], p[1][0] * q[0][1] + p[1][1] * q[1][1]]]; }
 
 function cdf(h) {
   const c = new Float64Array(256); let s = 0;
@@ -288,7 +437,7 @@ function buildLmap(sh, rh) {
   for (let i = 0; i < 256; i++) {
     let s = 0, c = 0;
     for (let k = -6; k <= 6; k++) { const q = i + k; if (q >= 0 && q < 256) { s += map[q]; c++; } }
-    sm[i] = 0.15 * (i / 2.55) + 0.85 * (s / c);
+    sm[i] = 0.12 * (i / 2.55) + 0.88 * (s / c);
     if (i > 0 && sm[i] < sm[i - 1]) sm[i] = sm[i - 1];
   }
   return sm;
@@ -298,44 +447,118 @@ function sampleMap(m, L) {
   return m[i] + (m[i + 1] - m[i]) * f;
 }
 
+/* descrição humana do look (para os "chips" da interface) */
+function describe(st) {
+  const out = [];
+  if (!st || !st.bands) return out;
+  const T = st.tint || st.bands.map(b => [b.a * 0.5, b.b * 0.5]);
+  const warm = (T[1][1] + T[2][1] + T[3][1]) / 3, sh = (T[0][1] + T[1][1]) / 2, hi = (T[3][1] + T[4][1]) / 2;
+  if (sh < -0.2 && hi > 2) out.push('Sombras frias, luzes quentes');
+  else if (warm > 2.5) out.push('Tons quentes');
+  else if (warm < -1) out.push('Tons frios');
+  else if (sh < -0.8) out.push('Sombras frias');
+  else out.push('Cor neutra');
+  let m = 0, v = 0;
+  st.hist.forEach((p, i) => { m += p * i / 2.55; });
+  st.hist.forEach((p, i) => { const d = i / 2.55 - m; v += p * d * d; });
+  const sd = Math.sqrt(v);
+  out.push(sd > 27 ? 'Contraste alto' : sd < 17 ? 'Contraste suave' : 'Contraste médio');
+  if (st.meanC != null) out.push(st.meanC > 30 ? 'Cores vivas' : st.meanC < 13 ? 'Cores dessaturadas' : 'Saturação natural');
+  let c = 0, p2 = 0;
+  for (let i = 0; i < 256; i++) { c += st.hist[i]; if (c >= 0.02) { p2 = i / 2.55; break; } }
+  if (p2 > 11) out.push('Pretos lavados');
+  return out;
+}
+
 /* =====================================================================
    Estado
    ===================================================================== */
+const REF_DEFAULT = { amount: 100, tone: 75, color: 100, skin: 40, mode: 'essencia' };
 const S = {
   P: defaults(),
   refCfg: Object.assign({}, REF_DEFAULT),
   ref: null,          // {kind:'ref', name, thumb, stats, src} | {kind:'cube', name, base:Float32Array}
-  base: null,         // Float32Array N3*3
+  base: null,
   lut: new Float32Array(N3 * 3),
   tex: new Uint8Array(N3 * 4),
   name: 'Sem título',
   id: null,
   media: null,
   compare: false, split: 0.5, before: false,
-  curveCh: 'm', hslSel: 0, tab: 'ref'
+  curveCh: 'm', hslSel: 0, tab: 'look',
+  active: false, edited: false
 };
 
 function computeBase() {
   const R = S.ref;
   if (!R) { S.base = null; return; }
   if (R.kind === 'cube') { S.base = R.base; return; }
-  const src = R.src || DEFAULT_SRC, ref = R.stats;
-  const tone = S.refCfg.tone / 100, col = S.refCfg.color / 100;
+  const src = upgradeStats(R.src) || DEFAULT_SRC, ref = upgradeStats(R.stats);
+  if (S.refCfg.mode !== 'fiel') { S.base = essenceBase(src, ref); return; }
+  const tone = S.refCfg.tone / 100, col = S.refCfg.color / 100, skin = S.refCfg.skin / 100;
   const map = buildLmap(src.hist, ref.hist);
-  const k = clamp(ref.spread / src.spread, 0.5, 2);
-  const base = new Float32Array(N3 * 3), ws = [0, 0, 0], wr = [0, 0, 0], o = [0, 0, 0], lab = [0, 0, 0];
+  const T = src.bands.map((s, k) => mkl(s, ref.bands[k]));
+  const base = new Float32Array(N3 * 3), ws = new Float64Array(NB), wr = new Float64Array(NB), o = [0, 0, 0], lab = [0, 0, 0];
   const inv = 1 / (N - 1);
   let i = 0;
   for (let b = 0; b < N; b++) for (let g = 0; g < N; g++) for (let r = 0; r < N; r++, i++) {
     rgbToLab(r * inv, g * inv, b * inv, lab);
-    const L = lab[0], L2 = L + (sampleMap(map, L) - L) * tone;
+    const L = lab[0], a0 = lab[1], b0 = lab[2];
+    const L2 = L + (sampleMap(map, L) - L) * tone;
     bandW(L, ws); bandW(L2, wr);
-    const a2 = (lab[1] - dot3(ws, src.a)) * k + dot3(wr, ref.a);
-    const b2 = (lab[2] - dot3(ws, src.b)) * k + dot3(wr, ref.b);
-    labToRgb(L2, lab[1] + (a2 - lab[1]) * col, lab[2] + (b2 - lab[2]) * col, o);
+    let a2 = 0, b2 = 0;
+    for (let k = 0; k < NB; k++) {
+      const s = src.bands[k], t = T[k], da = a0 - s.a, db = b0 - s.b;
+      a2 += ws[k] * (t[0] * da + t[1] * db) + wr[k] * ref.bands[k].a;
+      b2 += ws[k] * (t[1] * da + t[2] * db) + wr[k] * ref.bands[k].b;
+    }
+    // limite suave de croma
+    const C2 = Math.hypot(a2, b2), Cmax = 95;
+    if (C2 > Cmax) { const f = (Cmax + (C2 - Cmax) * 0.25) / C2; a2 *= f; b2 *= f; }
+    const ce = col * (1 - skin * 0.75 * skinW(L, a0, b0));
+    labToRgb(L2, a0 + (a2 - a0) * ce, b0 + (b2 - b0) * ce, o);
     base[i * 3] = o[0]; base[i * 3 + 1] = o[1]; base[i * 3 + 2] = o[2];
   }
   S.base = base;
+}
+
+/* quanto uma cor parece tom de pele (0..1) — para proteger rostos */
+function skinW(L, a, b) {
+  const C = Math.hypot(a, b);
+  if (C <= 6 || L <= 20) return 0;
+  let hd = Math.atan2(b, a) * 57.29578 - 52; if (hd > 180) hd -= 360; if (hd < -180) hd += 360;
+  return Math.exp(-0.5 * (hd / 16) * (hd / 16)) * clamp((C - 6) / 8, 0, 1) * clamp((60 - C) / 15, 0, 1);
+}
+
+/* Modo Essência: copia o TRATAMENTO de cor, não o conteúdo da referência.
+   - pontos de preto/branco (fade, brancos apagados) + um pouco do contraste
+   - tingimento por faixa medido nos tons quase neutros (split toning)
+   - nível geral de saturação                                                */
+const TW = [1, 0.15, 0.05, 0.15, 1];
+function essenceBase(src, ref) {
+  const t = S.refCfg.tone / 75, col = S.refCfg.color / 100, skin = S.refCfg.skin / 100;
+  const xs = [0], ys = [0];
+  src.Q.forEach((q, k) => { xs.push(q); ys.push(q + (ref.Q[k] - q) * clamp(TW[k] * t, 0, 1)); });
+  xs.push(100); ys.push(100);
+  for (let k = 1; k < xs.length; k++) { if (xs[k] < xs[k - 1] + 0.5) xs[k] = xs[k - 1] + 0.5; if (ys[k] < ys[k - 1] + 0.5) ys[k] = ys[k - 1] + 0.5; }
+  const f = monoFn(xs, ys);
+  const ratio = ref.C90 && src.C90 ? ref.C90 / Math.max(5, src.C90) : 1;
+  const sat = Math.pow(clamp(Math.pow(ratio, 0.7), 0.55, 1.5), col);
+  const base = new Float32Array(N3 * 3), ws = new Float64Array(NB), wr = new Float64Array(NB), o = [0, 0, 0], lab = [0, 0, 0];
+  const inv = 1 / (N - 1);
+  let i = 0;
+  for (let b = 0; b < N; b++) for (let g = 0; g < N; g++) for (let r = 0; r < N; r++, i++) {
+    rgbToLab(r * inv, g * inv, b * inv, lab);
+    const L = lab[0], a0 = lab[1], b0 = lab[2], L2 = clamp(f(L), 0, 100);
+    bandW(L, ws); bandW(L2, wr);
+    let sa = 0, sb = 0, ra = 0, rb = 0;
+    for (let k = 0; k < NB; k++) { sa += ws[k] * src.tint[k][0]; sb += ws[k] * src.tint[k][1]; ra += wr[k] * ref.tint[k][0]; rb += wr[k] * ref.tint[k][1]; }
+    const a2 = (a0 - sa) * sat + ra * 0.9, b2 = (b0 - sb) * sat + rb * 0.9;
+    const ce = col * (1 - skin * 0.75 * skinW(L, a0, b0));
+    labToRgb(L2, a0 + (a2 - a0) * ce, b0 + (b2 - b0) * ce, o);
+    base[i * 3] = o[0]; base[i * 3 + 1] = o[1]; base[i * 3 + 2] = o[2];
+  }
+  return base;
 }
 
 function computeLUT() {
@@ -479,6 +702,38 @@ class Renderer {
 }
 
 /* =====================================================================
+   Ícones
+   ===================================================================== */
+const ICONS = {
+  back: '<path d="M15 18l-6-6 6-6"/>',
+  spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/>',
+  drop: '<path d="M12 3.2s6.2 6.6 6.2 11.2a6.2 6.2 0 01-12.4 0C5.8 9.8 12 3.2 12 3.2z"/>',
+  wheel: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v6.5M12 14.5V21"/>',
+  curve: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M6 18c5 0 6.5-12 12-12"/>',
+  palette: '<circle cx="8" cy="9" r="3.2"/><circle cx="16" cy="9" r="3.2"/><circle cx="12" cy="15.5" r="3.2"/>',
+  split: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M12 3v18"/>',
+  eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>',
+  play: '<path d="M7 4.5v15l12-7.5z"/>',
+  pause: '<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>',
+  image: '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/>',
+  film: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/>',
+  cube: '<path d="M12 2.8l8 4.6v9.2l-8 4.6-8-4.6V7.4z"/><path d="M4 7.4l8 4.6 8-4.6M12 12v9.2"/>',
+  save: '<path d="M6 3h12v18l-6-4-6 4z"/>',
+  chev: '<path d="M9 6l6 6-6 6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.8v.4"/>',
+  swap: '<path d="M7 7h11l-3-3M17 17H6l3 3"/>'
+};
+function icon(name) {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('class', 'i'); s.setAttribute('aria-hidden', 'true');
+  s.innerHTML = ICONS[name] || '';
+  return s;
+}
+document.querySelectorAll('[data-icon]').forEach(b => b.prepend(icon(b.dataset.icon)));
+
+/* =====================================================================
    Mídia
    ===================================================================== */
 function loadImage(url) {
@@ -515,58 +770,80 @@ function scaledCanvas(src, w, h, maxSide) {
   c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
   return c;
 }
-const pixelsOf = (src, w, h) => { const c = scaledCanvas(src, w, h, 220); return c.getContext('2d').getImageData(0, 0, c.width, c.height).data; };
-const thumbOf = (src, w, h) => scaledCanvas(src, w, h, 160).toDataURL('image/jpeg', 0.8);
+const pixelsOf = (src, w, h) => { const c = scaledCanvas(src, w, h, 240); return { data: c.getContext('2d').getImageData(0, 0, c.width, c.height).data, w: c.width, h: c.height }; };
+const thumbOf = (src, w, h) => scaledCanvas(src, w, h, 200).toDataURL('image/jpeg', 0.82);
 const isVideoFile = f => (f.type || '').startsWith('video') || /\.(mp4|mov|m4v|webm|3gp|mkv)$/i.test(f.name || '');
 
 async function sampleVideo(v, count, onp) {
-  const datas = [], d = v.duration && isFinite(v.duration) ? v.duration : 0;
+  const frames = [], d = v.duration && isFinite(v.duration) ? v.duration : 0;
   let thumb = null;
   for (let i = 0; i < count; i++) {
     if (d > 0) await seekTo(v, d * (i + 0.5) / count);
-    datas.push(pixelsOf(v, v.videoWidth, v.videoHeight));
+    frames.push(pixelsOf(v, v.videoWidth, v.videoHeight));
     if (i === Math.floor(count / 2)) thumb = thumbOf(v, v.videoWidth, v.videoHeight);
     if (onp) onp((i + 1) / count);
     if (!d) break;
   }
-  return { datas, thumb };
+  return { frames, thumb };
 }
 
 function sampleChart() {
-  const w = 1200, h = 800, c = document.createElement('canvas');
+  const w = 1200, h = 1500, c = document.createElement('canvas');
   c.width = w; c.height = h;
   const x = c.getContext('2d');
-  const sky = x.createLinearGradient(0, 0, 0, h * 0.5);
-  sky.addColorStop(0, '#3f6fae'); sky.addColorStop(0.7, '#e9b98a'); sky.addColorStop(1, '#f6dcb4');
-  x.fillStyle = sky; x.fillRect(0, 0, w, h * 0.5);
-  const sun = x.createRadialGradient(w * 0.72, h * 0.36, 4, w * 0.72, h * 0.36, 120);
+  const sky = x.createLinearGradient(0, 0, 0, h * 0.55);
+  sky.addColorStop(0, '#3f6fae'); sky.addColorStop(0.65, '#e9b98a'); sky.addColorStop(1, '#f6dcb4');
+  x.fillStyle = sky; x.fillRect(0, 0, w, h * 0.55);
+  const sun = x.createRadialGradient(w * 0.7, h * 0.4, 4, w * 0.7, h * 0.4, 170);
   sun.addColorStop(0, 'rgba(255,248,225,1)'); sun.addColorStop(0.25, 'rgba(255,224,160,.9)'); sun.addColorStop(1, 'rgba(255,200,140,0)');
-  x.fillStyle = sun; x.fillRect(0, 0, w, h * 0.5);
+  x.fillStyle = sun; x.fillRect(0, 0, w, h * 0.55);
   x.fillStyle = '#2f4a3a';
-  x.beginPath(); x.moveTo(0, h * 0.5);
-  for (let i = 0; i <= w; i += 20) x.lineTo(i, h * 0.42 - Math.sin(i / 140) * 26 - Math.sin(i / 57) * 9);
-  x.lineTo(w, h * 0.5); x.fill();
+  x.beginPath(); x.moveTo(0, h * 0.55);
+  for (let i = 0; i <= w; i += 20) x.lineTo(i, h * 0.46 - Math.sin(i / 140) * 34 - Math.sin(i / 57) * 11);
+  x.lineTo(w, h * 0.55); x.fill();
   x.fillStyle = '#1b2a22';
-  x.beginPath(); x.moveTo(0, h * 0.5);
-  for (let i = 0; i <= w; i += 20) x.lineTo(i, h * 0.47 - Math.sin(i / 90 + 2) * 14);
-  x.lineTo(w, h * 0.5); x.fill();
+  x.beginPath(); x.moveTo(0, h * 0.55);
+  for (let i = 0; i <= w; i += 20) x.lineTo(i, h * 0.52 - Math.sin(i / 90 + 2) * 18);
+  x.lineTo(w, h * 0.55); x.fill();
+  // "pele" (círculos em tons de pele)
+  const skins = ['#8d5524', '#c68642', '#e0ac69', '#f1c27d', '#ffdbac'];
+  skins.forEach((s, i) => { x.fillStyle = s; x.beginPath(); x.arc(w * (0.12 + i * 0.19), h * 0.62, 70, 0, Math.PI * 2); x.fill(); });
   for (let i = 0; i < w; i += 2) {
-    const g = x.createLinearGradient(0, h * 0.5, 0, h * 0.72), hue = i / w * 360;
+    const g = x.createLinearGradient(0, h * 0.69, 0, h * 0.83), hue = i / w * 360;
     g.addColorStop(0, `hsl(${hue},90%,78%)`); g.addColorStop(0.5, `hsl(${hue},85%,50%)`); g.addColorStop(1, `hsl(${hue},80%,18%)`);
-    x.fillStyle = g; x.fillRect(i, h * 0.5, 2, h * 0.22);
+    x.fillStyle = g; x.fillRect(i, h * 0.69, 2, h * 0.14);
   }
   const gr = x.createLinearGradient(0, 0, w, 0);
   gr.addColorStop(0, '#000'); gr.addColorStop(1, '#fff');
-  x.fillStyle = gr; x.fillRect(0, h * 0.72, w, h * 0.08);
+  x.fillStyle = gr; x.fillRect(0, h * 0.83, w, h * 0.05);
   const cc = ['#735244', '#c29682', '#627a9d', '#576c43', '#8580b1', '#67bdaa', '#d67e2c', '#505ba6', '#c15a63', '#5e3c6c', '#9dbc40', '#e0a32e',
               '#383d96', '#469449', '#af363c', '#e7c71f', '#bb5695', '#0885a1', '#f3f3f2', '#c8c8c8', '#a0a0a0', '#7a7a79', '#555555', '#343434'];
-  const pw = w / 12, ph = h * 0.1;
-  cc.forEach((col, i) => { x.fillStyle = col; x.fillRect((i % 12) * pw, h * 0.8 + Math.floor(i / 12) * ph, pw + 1, ph + 1); });
+  const pw = w / 12, ph = h * 0.06;
+  cc.forEach((col, i) => { x.fillStyle = col; x.fillRect((i % 12) * pw, h * 0.88 + Math.floor(i / 12) * ph, pw + 1, ph + 1); });
   return c;
 }
 
 /* =====================================================================
-   Tela principal
+   Navegação entre telas
+   ===================================================================== */
+const home = $('#home'), editor = $('#editor');
+function showEditor(tab) {
+  home.classList.add('hidden'); editor.classList.remove('hidden');
+  S.active = true;
+  if (tab) setTab(tab);
+  layout(); refreshUI(); drawRefPane();
+}
+function showHome() {
+  if (S.active && S.edited && (S.ref || S.id)) saveToLibrary(false, true);
+  flushSave();
+  S.active = false;
+  const m = S.media; if (m && m.kind === 'video') m.el.pause();
+  editor.classList.add('hidden'); home.classList.remove('hidden');
+  drawHome();
+}
+
+/* =====================================================================
+   Pré-visualização
    ===================================================================== */
 const view = $('#view'), stage = $('#stage');
 let R = null;
@@ -577,18 +854,24 @@ function setMedia(m) {
   if (old && old.kind === 'video') { old.el.pause(); old.el.removeAttribute('src'); old.el.load(); }
   if (old && old.url) URL.revokeObjectURL(old.url);
   S.media = m; S.srcCache = null;
-  $('#mediaTag').textContent = m.kind === 'sample' ? 'Imagem de exemplo' : m.name;
+  drawMediaChip();
   $('#videoBar').classList.toggle('hidden', m.kind !== 'video');
   if (m.kind === 'video') bindVideo(m.el);
   srcDirty = true;
   layout();
-  if (exportOpen) openExport();
+}
+function drawMediaChip() {
+  const c = $('#mediaChip'), m = S.media;
+  c.innerHTML = '';
+  if (!m || m.kind === 'sample') c.append(icon('plus'), el('span', null, 'Adicionar sua mídia'));
+  else c.append(icon(m.kind === 'video' ? 'film' : 'image'), el('span', null, m.name), el('em', null, 'Trocar'));
 }
 
 let srcDirty = true, raf = 0, dirty = true, baseDirty = true;
-function changed(base) {
+function changed(base, silent) {
   if (base) baseDirty = true;
   dirty = true;
+  if (!silent && S.active) S.edited = true;
   schedule();
   scheduleSave();
 }
@@ -602,22 +885,26 @@ function tick() {
   if (m && m.kind === 'video' && !m.el.paused) { srcDirty = true; schedule(); }
 }
 function render() {
-  if (!R || !S.media) return;
+  if (!R || !S.media || editor.classList.contains('hidden')) return;
   if (srcDirty) { R.setSource(S.media.el); srcDirty = false; }
   R.draw(S.before ? 2 : S.compare ? S.split : -1);
 }
 
 function layout() {
   const m = S.media; if (!m) return;
-  const sw = stage.clientWidth, sh = stage.clientHeight, ar = m.w / m.h;
+  const sw = stage.clientWidth, sh = stage.clientHeight - 14;
+  if (!sw || !sh) return;
+  const ar = m.w / m.h;
   let w = sw, h = sw / ar;
   if (h > sh) { h = sh; w = sh * ar; }
   view.style.width = Math.round(w) + 'px'; view.style.height = Math.round(h) + 'px';
+  view.style.marginBottom = '14px';
   const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
   let pw = w * dpr, ph = h * dpr;
   const cap = 1800 / Math.max(pw, ph);
   if (cap < 1) { pw *= cap; ph *= cap; }
   view.width = Math.max(1, Math.round(pw)); view.height = Math.max(1, Math.round(ph));
+  srcDirty = true;
   placeSplit();
   schedule();
 }
@@ -627,7 +914,7 @@ function placeSplit() {
   if (!S.compare) return;
   const r = view.getBoundingClientRect(), sr = stage.getBoundingClientRect();
   line.style.left = (r.left - sr.left + S.split * r.width - 1) + 'px';
-  line.style.top = (r.top - sr.top) + 'px'; line.style.bottom = 'auto'; line.style.height = r.height + 'px';
+  line.style.top = (r.top - sr.top) + 'px'; line.style.height = r.height + 'px';
 }
 new ResizeObserver(layout).observe(stage);
 
@@ -635,12 +922,14 @@ $('#btnCompare').addEventListener('click', () => {
   S.compare = !S.compare;
   $('#btnCompare').classList.toggle('on', S.compare);
   placeSplit(); schedule();
+  if (S.compare) toast('Arraste na imagem para mover a divisão');
 });
 const beforeBtn = $('#btnBefore');
 const setBefore = v => { S.before = v; beforeBtn.classList.toggle('on', v); schedule(); };
 beforeBtn.addEventListener('pointerdown', e => { e.preventDefault(); setBefore(true); });
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => beforeBtn.addEventListener(t, () => setBefore(false)));
 beforeBtn.addEventListener('contextmenu', e => e.preventDefault());
+beforeBtn.addEventListener('click', () => { if (!S.before) toast('Segure para ver o original'); });
 stage.addEventListener('pointerdown', e => {
   if (!S.compare || e.target.closest('button,input,.videobar')) return;
   const move = ev => {
@@ -656,17 +945,18 @@ stage.addEventListener('pointerdown', e => {
 /* vídeo */
 const fmtT = t => { t = Math.max(0, t || 0); const m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + String(s).padStart(2, '0'); };
 let seeking = false;
+function setPlayIcon(playing) { const b = $('#btnPlay'); b.innerHTML = ''; b.append(icon(playing ? 'pause' : 'play')); b.setAttribute('aria-label', playing ? 'Pausar' : 'Reproduzir'); }
 function bindVideo(v) {
   v.muted = false;
-  v.onplay = () => { $('#btnPlay').textContent = '❚❚'; schedule(); };
-  v.onpause = () => { $('#btnPlay').textContent = '▶'; };
-  v.onended = () => { $('#btnPlay').textContent = '▶'; };
+  v.onplay = () => { setPlayIcon(true); schedule(); };
+  v.onpause = () => setPlayIcon(false);
+  v.onended = () => setPlayIcon(false);
   v.onseeked = () => { srcDirty = true; schedule(); };
   v.ontimeupdate = () => {
     if (!seeking && v.duration) $('#seek').value = Math.round(v.currentTime / v.duration * 1000);
     $('#vtime').textContent = fmtT(v.currentTime);
   };
-  $('#btnPlay').textContent = '▶';
+  setPlayIcon(false);
   $('#seek').value = 0; $('#vtime').textContent = '0:00';
 }
 $('#btnPlay').addEventListener('click', () => {
@@ -687,15 +977,21 @@ const refreshUI = () => { refreshers.forEach(f => f()); $('#btnName').textConten
 
 function slider(parent, o) {
   const val = el('span', { class: 'val' });
-  const inp = el('input', { type: 'range', min: o.min, max: o.max, step: o.step || 1, class: o.cls || null });
+  const inp = el('input', { type: 'range', min: o.min, max: o.max, step: o.step || 1, class: o.cls || null, 'aria-label': o.label });
+  const def = o.def != null ? o.def : 0;
   const fmt = v => o.fmt ? o.fmt(v) : (v > 0 && o.min < 0 ? '+' : '') + Math.round(v);
-  const sync = () => { inp.value = o.get(); val.textContent = fmt(o.get()); };
-  inp.addEventListener('input', () => { o.set(parseFloat(inp.value)); val.textContent = fmt(o.get()); changed(o.base); });
+  const paint = () => {
+    const v = o.get(), span = o.max - o.min, p = (v - o.min) / span * 100, z = ((o.min < 0 ? 0 : o.min) - o.min) / span * 100;
+    inp.style.setProperty('--a', Math.min(p, z) + '%'); inp.style.setProperty('--b', Math.max(p, z) + '%');
+    val.textContent = fmt(v); val.classList.toggle('mod', Math.abs(v - def) > 1e-6);
+  };
+  const sync = () => { inp.value = o.get(); paint(); };
+  inp.addEventListener('input', () => { o.set(parseFloat(inp.value)); paint(); changed(o.base); });
   const lab = el('div', { class: 'lab' }, el('span', null, o.label), val);
   let last = 0;
   lab.addEventListener('click', () => {
     const now = Date.now();
-    if (now - last < 350) { o.set(o.def != null ? o.def : 0); sync(); changed(o.base); }
+    if (now - last < 350) { o.set(def); sync(); changed(o.base); }
     last = now;
   });
   parent.append(el('div', { class: 'row' }, lab, inp));
@@ -704,57 +1000,76 @@ function slider(parent, o) {
 }
 function paneHead(pane, title, onReset) {
   pane.append(el('div', { class: 'pane-head' }, el('h4', null, title),
-    onReset ? el('button', { class: 'link', onclick: () => { onReset(); refreshUI(); changed(true); } }, 'Resetar') : null));
+    onReset ? el('button', { class: 'link', onclick: () => { onReset(); refreshUI(); changed(true); toast(title + ' redefinido'); } }, 'Redefinir') : null));
 }
 const panel = $('#panel');
 const panes = {};
-for (const k of ['ref', 'luz', 'cor', 'rodas', 'curvas', 'hsl']) { panes[k] = el('div', { class: 'pane' + (k === 'ref' ? ' on' : ''), 'data-pane': k }); panel.append(panes[k]); }
-$('#tabs').addEventListener('click', e => {
-  const b = e.target.closest('button[data-tab]'); if (!b) return;
-  S.tab = b.dataset.tab;
-  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
-  Object.keys(panes).forEach(k => panes[k].classList.toggle('on', k === S.tab));
-  if (S.tab === 'curvas') drawCurve();
-  if (S.tab === 'rodas') wheelDraws.forEach(f => f());
-});
+for (const k of ['look', 'luz', 'cor', 'rodas', 'curvas', 'hsl']) { panes[k] = el('div', { class: 'pane' + (k === 'look' ? ' on' : '') }); panel.append(panes[k]); }
+function setTab(t) {
+  S.tab = t;
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.tab === t));
+  Object.keys(panes).forEach(k => panes[k].classList.toggle('on', k === t));
+  panel.scrollTop = 0;
+  if (t === 'curvas') drawCurve();
+  if (t === 'rodas') wheelDraws.forEach(f => f());
+}
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('button[data-tab]'); if (b) setTab(b.dataset.tab); });
 
-/* --- Referência --- */
-const refBox = el('div');
-panes.ref.append(refBox);
+/* --- Look (referência) --- */
+const lookBox = el('div');
+panes.look.append(lookBox);
 const refSliders = el('div');
 slider(refSliders, { label: 'Intensidade', min: 0, max: 100, def: 100, fmt: v => Math.round(v) + '%', get: () => S.refCfg.amount, set: v => S.refCfg.amount = v });
-const toneColor = el('div');
-slider(toneColor, { label: 'Luz e contraste da referência', min: 0, max: 100, def: 70, base: true, fmt: v => Math.round(v) + '%', get: () => S.refCfg.tone, set: v => S.refCfg.tone = v });
-slider(toneColor, { label: 'Cores da referência', min: 0, max: 100, def: 100, base: true, fmt: v => Math.round(v) + '%', get: () => S.refCfg.color, set: v => S.refCfg.color = v });
-refSliders.append(toneColor);
+const refFine = el('div');
+slider(refFine, { label: 'Luz e contraste', min: 0, max: 100, def: REF_DEFAULT.tone, base: true, fmt: v => Math.round(v) + '%', get: () => S.refCfg.tone, set: v => S.refCfg.tone = v });
+slider(refFine, { label: 'Cores', min: 0, max: 100, def: 100, base: true, fmt: v => Math.round(v) + '%', get: () => S.refCfg.color, set: v => S.refCfg.color = v });
+slider(refFine, { label: 'Proteger tons de pele', min: 0, max: 100, def: REF_DEFAULT.skin, base: true, fmt: v => Math.round(v) + '%', get: () => S.refCfg.skin, set: v => S.refCfg.skin = v });
+refSliders.append(refFine);
+
 function drawRefPane() {
-  refBox.innerHTML = '';
+  lookBox.innerHTML = '';
   const r = S.ref;
   if (!r) {
-    refBox.append(
-      el('p', { class: 'hint' }, 'Anexe uma foto ou vídeo com a cor que você quer copiar. O app analisa as luzes, sombras e tons e cria o LUT automaticamente. Depois você refina nas outras abas.'),
-      el('button', { class: 'btn-big', onclick: () => pick('#fileRef') }, 'Anexar referência (foto ou vídeo)'),
-      el('div', { class: 'btns' },
-        el('button', { class: 'btn-line', onclick: () => pick('#fileCube') }, 'Importar .cube'),
-        el('button', { class: 'btn-line', onclick: openLibrary }, 'Abrir da biblioteca'))
-    );
-    refSliders.remove();
+    lookBox.append(el('div', { class: 'empty-look' },
+      el('div', { class: 'ico' }, icon('spark')),
+      el('b', null, 'Copie um look'),
+      el('p', null, 'Escolha a foto ou o vídeo com a cor que você quer. O app extrai a luz, o contraste e as cores automaticamente.'),
+      el('button', { class: 'btn primary block', onclick: () => pick('#fileRef') }, 'Escolher referência'),
+      el('div', { class: 'two', style: 'margin-top:8px' },
+        el('button', { class: 'btn ghost', onclick: () => pick('#fileCube') }, 'Importar .cube'),
+        el('button', { class: 'btn ghost', onclick: () => setTab('luz') }, 'Ajustar à mão'))));
     return;
   }
   const isCube = r.kind === 'cube';
-  refBox.append(
-    el('div', { class: 'card ref-card' },
-      isCube ? el('div', { style: 'width:72px;height:72px;border-radius:10px;background:linear-gradient(135deg,#3e63dd,#f0a247);display:flex;align-items:center;justify-content:center;font-weight:800' }, '.cube')
-             : el('img', { src: r.thumb, alt: '' }),
-      el('div', { class: 'meta' }, el('b', null, r.name || 'Referência'),
-        el('small', null, isCube ? 'LUT importado como base' : (r.src ? 'Ajustado à sua mídia' : 'Ajustado para uma mídia neutra')))),
-    el('div', { class: 'btns' },
-      el('button', { class: 'btn-line', onclick: () => pick(isCube ? '#fileCube' : '#fileRef') }, 'Trocar'),
-      el('button', { class: 'btn-line', onclick: () => { S.ref = null; drawRefPane(); changed(true); } }, 'Remover'))
-  );
-  if (!isCube) refBox.append(el('button', { class: 'link', onclick: rematch }, 'Recalcular com a mídia aberta agora'));
-  toneColor.classList.toggle('hidden', isCube);
-  refBox.append(refSliders);
+  lookBox.append(el('div', { class: 'pane-head' }, el('h4', null, 'Look'),
+    el('button', { class: 'link', onclick: () => { S.ref = null; drawRefPane(); changed(true); toast('Referência removida'); } }, 'Remover')));
+  lookBox.append(el('div', { class: 'ref-card' },
+    isCube ? el('div', { class: 'cube' }, '.cube') : r.thumb ? el('img', { src: r.thumb, alt: '' }) : el('div', { class: 'cube' }, 'Look'),
+    el('div', { class: 'meta' }, el('b', null, r.name || 'Referência'),
+      el('small', null, isCube ? 'LUT importado' : (r.src ? 'Adaptado à sua mídia' : 'Adicione sua mídia para adaptar melhor'))),
+    el('button', { class: 'btn ghost sm', onclick: () => pick(isCube ? '#fileCube' : '#fileRef') }, 'Trocar')));
+  if (!isCube) {
+    const st = upgradeStats(r.stats), dna = el('div', { class: 'dna' });
+    if (st.palette && st.palette.length) {
+      const sw = el('div', { class: 'swatches' });
+      st.palette.forEach(p => sw.append(el('i', { style: 'background:' + p.hex + ';flex:' + p.w })));
+      dna.append(el('div', { class: 'dna-label' }, el('span', null, 'DNA do look'), el('span', null, 'cores dominantes')), sw);
+    }
+    const tags = el('div', { class: 'tags' });
+    describe(st).forEach(t => tags.append(el('span', null, t)));
+    dna.append(tags);
+    lookBox.append(dna);
+    const modes = el('div', { class: 'choice', style: 'margin:14px 0 4px' });
+    [['essencia', 'Essência'], ['fiel', 'Cópia fiel']].forEach(([k, t]) => modes.append(el('button', {
+      class: (S.refCfg.mode || 'essencia') === k ? 'on' : null,
+      onclick: () => { S.refCfg.mode = k; drawRefPane(); changed(true); }
+    }, t)));
+    lookBox.append(modes, el('p', { class: 'hint' }, (S.refCfg.mode || 'essencia') === 'essencia'
+      ? 'Copia o tratamento de cor (tons, contraste, saturação) sem puxar as cores da cena da referência.'
+      : 'Deixa sua mídia com as mesmas cores da referência. Funciona melhor quando as duas cenas são parecidas.'));
+  }
+  refFine.classList.toggle('hidden', isCube);
+  lookBox.append(refSliders);
 }
 
 /* --- Luz --- */
@@ -765,48 +1080,48 @@ slider(panes.luz, { label: 'Altas luzes', min: -100, max: 100, get: () => S.P.hi
 slider(panes.luz, { label: 'Sombras', min: -100, max: 100, get: () => S.P.shadows, set: v => S.P.shadows = v });
 slider(panes.luz, { label: 'Brancos', min: -100, max: 100, get: () => S.P.whites, set: v => S.P.whites = v });
 slider(panes.luz, { label: 'Pretos', min: -100, max: 100, get: () => S.P.blacks, set: v => S.P.blacks = v });
-slider(panes.luz, { label: 'Fade (preto lavado)', min: 0, max: 100, get: () => S.P.fade, set: v => S.P.fade = v });
+slider(panes.luz, { label: 'Fade', min: 0, max: 100, get: () => S.P.fade, set: v => S.P.fade = v });
 panes.luz.append(el('p', { class: 'hint' }, 'Toque duas vezes no nome de um ajuste para zerar.'));
 
 /* --- Cor --- */
 paneHead(panes.cor, 'Cor', () => { for (const k of ['temp', 'tint', 'saturation', 'vibrance']) S.P[k] = 0; });
 slider(panes.cor, { label: 'Temperatura', min: -100, max: 100, cls: 'temp', get: () => S.P.temp, set: v => S.P.temp = v });
-slider(panes.cor, { label: 'Tint', min: -100, max: 100, cls: 'tint', get: () => S.P.tint, set: v => S.P.tint = v });
+slider(panes.cor, { label: 'Tonalidade', min: -100, max: 100, cls: 'tint', get: () => S.P.tint, set: v => S.P.tint = v });
 slider(panes.cor, { label: 'Saturação', min: -100, max: 100, cls: 'sat', get: () => S.P.saturation, set: v => S.P.saturation = v });
 slider(panes.cor, { label: 'Vibração', min: -100, max: 100, get: () => S.P.vibrance, set: v => S.P.vibrance = v });
 
 /* --- Rodas de cor --- */
 paneHead(panes.rodas, 'Rodas de cor', () => { S.P.wheels = defaults().wheels; });
-panes.rodas.append(el('p', { class: 'hint' }, 'Arraste o ponto para tingir sombras, meios-tons e altas luzes. Toque duas vezes para zerar.'));
 const wheelRow = el('div', { class: 'wheels' });
-panes.rodas.append(wheelRow);
+panes.rodas.append(wheelRow, el('p', { class: 'hint', style: 'margin-top:12px' }, 'Arraste o ponto para tingir cada faixa de luz. Toque duas vezes para zerar.'));
 const wheelDraws = [];
 [['sh', 'Sombras'], ['mid', 'Meios-tons'], ['hi', 'Altas luzes']].forEach(([key, label]) => {
-  const cv = el('canvas', { width: 224, height: 224 });
+  const cv = el('canvas', { width: 216, height: 216, 'aria-label': 'Roda de ' + label });
   const info = el('small');
   wheelRow.append(el('div', { class: 'wheel' }, cv, el('b', null, label), info));
   const ctx = cv.getContext('2d');
   const draw = () => {
-    const W = S.P.wheels[key], s = cv.width, c = s / 2, rad = c - 10;
+    const W = S.P.wheels[key], s = cv.width, c = s / 2, rad = c - 12;
     ctx.clearRect(0, 0, s, s);
     ctx.save();
     ctx.beginPath(); ctx.arc(c, c, rad, 0, Math.PI * 2); ctx.clip();
     if (ctx.createConicGradient) {
       const g = ctx.createConicGradient(0, c, c);
-      for (let i = 0; i <= 12; i++) g.addColorStop(i / 12, `hsl(${i * 30},75%,55%)`);
+      for (let i = 0; i <= 12; i++) g.addColorStop(i / 12, `hsl(${i * 30},70%,55%)`);
       ctx.fillStyle = g;
     } else ctx.fillStyle = '#888';
     ctx.fillRect(0, 0, s, s);
     const rg = ctx.createRadialGradient(c, c, 0, c, c, rad);
-    rg.addColorStop(0, 'rgba(40,42,48,1)'); rg.addColorStop(1, 'rgba(40,42,48,0)');
+    rg.addColorStop(0, 'rgba(27,27,31,1)'); rg.addColorStop(1, 'rgba(27,27,31,0)');
     ctx.fillStyle = rg; ctx.fillRect(0, 0, s, s);
     ctx.restore();
-    ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(c, c, rad, 0, Math.PI * 2); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(c - 8, c); ctx.lineTo(c + 8, c); ctx.moveTo(c, c - 8); ctx.lineTo(c, c + 8); ctx.stroke();
     const px = c + Math.cos(W.h) * W.a * rad, py = c + Math.sin(W.h) * W.a * rad;
-    ctx.fillStyle = '#fff'; ctx.strokeStyle = '#111'; ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.arc(px, py, 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 8;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(px, py, 12, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
     info.textContent = W.a > 0.005 ? Math.round(W.a * 100) + '%' : '—';
   };
   let last = 0;
@@ -816,7 +1131,7 @@ const wheelDraws = [];
     last = now;
     cv.setPointerCapture(e.pointerId);
     const mv = ev => {
-      const r = cv.getBoundingClientRect(), rad = r.width / 2 - 10 * r.width / cv.width;
+      const r = cv.getBoundingClientRect(), rad = r.width / 2 - 12 * r.width / cv.width;
       const dx = ev.clientX - r.left - r.width / 2, dy = ev.clientY - r.top - r.height / 2;
       S.P.wheels[key] = { h: Math.atan2(dy, dx), a: Math.min(1, Math.hypot(dx, dy) / rad) };
       draw(); changed();
@@ -831,15 +1146,15 @@ const wheelDraws = [];
 /* --- Curvas --- */
 paneHead(panes.curvas, 'Curvas', () => { S.P.curves = defaults().curves; });
 const seg = el('div', { class: 'seg' });
-[['m', 'RGB'], ['r', 'R'], ['g', 'G'], ['b', 'B']].forEach(([k, t]) =>
+[['m', 'RGB'], ['r', 'Vermelho'], ['g', 'Verde'], ['b', 'Azul']].forEach(([k, t]) =>
   seg.append(el('button', { 'data-c': k, class: k === 'm' ? 'on' : null, onclick: () => {
     S.curveCh = k; seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.c === k)); drawCurve();
   } }, t)));
-const curveCv = el('canvas', { id: 'curve' });
+const curveCv = el('canvas', { id: 'curve', 'aria-label': 'Editor de curvas' });
 panes.curvas.append(seg, curveCv,
-  el('div', { class: 'btns' }, el('button', { class: 'btn-line', onclick: () => { S.P.curves[S.curveCh] = CX.slice(); drawCurve(); changed(); } }, 'Resetar este canal')),
-  el('p', { class: 'hint' }, 'Arraste os pontos para cima ou para baixo. Levantar o ponto da esquerda lava os pretos; baixar o da direita apaga os brancos.'));
-const CURVE_COL = { m: '#eef0f4', r: '#e5484d', g: '#46a758', b: '#5b7ff0' };
+  el('div', { class: 'two', style: 'margin-top:10px' }, el('button', { class: 'btn ghost sm', onclick: () => { S.P.curves[S.curveCh] = CX.slice(); drawCurve(); changed(); } }, 'Zerar este canal')),
+  el('p', { class: 'hint' }, 'Arraste os pontos para cima ou para baixo.'));
+const CURVE_COL = { m: '#f4f4f5', r: '#ff6b6b', g: '#5fcf80', b: '#6f8fff' };
 function drawCurve() {
   const r = curveCv.getBoundingClientRect(); if (!r.width) return;
   const dpr = window.devicePixelRatio || 1;
@@ -847,20 +1162,20 @@ function drawCurve() {
   const x = curveCv.getContext('2d'), W = curveCv.width, H = curveCv.height, pad = 14 * dpr;
   const X = v => pad + v * (W - 2 * pad), Y = v => H - pad - v * (H - 2 * pad);
   x.clearRect(0, 0, W, H);
-  x.strokeStyle = '#2a2e37'; x.lineWidth = 1 * dpr;
+  x.strokeStyle = '#222226'; x.lineWidth = 1 * dpr;
   for (let i = 0; i <= 4; i++) { x.beginPath(); x.moveTo(X(i / 4), Y(0)); x.lineTo(X(i / 4), Y(1)); x.moveTo(X(0), Y(i / 4)); x.lineTo(X(1), Y(i / 4)); x.stroke(); }
-  x.setLineDash([4 * dpr, 4 * dpr]); x.beginPath(); x.moveTo(X(0), Y(0)); x.lineTo(X(1), Y(1)); x.stroke(); x.setLineDash([]);
+  x.setLineDash([4 * dpr, 4 * dpr]); x.strokeStyle = '#34343a'; x.beginPath(); x.moveTo(X(0), Y(0)); x.lineTo(X(1), Y(1)); x.stroke(); x.setLineDash([]);
   for (const k of ['m', 'r', 'g', 'b']) {
     if (k !== S.curveCh && isIdent(S.P.curves[k])) continue;
     const T = curveTable(S.P.curves[k]);
-    x.strokeStyle = CURVE_COL[k]; x.globalAlpha = k === S.curveCh ? 1 : 0.35; x.lineWidth = (k === S.curveCh ? 2.5 : 1.5) * dpr;
+    x.strokeStyle = CURVE_COL[k]; x.globalAlpha = k === S.curveCh ? 1 : 0.3; x.lineWidth = (k === S.curveCh ? 2.5 : 1.5) * dpr;
     x.beginPath();
     for (let i = 0; i < 256; i++) { const px = X(i / 255), py = Y(clamp01(T[i])); i ? x.lineTo(px, py) : x.moveTo(px, py); }
     x.stroke();
   }
   x.globalAlpha = 1;
   const ys = S.P.curves[S.curveCh];
-  CX.forEach((cx, i) => { x.fillStyle = '#fff'; x.strokeStyle = '#111'; x.lineWidth = 2 * dpr; x.beginPath(); x.arc(X(cx), Y(ys[i]), 7 * dpr, 0, Math.PI * 2); x.fill(); x.stroke(); });
+  CX.forEach((cx, i) => { x.fillStyle = '#fff'; x.beginPath(); x.arc(X(cx), Y(ys[i]), 7 * dpr, 0, Math.PI * 2); x.fill(); });
 }
 curveCv.addEventListener('pointerdown', e => {
   const r = curveCv.getBoundingClientRect(), pad = 14;
@@ -881,7 +1196,7 @@ refreshers.push(drawCurve);
 /* --- HSL --- */
 paneHead(panes.hsl, 'HSL por cor', () => { S.P.hsl = defaults().hsl; });
 const bandRow = el('div', { class: 'bands' });
-const bandName = el('p', { class: 'hint', style: 'margin:4px 0 0' });
+const bandName = el('p', { class: 'hint', style: 'margin:8px 0 0;font-weight:600;color:var(--text)' });
 panes.hsl.append(bandRow, bandName);
 const bandBtns = HSL_BANDS.map(([name, , col], i) => {
   const b = el('button', { class: 'band', style: 'background:' + col, 'aria-label': name, onclick: () => { S.hslSel = i; refreshUI(); } });
@@ -901,7 +1216,7 @@ panes.hsl.addEventListener('input', syncBands);
    Arquivos
    ===================================================================== */
 function pick(sel) { const i = $(sel); i.value = ''; i.click(); }
-$('#btnOpen').addEventListener('click', () => pick('#fileMedia'));
+$('#mediaChip').addEventListener('click', () => pick('#fileMedia'));
 $('#fileMedia').addEventListener('change', e => { const f = e.target.files[0]; if (f) openMedia(f); });
 $('#fileRef').addEventListener('change', e => { const f = e.target.files[0]; if (f) attachRef(f); });
 $('#fileCube').addEventListener('change', e => { const f = e.target.files[0]; if (f) importCube(f); });
@@ -919,7 +1234,12 @@ async function openMedia(file) {
       const prev = scaledCanvas(img, img.naturalWidth, img.naturalHeight, Math.min(2048, R ? R.maxTex : 2048));
       setMedia({ kind: 'image', el: prev, full: img, url, name: file.name, w: img.naturalWidth, h: img.naturalHeight });
     }
-    toast('Mídia aberta');
+    if (S.ref && S.ref.kind === 'ref') {
+      busyText('Adaptando o look à sua mídia…');
+      S.ref.src = await mediaStats();
+      drawRefPane(); changed(true);
+      toast('Look adaptado à sua mídia');
+    } else toast('Mídia aberta');
   } catch (e) { URL.revokeObjectURL(url); toast('Não consegui abrir: ' + e.message, true); }
   finally { unbusy(); }
 }
@@ -931,55 +1251,56 @@ async function mediaStats() {
   if (m.kind === 'image') S.srcCache = statsFromData([pixelsOf(m.el, m.el.width, m.el.height)]);
   else {
     const v = await loadVideo(m.url);
-    const { datas } = await sampleVideo(v, 6);
+    const { frames } = await sampleVideo(v, 8);
     v.removeAttribute('src'); v.load();
-    S.srcCache = statsFromData(datas);
+    S.srcCache = statsFromData(frames);
   }
   return S.srcCache;
 }
 
 async function attachRef(file) {
-  busy('Analisando a referência…');
+  busy('Lendo as cores da referência…');
   const url = URL.createObjectURL(file);
   try {
-    let datas, thumb;
+    let frames, thumb;
     if (isVideoFile(file)) {
       const v = await loadVideo(url);
-      const out = await sampleVideo(v, 10, p => progress(p * 0.8));
-      datas = out.datas; thumb = out.thumb;
+      const out = await sampleVideo(v, 16, p => progress(p * 0.8));
+      frames = out.frames; thumb = out.thumb;
       v.removeAttribute('src'); v.load();
     } else {
       const img = await loadImage(url);
-      datas = [pixelsOf(img, img.naturalWidth, img.naturalHeight)];
+      frames = [pixelsOf(img, img.naturalWidth, img.naturalHeight)];
       thumb = thumbOf(img, img.naturalWidth, img.naturalHeight);
     }
-    const stats = statsFromData(datas);
-    busyText('Adaptando à sua mídia…');
+    busyText('Extraindo o look…');
+    await new Promise(r => setTimeout(r, 30));
+    const stats = statsFromData(frames);
     const src = await mediaStats();
+    progress(1);
+    const fresh = !S.active;
+    if (fresh) applyRecord(null);
     S.ref = { kind: 'ref', name: file.name.replace(/\.[^.]+$/, ''), thumb, stats, src };
     S.refCfg = Object.assign({}, REF_DEFAULT);
     if (S.name === 'Sem título') S.name = 'Look ' + S.ref.name;
-    refreshUI(); drawRefPane(); changed(true);
+    if (fresh) showEditor('look'); else { setTab('look'); refreshUI(); drawRefPane(); }
+    changed(true);
     toast('Look extraído');
   } catch (e) { toast('Não consegui analisar: ' + e.message, true); }
   finally { URL.revokeObjectURL(url); unbusy(); }
-}
-async function rematch() {
-  if (!S.ref || S.ref.kind !== 'ref') return;
-  busy('Recalculando…');
-  try { S.ref.src = await mediaStats(); drawRefPane(); changed(true); toast(S.ref.src ? 'Ajustado à mídia aberta' : 'Sem mídia aberta: usando base neutra'); }
-  catch (e) { toast(e.message, true); }
-  finally { unbusy(); }
 }
 async function importCube(file) {
   busy('Lendo LUT…');
   try {
     const text = await file.text();
     const base = parseCube(text);
+    const fresh = !S.active;
+    if (fresh) applyRecord(null);
     S.ref = { kind: 'cube', name: file.name.replace(/\.cube$/i, ''), base };
     S.refCfg.amount = 100;
     if (S.name === 'Sem título') S.name = S.ref.name;
-    refreshUI(); drawRefPane(); changed(true);
+    if (fresh) showEditor('look'); else { setTab('look'); refreshUI(); drawRefPane(); }
+    changed(true);
     toast('LUT importado');
   } catch (e) { toast('Não consegui importar: ' + e.message, true); }
   finally { unbusy(); }
@@ -1065,7 +1386,7 @@ let cancelExport = null;
 async function exportVideo(maxSide, bitrate) {
   const m = S.media; if (!m || m.kind !== 'video') return;
   const type = pickRecorderType();
-  if (!type) { toast('Este aparelho não suporta gravar vídeo pelo app. Exporte o .cube.', true); return; }
+  if (!type) { toast('Este aparelho não grava vídeo pelo app. Exporte o .cube.', true); return; }
   if (m.el && !m.el.paused) m.el.pause();
   busy('Preparando vídeo…', true);
   let r2 = null, actx = null, cv = null, v = null, canceled = false;
@@ -1128,7 +1449,7 @@ async function exportVideo(maxSide, bitrate) {
 $('#busyCancel').addEventListener('click', () => { if (cancelExport) cancelExport(); });
 
 /* =====================================================================
-   Biblioteca (arquivos internos do app; localStorage fora do Android)
+   Biblioteca "Meus looks"
    ===================================================================== */
 function f32ToB64(f) {
   const u = new Uint16Array(f.length);
@@ -1146,7 +1467,7 @@ function b64ToF32(b64) {
   return f;
 }
 function record() {
-  const r = { v: 1, name: S.name, P: S.P, refCfg: S.refCfg, ref: null };
+  const r = { v: 2, name: S.name, P: S.P, refCfg: S.refCfg, ref: null };
   if (S.ref) r.ref = S.ref.kind === 'cube'
     ? { kind: 'cube', name: S.ref.name, base: f32ToB64(S.ref.base) }
     : { kind: 'ref', name: S.ref.name, thumb: S.ref.thumb, stats: S.ref.stats, src: S.ref.src || null };
@@ -1159,7 +1480,10 @@ function applyRecord(r, id) {
   S.id = id || null;
   S.ref = null;
   if (r && r.ref) S.ref = r.ref.kind === 'cube' ? { kind: 'cube', name: r.ref.name, base: b64ToF32(r.ref.base) } : Object.assign({}, r.ref);
-  refreshUI(); drawRefPane(); changed(true);
+  // se há mídia aberta, o look se adapta a ela
+  if (S.ref && S.ref.kind === 'ref' && S.srcCache) S.ref.src = S.srcCache;
+  S.edited = false;
+  refreshUI(); drawRefPane(); changed(true, true);
 }
 const Store = {
   list() {
@@ -1176,7 +1500,7 @@ const Store = {
   },
   load(id) {
     const t = Native ? Native.lutLoad(id) : localStorage.getItem('tonalize.lut.' + id);
-    if (!t) throw new Error('LUT não encontrado');
+    if (!t) throw new Error('look não encontrado');
     return JSON.parse(t);
   },
   del(id) {
@@ -1186,17 +1510,17 @@ const Store = {
   }
 };
 function viewThumb() {
-  try { render(); return scaledCanvas(view, view.width, view.height, 240).toDataURL('image/jpeg', 0.8); }
+  try { render(); return scaledCanvas(view, view.width, view.height, 280).toDataURL('image/jpeg', 0.8); }
   catch (e) { return ''; }
 }
-function saveToLibrary(asNew) {
+function saveToLibrary(asNew, quiet) {
   try {
     if (dirty || baseDirty) tick();
     const id = (!asNew && S.id) || ('l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6));
     const meta = { id, name: S.name, date: Date.now(), thumb: viewThumb() };
     Store.save(meta, record());
-    S.id = id;
-    toast('Salvo na biblioteca');
+    S.id = id; S.edited = false;
+    toast("Salvo em Meus looks");
     return true;
   } catch (e) { toast('Não consegui salvar: ' + e.message, true); return false; }
 }
@@ -1205,99 +1529,106 @@ function saveToLibrary(asNew) {
 let saveT = 0;
 function flushSave() {
   clearTimeout(saveT); saveT = 0;
-  try { localStorage.setItem('tonalize.session', JSON.stringify(Object.assign(record(), { id: S.id }))); } catch (e) { /* cheio */ }
+  if (!S.active) return;
+  try { localStorage.setItem('tonalize.session', JSON.stringify(Object.assign(record(), { id: S.id, thumb: viewThumb() }))); } catch (e) { /* cheio */ }
 }
-function scheduleSave() { clearTimeout(saveT); saveT = setTimeout(flushSave, 800); }
+function scheduleSave() { if (!S.active) return; clearTimeout(saveT); saveT = setTimeout(flushSave, 900); }
 window.addEventListener('pagehide', flushSave);
 document.addEventListener('visibilitychange', () => { if (document.hidden) flushSave(); });
 window.appPause = flushSave;
 
 /* =====================================================================
-   Folhas (Exportar / Biblioteca / Nome)
+   Tela inicial
+   ===================================================================== */
+function readSession() { try { return JSON.parse(localStorage.getItem('tonalize.session') || 'null'); } catch (e) { return null; } }
+function drawHome() {
+  const res = $('#resume'); res.innerHTML = '';
+  const s = readSession();
+  if (s && (s.ref || JSON.stringify(s.P) !== JSON.stringify(defaults()))) {
+    res.append(el('button', { class: 'resume', onclick: () => { applyRecord(s, s.id); showEditor(s.ref ? 'look' : 'luz'); } },
+      s.thumb ? el('img', { src: s.thumb, alt: '' }) : el('span', { class: 'ph' }),
+      el('div', null, el('small', null, 'Continuar editando'), el('b', null, s.name || 'Sem título')),
+      icon('chev')));
+  }
+  const grid = $('#libGrid'); grid.innerHTML = '';
+  const list = Store.list();
+  $('#libCount').textContent = list.length ? list.length + (list.length === 1 ? ' look' : ' looks') : '';
+  if (!list.length) { grid.append(el('div', { class: 'empty' }, 'Seus looks salvos aparecem aqui.')); return; }
+  list.forEach(meta => grid.append(el('button', { class: 'item', onclick: () => libItem(meta) },
+    meta.thumb ? el('img', { src: meta.thumb, alt: '' }) : el('span', { class: 'ph' }),
+    el('div', null, meta.name), el('small', null, new Date(meta.date).toLocaleDateString('pt-BR')))));
+}
+$('#hRef').addEventListener('click', () => pick('#fileRef'));
+$('#hImport').addEventListener('click', () => pick('#fileCube'));
+$('#hBlank').addEventListener('click', () => { applyRecord(null); showEditor('luz'); });
+$('#btnBack').addEventListener('click', showHome);
+
+/* =====================================================================
+   Folhas (Exportar / Nome / Look salvo)
    ===================================================================== */
 const sheet = $('#sheet'), sheetBody = $('#sheetBody');
-let exportOpen = false;
 function openSheet(build) { sheetBody.innerHTML = ''; build(sheetBody); sheet.classList.remove('hidden'); }
-function closeSheet() { sheet.classList.add('hidden'); exportOpen = false; }
+function closeSheet() { sheet.classList.add('hidden'); }
 sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); });
+const opt = (ic, title, sub, onclick, main) => el('button', { class: 'opt' + (main ? ' main' : ''), onclick },
+  el('span', { class: 'ic' }, icon(ic)), el('div', null, el('b', null, title), el('small', null, sub)), icon('chev'));
 
 $('#btnName').addEventListener('click', () => openSheet(b => {
-  const inp = el('input', { class: 'field', value: S.name, maxlength: 60 });
-  b.append(el('h3', null, 'Nome do LUT'), inp,
-    el('div', { class: 'btns' }, el('button', { class: 'btn-big', onclick: () => { S.name = inp.value.trim() || 'Sem título'; refreshUI(); scheduleSave(); closeSheet(); } }, 'Salvar nome')));
-  setTimeout(() => inp.focus(), 50);
+  const inp = el('input', { class: 'field', value: S.name, maxlength: 60, 'aria-label': 'Nome do look' });
+  b.append(el('h3', null, 'Nome do look'), el('p', { class: 'sub' }, 'É o nome do arquivo .cube e do look em Meus looks.'), inp,
+    el('button', { class: 'btn primary block', style: 'margin-top:12px', onclick: () => { S.name = inp.value.trim() || 'Sem título'; S.edited = true; refreshUI(); scheduleSave(); closeSheet(); } }, 'Salvar'));
+  setTimeout(() => inp.focus(), 60);
 }));
 
 const EXP = { res: 1920, rate: 12e6 };
 function openExport() {
-  exportOpen = true;
   const m = S.media;
   openSheet(b => {
-    const inp = el('input', { class: 'field', value: S.name, maxlength: 60, oninput: e => { S.name = e.target.value.trim() || 'Sem título'; $('#btnName').textContent = S.name; scheduleSave(); } });
-    b.append(el('h3', null, 'Exportar'), inp);
-    b.append(el('div', { class: 'sec' }, 'LUT'),
-      el('div', { class: 'stack' },
-        el('button', { class: 'btn-big', onclick: () => { closeSheet(); exportCube(); } }, 'Exportar LUT (.cube)'),
-        el('button', { class: 'btn-line', onclick: () => { if (saveToLibrary(false)) closeSheet(); } }, S.id ? 'Atualizar na biblioteca' : 'Salvar na biblioteca'),
-        S.id ? el('button', { class: 'btn-line', onclick: () => { if (saveToLibrary(true)) closeSheet(); } }, 'Salvar como novo') : null),
-      el('p', { class: 'hint' }, 'O .cube vai para Downloads/Tonalize. Use no CapCut para computador, Premiere, DaVinci ou Lightroom.'));
-    if (m && (m.kind === 'image' || m.kind === 'sample')) {
-      b.append(el('div', { class: 'sec' }, 'Foto'),
-        el('button', { class: 'btn-line', onclick: () => { closeSheet(); exportPhoto(); } }, m.kind === 'sample' ? 'Exportar imagem de exemplo (JPG)' : 'Exportar foto com a cor (JPG)'));
-    }
-    if (m && m.kind === 'video') {
-      const opt = (list, key) => {
-        const row = el('div', { class: 'opts' });
-        list.forEach(([label, val]) => row.append(el('button', { class: 'chip small' + (EXP[key] === val ? ' on' : ''), onclick: e => { EXP[key] = val; row.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); e.target.classList.add('on'); } }, label)));
-        return row;
-      };
-      const t = pickRecorderType();
-      b.append(el('div', { class: 'sec' }, 'Vídeo'),
-        el('small', { class: 'hint' }, 'Resolução'), opt([['720p', 1280], ['1080p', 1920], ['Original', 4096]], 'res'),
-        el('small', { class: 'hint' }, 'Qualidade'), opt([['Padrão', 12e6], ['Alta', 24e6]], 'rate'),
-        el('button', { class: 'btn-big', onclick: () => { closeSheet(); exportVideo(EXP.res, EXP.rate * (EXP.res <= 1280 ? 0.6 : EXP.res > 1920 ? 2 : 1)); } }, 'Exportar vídeo com a cor'),
-        el('p', { class: 'hint' }, 'A exportação acontece em tempo real: um vídeo de 1 minuto leva cerca de 1 minuto. Mantenha o app aberto. ' +
-          (t ? 'Formato: ' + t[1].toUpperCase() + '.' : 'Este aparelho não grava vídeo pelo app.')));
-    }
-    if (!m || m.kind === 'sample') b.append(el('p', { class: 'hint' }, 'Abra uma foto ou vídeo em “+ Mídia” para exportar o material já tratado.'));
+    b.append(el('h3', null, 'Exportar'), el('p', { class: 'sub' }, S.name));
+    b.append(opt('cube', 'LUT (.cube)', 'CapCut PC, Premiere, DaVinci, Lightroom', () => { closeSheet(); exportCube(); }, true));
+    if (m && m.kind === 'image') b.append(opt('image', 'Foto com o look', 'JPG em alta qualidade na galeria', () => { closeSheet(); exportPhoto(); }));
+    if (m && m.kind === 'video') b.append(opt('film', 'Vídeo com o look', 'Com áudio, salvo na galeria', openVideoExport));
+    b.append(opt('save', S.id ? 'Atualizar em Meus looks' : 'Salvar em Meus looks', 'Para reutilizar depois', () => { if (saveToLibrary(false)) closeSheet(); }));
+    if (S.id) b.append(opt('plus', 'Salvar como novo look', 'Mantém o original', () => { if (saveToLibrary(true)) closeSheet(); }));
+    b.append(el('div', { class: 'note' }, icon('info'),
+      el('span', null, 'O CapCut do celular não importa .cube. Lá, exporte o vídeo já com o look. No CapCut do computador, importe o .cube em Ajustar → LUT.')));
+  });
+}
+function openVideoExport() {
+  openSheet(b => {
+    const choice = (list, key) => {
+      const row = el('div', { class: 'choice' });
+      list.forEach(([label, val]) => row.append(el('button', { class: EXP[key] === val ? 'on' : null, onclick: e => { EXP[key] = val; row.querySelectorAll('button').forEach(c => c.classList.remove('on')); e.target.classList.add('on'); } }, label)));
+      return row;
+    };
+    const t = pickRecorderType();
+    b.append(el('h3', null, 'Vídeo com o look'),
+      el('p', { class: 'sub' }, 'A exportação acontece em tempo real: 1 minuto de vídeo leva cerca de 1 minuto. ' + (t ? 'Formato ' + t[1].toUpperCase() + '.' : 'Este aparelho não grava vídeo pelo app.')),
+      el('div', { class: 'sec' }, 'Resolução'), choice([['720p', 1280], ['1080p', 1920], ['Original', 4096]], 'res'),
+      el('div', { class: 'sec' }, 'Qualidade'), choice([['Padrão', 12e6], ['Alta', 24e6]], 'rate'),
+      el('button', { class: 'btn primary lg', style: 'margin-top:20px', onclick: () => { closeSheet(); exportVideo(EXP.res, EXP.rate * (EXP.res <= 1280 ? 0.6 : EXP.res > 1920 ? 2 : 1)); } }, 'Exportar vídeo'),
+      el('button', { class: 'btn quiet block', onclick: openExport }, 'Voltar'));
   });
 }
 $('#btnExport').addEventListener('click', openExport);
 
-function openLibrary() {
-  openSheet(b => {
-    const list = Store.list();
-    b.append(el('h3', null, 'Biblioteca de LUTs'),
-      el('div', { class: 'btns' },
-        el('button', { class: 'btn-line', onclick: () => { applyRecord(null); closeSheet(); toast('Novo LUT'); } }, 'Novo LUT'),
-        el('button', { class: 'btn-line', onclick: () => { closeSheet(); pick('#fileCube'); } }, 'Importar .cube')));
-    if (!list.length) { b.append(el('div', { class: 'empty' }, 'Nenhum LUT salvo ainda. Crie um look e toque em Exportar → Salvar na biblioteca.')); return; }
-    const grid = el('div', { class: 'lib' });
-    list.forEach(meta => grid.append(el('button', { class: 'item', onclick: () => libItem(meta) },
-      meta.thumb ? el('img', { src: meta.thumb, alt: '' }) : el('div', { style: 'aspect-ratio:3/2;background:#000' }),
-      el('div', null, meta.name), el('small', null, new Date(meta.date).toLocaleDateString('pt-BR')))));
-    b.append(grid);
-  });
-}
 function libItem(meta) {
   openSheet(b => {
-    b.append(el('h3', null, meta.name),
-      el('div', { class: 'stack' },
-        el('button', { class: 'btn-big', onclick: () => { try { applyRecord(Store.load(meta.id), meta.id); closeSheet(); toast('LUT aberto'); } catch (e) { toast(e.message, true); } } }, 'Abrir para editar'),
-        el('button', { class: 'btn-line', onclick: async () => { try { applyRecord(Store.load(meta.id), meta.id); closeSheet(); await exportCube(); } catch (e) { toast(e.message, true); } } }, 'Exportar .cube'),
-        el('button', { class: 'btn-line', onclick: () => confirmDel(meta) }, 'Apagar'),
-        el('button', { class: 'btn-line', onclick: openLibrary }, 'Voltar')));
+    b.append(el('h3', null, meta.name), el('p', { class: 'sub' }, 'Salvo em ' + new Date(meta.date).toLocaleDateString('pt-BR')));
+    b.append(
+      opt('spark', 'Abrir e editar', 'Aplica o look na sua mídia', () => { try { const r = Store.load(meta.id); applyRecord(r, meta.id); closeSheet(); showEditor(r.ref ? 'look' : 'luz'); } catch (e) { toast(e.message, true); } }, true),
+      opt('cube', 'Exportar .cube', 'Direto para Downloads/Tonalize', async () => { try { applyRecord(Store.load(meta.id), meta.id); closeSheet(); await exportCube(); } catch (e) { toast(e.message, true); } }),
+      el('button', { class: 'btn quiet block', style: 'margin-top:10px;color:var(--bad)', onclick: () => confirmDel(meta) }, 'Apagar look'));
   });
 }
 function confirmDel(meta) {
   openSheet(b => {
-    b.append(el('h3', null, 'Apagar “' + meta.name + '”?'), el('p', { class: 'hint' }, 'Isso não pode ser desfeito.'),
-      el('div', { class: 'btns' },
-        el('button', { class: 'btn-line', onclick: () => libItem(meta) }, 'Cancelar'),
-        el('button', { class: 'btn-big', style: 'background:var(--bad);color:#fff', onclick: () => { Store.del(meta.id); if (S.id === meta.id) S.id = null; toast('Apagado'); openLibrary(); } }, 'Apagar')));
+    b.append(el('h3', null, 'Apagar “' + meta.name + '”?'), el('p', { class: 'sub' }, 'Isso não pode ser desfeito.'),
+      el('div', { class: 'two' },
+        el('button', { class: 'btn ghost', onclick: () => libItem(meta) }, 'Cancelar'),
+        el('button', { class: 'btn danger', onclick: () => { Store.del(meta.id); if (S.id === meta.id) S.id = null; closeSheet(); toast('Look apagado'); drawHome(); } }, 'Apagar')));
   });
 }
-$('#btnLib').addEventListener('click', openLibrary);
 
 /* =====================================================================
    Avisos
@@ -1306,7 +1637,7 @@ let toastT = 0;
 function toast(msg, err) {
   const t = $('#toast');
   t.textContent = msg; t.classList.toggle('err', !!err); t.classList.add('show');
-  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), err ? 4200 : 2600);
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), err ? 4200 : 2400);
 }
 function busy(text, cancellable) {
   $('#busyText').textContent = text; $('#busyBar').style.width = '0';
@@ -1320,6 +1651,7 @@ function unbusy() { $('#busy').classList.add('hidden'); }
 /* botão voltar do Android */
 window.appBack = function () {
   if (!sheet.classList.contains('hidden')) { closeSheet(); return true; }
+  if (!editor.classList.contains('hidden')) { showHome(); return true; }
   return false;
 };
 
@@ -1328,13 +1660,10 @@ window.appBack = function () {
    ===================================================================== */
 const chart = sampleChart();
 setMedia({ kind: 'sample', el: chart, name: 'Imagem de exemplo', w: chart.width, h: chart.height });
-try {
-  const saved = JSON.parse(localStorage.getItem('tonalize.session') || 'null');
-  if (saved) applyRecord(saved, saved.id); else { drawRefPane(); refreshUI(); }
-} catch (e) { drawRefPane(); refreshUI(); }
-changed(true);
+refreshUI(); drawRefPane(); drawHome();
+changed(true, true);
 
 /* para testes automatizados */
-window.__tonalize = { S, computeLUT, computeBase, buildCube, parseCube, tick, manual, prepManual };
+window.__tonalize = { S, computeLUT, computeBase, buildCube, parseCube, tick, manual, prepManual, statsFromData, describe, upgradeStats, attachRef, openMedia, showEditor, showHome, applyRecord, setTab, openExport };
 
 })();

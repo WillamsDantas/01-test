@@ -8,46 +8,79 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <button id="btnOpen" class="chip">+ Mídia</button>
-  <button id="btnName" class="title" title="Renomear">Sem título</button>
-  <button id="btnLib" class="iconbtn" aria-label="Biblioteca"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button>
-  <button id="btnExport" class="chip accent">Exportar</button>
-</header>
 
-<section class="stage" id="stage">
-  <canvas id="view"></canvas>
-  <div id="splitLine" class="split hidden"><span>antes · depois</span></div>
-  <div class="stage-tools">
-    <button id="btnCompare" class="chip small">Comparar</button>
-    <button id="btnBefore" class="chip small">Segure p/ ver antes</button>
-  </div>
-  <div id="mediaTag" class="media-tag">Imagem de exemplo</div>
-  <div id="videoBar" class="videobar hidden">
-    <button id="btnPlay" class="play" aria-label="Reproduzir">▶</button>
-    <input type="range" id="seek" min="0" max="1000" value="0">
-    <span id="vtime">0:00</span>
-  </div>
-  <div id="busy" class="busy hidden">
-    <div class="spinner"></div>
-    <div id="busyText">Processando…</div>
-    <div class="bar"><i id="busyBar"></i></div>
-    <button id="busyCancel" class="chip small hidden">Cancelar</button>
+<!-- ============ INÍCIO ============ -->
+<section id="home" class="screen">
+  <header class="home-top">
+    <div class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>Tonalize</div>
+    <button id="hImport" class="btn ghost sm" data-icon="cube">Importar .cube</button>
+  </header>
+  <div class="home-scroll">
+    <div id="resume"></div>
+
+    <div class="hero">
+      <div class="hero-art" aria-hidden="true">
+        <div class="frame f1"></div><div class="frame f2"></div><div class="frame f3"></div>
+      </div>
+      <h1>Copie o look de qualquer vídeo</h1>
+      <p>Escolha uma referência. O Tonalize lê a luz, o contraste e as cores dela e cria um LUT pronto para usar no CapCut.</p>
+      <button id="hRef" class="btn primary lg" data-icon="spark">Escolher referência</button>
+      <button id="hBlank" class="btn quiet">Começar do zero</button>
+      <ol class="steps">
+        <li><b>1</b>Referência</li><li><b>2</b>Sua mídia</li><li><b>3</b>Exportar</li>
+      </ol>
+    </div>
+
+    <div class="sec-head"><h2>Meus looks</h2><span id="libCount"></span></div>
+    <div id="libGrid" class="lib"></div>
   </div>
 </section>
 
-<nav class="tabs" id="tabs">
-  <button data-tab="ref" class="on">Referência</button>
-  <button data-tab="luz">Luz</button>
-  <button data-tab="cor">Cor</button>
-  <button data-tab="rodas">Rodas</button>
-  <button data-tab="curvas">Curvas</button>
-  <button data-tab="hsl">HSL</button>
-</nav>
-<main class="panel" id="panel"></main>
+<!-- ============ EDITOR ============ -->
+<section id="editor" class="screen hidden">
+  <header class="ed-top">
+    <button id="btnBack" class="icon-btn" aria-label="Voltar" data-icon="back"></button>
+    <button id="btnName" class="title" aria-label="Renomear look">Sem título</button>
+    <button id="btnExport" class="btn primary sm">Exportar</button>
+  </header>
 
+  <section class="stage" id="stage">
+    <canvas id="view"></canvas>
+    <div id="splitLine" class="split hidden"><i></i><span class="tag l">Antes</span><span class="tag r">Depois</span></div>
+    <button id="mediaChip" class="media-chip"></button>
+    <div class="stage-ctrl">
+      <button id="btnCompare" class="pill" data-icon="split" aria-label="Comparar antes e depois"></button>
+      <button id="btnBefore" class="pill" data-icon="eye" aria-label="Segure para ver o original"></button>
+    </div>
+    <div id="videoBar" class="videobar hidden">
+      <button id="btnPlay" class="play" aria-label="Reproduzir" data-icon="play"></button>
+      <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Posição do vídeo">
+      <span id="vtime">0:00</span>
+    </div>
+  </section>
+
+  <main class="panel" id="panel"></main>
+
+  <nav class="dock" id="tabs">
+    <button data-tab="look" data-icon="spark" class="on">Look</button>
+    <button data-tab="luz" data-icon="sun">Luz</button>
+    <button data-tab="cor" data-icon="drop">Cor</button>
+    <button data-tab="rodas" data-icon="wheel">Rodas</button>
+    <button data-tab="curvas" data-icon="curve">Curvas</button>
+    <button data-tab="hsl" data-icon="palette">HSL</button>
+  </nav>
+</section>
+
+<div id="busy" class="busy hidden">
+  <div class="busy-card">
+    <div class="spinner"></div>
+    <div id="busyText">Processando…</div>
+    <div class="bar"><i id="busyBar"></i></div>
+    <button id="busyCancel" class="btn ghost sm hidden">Cancelar</button>
+  </div>
+</div>
 <div id="sheet" class="sheet hidden"><div class="sheet-body" id="sheetBody"></div></div>
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="status"></div>
 
 <input type="file" id="fileMedia" accept="image/*,video/*" hidden>
 <input type="file" id="fileRef" accept="image/*,video/*" hidden>
