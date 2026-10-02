@@ -5,17 +5,19 @@ Note: Recompile with -Xlint:deprecation for details.
 V3.0 Signer: certificate DN: CN=Auxano, O=Auxano, C=BR
 V3.0 Signer: certificate SHA-256 digest: 3864b282b2ddb7b01c8f069fa0d8af53a5b65beeae0e0de3b46cf4504ed97677
 V3.0 Signer: certificate SHA-1 digest: df513c20c643c5fe1e7cb8d665b349e8c3e6bdfa
-total 380
-drwxr-xr-x 2 runner runner  4096 Sep 27 02:03 .
-drwxr-xr-x 9 runner runner  4096 Sep 27 02:03 ..
--rw-r--r-- 1 runner runner 58385 Sep 27 02:03 Quita-v1.0.0.apk
--rw-r--r-- 1 runner runner  5538 Sep 27 02:03 Quita-v1.0.0.apk.idsig
--rw-r--r-- 1 runner runner 58385 Sep 27 02:03 Quita-v1.1.0.apk
--rw-r--r-- 1 runner runner  5538 Sep 27 02:03 Quita-v1.1.0.apk.idsig
--rw-r--r-- 1 runner runner 62481 Sep 27 02:03 Quita-v1.2.0.apk
--rw-r--r-- 1 runner runner  5538 Sep 27 02:03 Quita-v1.2.0.apk.idsig
--rw-r--r-- 1 runner runner 70744 Sep 27 02:03 Quita-v1.3.0.apk
--rw-r--r-- 1 runner runner  5538 Sep 27 02:03 Quita-v1.3.0.apk.idsig
--rw-r--r-- 1 runner runner 70744 Sep 27 02:03 Quita-v1.3.1.apk
--rw-r--r-- 1 runner runner  5538 Sep 27 02:03 Quita-v1.3.1.apk.idsig
--rw-r--r-- 1 runner runner   468 Sep 27 02:03 build.log
+total 464
+drwxr-xr-x 2 runner runner  4096 Oct  2 13:59 .
+drwxr-xr-x 9 runner runner  4096 Oct  2 13:59 ..
+-rw-r--r-- 1 runner runner 58385 Oct  2 13:59 Quita-v1.0.0.apk
+-rw-r--r-- 1 runner runner  5538 Oct  2 13:59 Quita-v1.0.0.apk.idsig
+-rw-r--r-- 1 runner runner 58385 Oct  2 13:59 Quita-v1.1.0.apk
+-rw-r--r-- 1 runner runner  5538 Oct  2 13:59 Quita-v1.1.0.apk.idsig
+-rw-r--r-- 1 runner runner 62481 Oct  2 13:59 Quita-v1.2.0.apk
+-rw-r--r-- 1 runner runner  5538 Oct  2 13:59 Quita-v1.2.0.apk.idsig
+-rw-r--r-- 1 runner runner 70744 Oct  2 13:59 Quita-v1.3.0.apk
+-rw-r--r-- 1 runner runner  5538 Oct  2 13:59 Quita-v1.3.0.apk.idsig
+-rw-r--r-- 1 runner runner 70744 Oct  2 13:59 Quita-v1.3.1.apk
+-rw-r--r-- 1 runner runner  5538 Oct  2 13:59 Quita-v1.3.1.apk.idsig
+-rw-r--r-- 1 runner runner 74840 Oct  2 13:59 Quita-v1.4.0.apk
+-rw-r--r-- 1 runner runner  5538 Oct  2 13:59 Quita-v1.4.0.apk.idsig
+-rw-r--r-- 1 runner runner   468 Oct  2 13:59 build.log
