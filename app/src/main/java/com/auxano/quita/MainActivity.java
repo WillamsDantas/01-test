@@ -51,10 +51,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window w = getWindow();
-        w.setStatusBarColor(0xFF0F5C4D);
+        w.setStatusBarColor(0xFFECECEC);
+        w.setNavigationBarColor(0xFFECECEC);
+        w.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                | (Build.VERSION.SDK_INT >= 26 ? View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0));
 
         web = new WebView(this);
-        web.setBackgroundColor(0xFFF4F6F5);
+        web.setBackgroundColor(0xFFECECEC);
         setContentView(web);
 
         WebSettings s = web.getSettings();
@@ -390,7 +393,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.3.1";
+            return "1.4.0";
         }
     }
 }

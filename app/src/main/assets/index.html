@@ -209,11 +209,111 @@ nav.bottom button{font-size:10.5px}
 .tbl th{text-align:right;font-weight:600;color:var(--ink-3);font-size:12px;padding:0 0 6px}
 .tbl td{text-align:right;padding:7px 0;border-top:1px solid var(--line)}
 .tbl th:first-child,.tbl td:first-child{text-align:left}
+
+/* ===== Tema v2: claro, clean (cinza + preto + verde) ===== */
+:root{
+  --brand:#141414; --brand-2:#2B2B2B; --brand-soft:#E9E9E9;
+  --bg:#ECECEC; --card:#F8F8F8; --ink:#111111; --ink-2:#55585D; --ink-3:#9A9DA2; --line:#E6E6E6;
+  --good:#1FA463; --good-soft:#E3F5EB; --warn:#C98A12; --warn-soft:#FBF1DA; --bad:#E5484D; --bad-soft:#FDE8E8;
+  --r:18px; --shadow:0 1px 1px rgba(0,0,0,.03),0 6px 18px rgba(0,0,0,.04);
+}
+html,body{background:var(--bg);font-family:"Inter","SF Pro Text",Roboto,system-ui,sans-serif;letter-spacing:-.1px}
+.top{background:var(--bg);color:var(--ink);padding:16px 18px 8px;gap:12px}
+.top .avatar{width:42px;height:42px;border-radius:50%;background:#DADADA;display:grid;place-items:center;font-weight:700;color:#3A3A3A;flex:0 0 42px;border:2px solid #F7F7F7;box-shadow:var(--shadow)}
+.top h1{font-size:17px;font-weight:600;color:var(--ink)}
+.top h1 small{font-size:12px;color:var(--ink-3);opacity:1;font-weight:400;margin-bottom:1px}
+.top h1{display:flex;flex-direction:column-reverse}
+.icon-btn{width:42px;height:42px;border-radius:50%;background:#F8F8F8;color:var(--ink);box-shadow:var(--shadow);border:1px solid #F2F2F2}
+.icon-btn:active{background:#E4E4E4}
+.icon-btn svg{width:19px;height:19px}
+.sync-dot i{right:8px;top:8px;width:9px;height:9px;border:2px solid #F8F8F8}
+.sync-dot i.ok{background:#2DBE7E}.sync-dot i.pend{background:#F5A623}.sync-dot i.err{background:var(--bad)}
+main{padding:6px 16px 120px}
+.month{margin:4px 0 14px}
+.month b{font-size:15px;font-weight:600}
+.month button{width:38px;height:38px;border-radius:50%;background:#F8F8F8;box-shadow:var(--shadow);color:var(--ink)}
+.today-link{color:var(--ink-2);font-weight:500;text-decoration:underline}
+.card{background:var(--card);border:1px solid #F3F3F3;box-shadow:var(--shadow);border-radius:var(--r);padding:16px}
+.card h3{font-size:15px;font-weight:600;color:#2B2B2B;text-transform:none;letter-spacing:-.1px;margin-bottom:12px}
+.card h3 .r{color:var(--ink);font-weight:600;font-size:13px}
+/* cartão escuro de destaque */
+.hero{background:linear-gradient(150deg,#1E1E1E 0%,#121212 60%,#1B2A22 130%);color:#fff;border:0;box-shadow:0 10px 28px rgba(0,0,0,.18);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(closest-side,rgba(45,190,126,.22),transparent)}
+.hero .lbl{opacity:.65;font-size:13px}
+.hero .big{font-size:34px;font-weight:700;letter-spacing:-1px;margin:4px 0 14px}
+.hero .big small{font-size:18px;opacity:.55;font-weight:600;letter-spacing:0}
+.hero .row>div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.06);border-radius:14px}
+.hero .row span{opacity:.6}
+/* ações rápidas */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.qa button{background:var(--card);border:1px solid #F3F3F3;border-radius:var(--r);box-shadow:var(--shadow);padding:14px 14px 13px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.qa button:active{background:#EFEFEF}
+.qa svg{width:20px;height:20px;margin-bottom:14px;color:var(--ink)}
+.qa b{font-size:15px;font-weight:600}
+.qa span{font-size:12px;color:var(--ink-3)}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;margin:6px 2px 10px}
+.sec-head b{font-size:15px;font-weight:600;color:#2B2B2B}
+.stat{background:var(--card);border:1px solid #F3F3F3;border-radius:var(--r)}
+.stat b{font-weight:700}
+.bar{height:10px;background:repeating-linear-gradient(90deg,#E4E4E4 0 3px,transparent 3px 6px)}
+.bar>i{background:#2DBE7E}
+.list-row{border-top:1px solid var(--line)}
+.badge-day{background:#EFEFEF;color:var(--ink);border-radius:50%;width:42px;height:42px;font-size:15px}
+.badge-day small{color:var(--ink-3)}
+.badge-day.late{background:var(--bad-soft);color:var(--bad)}
+.badge-day.late small{color:var(--bad)}
+.chk{border-radius:50%;border:1.5px solid #D4D4D4;background:#fff}
+.chk.on{background:#141414;border-color:#141414}
+.val.pos,.pos{color:var(--good)}
+.val.neg,.neg{color:var(--bad)}
+.pill{font-weight:600;font-size:11.5px;padding:3px 9px}
+.pill.done{background:#EBEBEB;color:var(--ink-2)}
+.chip{background:#F8F8F8;color:var(--ink-2);border:1px solid #EFEFEF}
+.chip.on{background:#141414;color:#fff;border-color:#141414}
+.debt{background:var(--card);border:1px solid #F3F3F3;border-radius:var(--r)}
+.debt .mid .saldo,.debt .mid .days b{font-weight:700;letter-spacing:-.4px}
+.btn{border-radius:14px;font-weight:600}
+.btn.pri{background:#141414;color:#fff}
+.btn.sec{background:#E6E6E6;color:#141414}
+.btn.ghost{background:#F8F8F8;border:1px solid #EEEEEE}
+.btn.danger{background:var(--bad-soft);color:var(--bad)}
+.alert{background:var(--bad-soft);color:#9B1C1F;border:0}
+.note{background:#EFEFEF;color:#2B2B2B}
+.note-card{background:var(--card)}
+.empty svg{color:var(--ink)}
+/* barra de navegação flutuante */
+nav.bottom{left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom));padding:7px;border:1px solid #F3F3F3;border-radius:30px;background:rgba(248,248,248,.96);box-shadow:0 8px 28px rgba(0,0,0,.10);backdrop-filter:blur(10px)}
+nav.bottom button{border-radius:24px;padding:7px 0 6px;color:#6B6E73;font-size:10.5px;gap:3px}
+nav.bottom button svg{width:21px;height:21px}
+nav.bottom button.on{background:#E3E3E3;color:#111;font-weight:600}
+nav.bottom button.on svg{background:none;padding:0;width:21px;height:21px}
+.fab{background:#141414;border-radius:50%;width:56px;height:56px;bottom:98px;box-shadow:0 8px 22px rgba(0,0,0,.22)}
+.toast{bottom:104px;background:#141414;border-radius:14px}
+/* folhas e formulários */
+.sheet{background:#F4F4F4;border-radius:26px 26px 0 0}
+.grab{background:#CFCFCF}
+.field input,.field select,.field textarea{background:#fff;border:1px solid #E3E3E3;border-radius:14px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#141414}
+.seg{background:#E6E6E6;border-radius:14px}
+.seg button.on{color:#111;border-radius:11px}
+.switch input:checked{background:#141414}
+.detail-grid div{background:#fff;border:1px solid #EEEEEE}
+.rep-item .n{background:#141414;border-radius:50%}
+.tbl th{color:var(--ink-3)}
+.sec-title{color:var(--ink-3);font-weight:600;font-size:12px}
+
+.hero .row3{flex-direction:column;gap:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:2px 14px}
+.hero .row3>div{display:flex;justify-content:space-between;align-items:center;background:none;border:0;border-radius:0;padding:9px 0;border-top:1px solid rgba(255,255,255,.07)}
+.hero .row3>div:first-child{border-top:0}
+.hero .row3 span{display:inline;font-size:13px}
+.hero .row3 b{font-size:14px;overflow:visible}
+.gauge-txt p{font-size:12.5px}
 </style>
 </head>
 <body>
 
 <header class="top">
+  <div class="avatar">Q</div>
   <h1>Quita<small id="topSub">Controle financeiro</small></h1>
   <button class="icon-btn sync-dot" id="btnSync" aria-label="Sincronizar planilha">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/></svg>
@@ -343,7 +443,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.3.1';
+var VERSION = '1.4.0';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -374,6 +474,7 @@ function parseMoney(s){
   var v=parseFloat(s);return isFinite(v)?v:0;
 }
 function moneyInput(v){return v?String(r2(v)).replace('.',','):''}
+function moneyBig(v){var t=money(v),i=t.lastIndexOf(',');return i<0?t:t.slice(0,i)+'<small>'+t.slice(i)+'</small>'}
 function plural(n,s,p){return n+' '+(Math.abs(n)===1?s:p)}
 function curYM(){return ym(todayISO())}
 
@@ -568,14 +669,14 @@ function bindRows(el){
 function gaugeSVG(pct){
   var p=isFinite(pct)?Math.max(0,Math.min(1,pct)):1;
   var f=faixa(pct);
-  var col=f[1]==='good'?'#1B8A5A':f[1]==='warn'?'#E0A526':'#C8412F';
+  var col=f[1]==='good'?'#2DBE7E':f[1]==='warn'?'#E0A526':'#E5484D';
   var R=58,cx=75,cy=72,len=Math.PI*R;
   var txt=isFinite(pct)?Math.round(pct*100)+'%':'—';
   return '<svg viewBox="0 0 150 86" width="150" height="86" role="img" aria-label="Renda comprometida '+txt+'">'+
-    '<path d="M'+(cx-R)+' '+cy+' A'+R+' '+R+' 0 0 1 '+(cx+R)+' '+cy+'" fill="none" stroke="#E8EEEC" stroke-width="14" stroke-linecap="round"/>'+
+    '<path d="M'+(cx-R)+' '+cy+' A'+R+' '+R+' 0 0 1 '+(cx+R)+' '+cy+'" fill="none" stroke="#E4E4E4" stroke-width="14" stroke-linecap="round"/>'+
     '<path d="M'+(cx-R)+' '+cy+' A'+R+' '+R+' 0 0 1 '+(cx+R)+' '+cy+'" fill="none" stroke="'+col+'" stroke-width="14" stroke-linecap="round" stroke-dasharray="'+(len*p).toFixed(1)+' '+len.toFixed(1)+'"/>'+
-    '<text x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" font-size="24" font-weight="700" fill="#16211E">'+txt+'</text>'+
-    '<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="10" fill="#8A9792">da renda</text></svg>';
+    '<text x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" font-size="24" font-weight="700" fill="#111">'+txt+'</text>'+
+    '<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="10" fill="#9A9DA2">da renda</text></svg>';
 }
 /* 6 meses a partir do mês selecionado: receita × parcelas */
 function barsSVG(k){
@@ -585,18 +686,18 @@ function barsSVG(k){
   var max=Math.max.apply(null,inc.concat(out).concat([1]));
   var W=320,H=176,pl=4,pr=4,pt=16,pb=24,ch=H-pt-pb,gw=(W-pl-pr)/6,bw=Math.min(16,gw/3.2);
   var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Receita e saídas dos próximos 6 meses">';
-  for(var g=0;g<=3;g++){var y=pt+ch*g/3;s+='<line x1="0" x2="'+W+'" y1="'+y+'" y2="'+y+'" stroke="#EEF2F1"/>'}
+  for(var g=0;g<=3;g++){var y=pt+ch*g/3;s+='<line x1="0" x2="'+W+'" y1="'+y+'" y2="'+y+'" stroke="#E6E6E6"/>'}
   months.forEach(function(m,j){
     var x=pl+gw*j+gw/2;
     var h1=ch*inc[j]/max,hd=ch*dsp[j]/max,hp=ch*par[j]/max,base=pt+ch;
-    s+='<rect x="'+(x-bw-1.5)+'" y="'+(base-h1)+'" width="'+bw+'" height="'+Math.max(h1,0)+'" rx="3" fill="#1B8A5A"><title>Receita '+money(inc[j])+'</title></rect>';
-    if(hd>0)s+='<rect x="'+(x+1.5)+'" y="'+(base-hd)+'" width="'+bw+'" height="'+hd+'" rx="2" fill="#4F7CAC"><title>Despesas '+money(dsp[j])+'</title></rect>';
-    if(hp>0)s+='<rect x="'+(x+1.5)+'" y="'+(base-hd-hp)+'" width="'+bw+'" height="'+Math.max(hp-1,0)+'" rx="2" fill="#E0A526"><title>Parcelas '+money(par[j])+'</title></rect>';
-    if(out[j]>inc[j]&&out[j]>0)s+='<circle cx="'+x+'" cy="'+(base-Math.max(h1,hd+hp)-7)+'" r="3" fill="#C8412F"/>';
+    s+='<rect x="'+(x-bw-1.5)+'" y="'+(base-h1)+'" width="'+bw+'" height="'+Math.max(h1,0)+'" rx="3" fill="#2DBE7E"><title>Receita '+money(inc[j])+'</title></rect>';
+    if(hd>0)s+='<rect x="'+(x+1.5)+'" y="'+(base-hd)+'" width="'+bw+'" height="'+hd+'" rx="2" fill="#BDBFC4"><title>Despesas '+money(dsp[j])+'</title></rect>';
+    if(hp>0)s+='<rect x="'+(x+1.5)+'" y="'+(base-hd-hp)+'" width="'+bw+'" height="'+Math.max(hp-1,0)+'" rx="2" fill="#1F1F1F"><title>Parcelas '+money(par[j])+'</title></rect>';
+    if(out[j]>inc[j]&&out[j]>0)s+='<circle cx="'+x+'" cy="'+(base-Math.max(h1,hd+hp)-7)+'" r="3" fill="#E5484D"/>';
     var p=m.split('-');
-    s+='<text x="'+x+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+(j===0?'#16211E':'#8A9792')+'" font-weight="'+(j===0?700:400)+'">'+MES_CURTO[+p[1]-1]+'</text>';
+    s+='<text x="'+x+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+(j===0?'#111':'#9A9DA2')+'" font-weight="'+(j===0?700:400)+'">'+MES_CURTO[+p[1]-1]+'</text>';
   });
-  s+='<text x="'+(W-2)+'" y="10" text-anchor="end" font-size="10" fill="#8A9792">máx. '+moneyShort(max)+'</text>';
+  s+='<text x="'+(W-2)+'" y="10" text-anchor="end" font-size="10" fill="#9A9DA2">máx. '+moneyShort(max)+'</text>';
   return s+'</svg>';
 }
 
@@ -613,13 +714,18 @@ function renderPainel(){
   var pm=pagoMes(k), sobra=rec-desp-parc, pct=comprometimento(k), f=faixa(pct);
   var ab=abertas(), fim=fimDeTudo(), atr=totalAtraso();
   var h=monthBar();
-  h+='<div class="card hero"><div class="lbl">Sobra de '+mes+'</div><div class="big num">'+money(sobra)+'</div>'+
+  h+='<div class="card hero"><div class="lbl">Sobra de '+mes+'</div><div class="big num">'+moneyBig(sobra)+'</div>'+
      '<div class="row row3"><div><span>Receitas</span><b class="num">'+money(rec)+'</b></div><div><span>Despesas</span><b class="num">'+money(desp)+'</b></div><div><span>Parcelas</span><b class="num">'+money(parc)+'</b></div></div></div>';
+  h+='<div class="sec-head"><b>Ações rápidas</b></div><div class="qa">'+
+    '<button data-qa="rec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg><b>Nova receita</b><span>Salário, contratos, extras</span></button>'+
+    '<button data-qa="desp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 7L7 17M15 17H7V9"/></svg><b>Nova despesa</b><span>Aluguel, luz, internet</span></button>'+
+    '<button data-qa="div"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/></svg><b>Nova dívida</b><span>'+plural(ab.length,'dívida ativa','dívidas ativas')+'</span></button>'+
+    '<button data-qa="pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 14h8M8 18h5"/></svg><b>Relatório</b><span>Exportar em PDF</span></button></div>';
   if(atr.n>0&&k===curYM())h+='<div class="card alert"><b>'+plural(atr.n,'parcela atrasada','parcelas atrasadas')+'</b> somando '+money(atr.valor)+'. Marque com ✓ as que já pagou.</div>';
   // despesas do mês
   h+='<div class="card"><h3>Despesas de '+mes+(desps.length?'<span class="r">'+desps.filter(function(r){return despPaga(r,k)}).length+' de '+desps.length+' pagas</span>':'')+'</h3>';
   if(desps.length){
-    h+='<div class="bar" style="margin:-2px 0 8px"><i style="width:'+(desp?dp/desp*100:0).toFixed(1)+'%;background:#4F7CAC"></i></div>';
+    h+='<div class="bar" style="margin:-2px 0 8px"><i style="width:'+(desp?dp/desp*100:0).toFixed(1)+'%;background:#2DBE7E"></i></div>';
     h+=desps.sort(function(a,b){return valorNoMes(b,k)-valorNoMes(a,k)}).map(function(r){return lancRow('despesa',r,k)}).join('');
     h+='<div class="tot-row"><span>Pago '+money(dp)+'</span><span>Falta '+money(desp-dp)+'</span></div>';
   } else h+='<p class="muted" style="margin:0">Nenhuma despesa neste mês. <a href="#" id="addDesp" style="color:var(--brand);font-weight:600">Cadastrar</a></p>';
@@ -638,7 +744,7 @@ function renderPainel(){
      '<div class="stat"><span>Livre de dívidas em</span><b>'+(fim?ymShort(fim):'—')+'</b><em>'+(fim?'última parcela em '+ymLabel(fim):'nenhuma em aberto')+'</em></div>'+
      '</div>';
   h+='<div class="card"><h3>Entradas × saídas <span class="r" style="color:var(--ink-3)">próximos 6 meses</span></h3>'+barsSVG(k)+
-     '<div class="legend"><span><i style="background:#1B8A5A"></i>Receita</span><span><i style="background:#4F7CAC"></i>Despesas</span><span><i style="background:#E0A526"></i>Parcelas</span><span><i style="background:#C8412F;border-radius:50%"></i>Saídas > receita</span></div></div>';
+     '<div class="legend"><span><i style="background:#2DBE7E"></i>Receita</span><span><i style="background:#BDBFC4"></i>Despesas</span><span><i style="background:#1F1F1F"></i>Parcelas</span><span><i style="background:#E5484D;border-radius:50%"></i>Saídas > receita</span></div></div>';
   if(ab.length){
     h+='<div class="card"><h3>Progresso das dívidas</h3>';
     ab.map(function(d){return {d:d,c:calc(d)}}).sort(function(a,b){return a.c.ultimoMes<b.c.ultimoMes?-1:1}).forEach(function(x){
@@ -649,11 +755,12 @@ function renderPainel(){
   var ac=alertCfg();
   if(!ac.on&&!ac.dispensado)h+='<div class="card note-card"><b>Quer ser avisado antes dos vencimentos?</b><p class="muted" style="margin:4px 0 10px">O Quita manda uma notificação antes do vencimento e no dia de cada parcela e despesa.</p><div class="btn-row"><button class="btn ghost" id="alNo">Agora não</button><button class="btn pri" id="alYes">Ativar alertas</button></div></div>';
   el.innerHTML=h; bindMonth(el); bindRows(el); bindLanc('despesa',el);
+  $$('[data-qa]',el).forEach(function(b){b.onclick=function(){var a=b.dataset.qa;if(a==='rec')openLancForm('receita');else if(a==='desp')openLancForm('despesa');else if(a==='div')openDebtForm();else exportPDF()}});
   var ay=$('#alYes',el);if(ay){ay.onclick=ativarAlertas;$('#alNo',el).onclick=function(){ac.dispensado=true;persist();renderAll()}}
   var ad=$('#addDesp',el);if(ad)ad.onclick=function(e){e.preventDefault();openLancForm('despesa')};
 }
 function pill2(f){return '<span class="pill '+f[1]+'">'+f[0]+'</span>'}
-function barColor(st){return st==='atrasada'?'#C8412F':st==='quitada'?'#8A9792':'#1B8A5A'}
+function barColor(st){return st==='atrasada'?'#E5484D':st==='quitada'?'#9A9DA2':'#2DBE7E'}
 
 /* ---------------- Dívidas ---------------- */
 function renderDividas(){
@@ -718,7 +825,7 @@ function renderLanc(kind){
   var K=KIND[kind], el=$('#tab-'+K.tab), k=curMonth;
   var list=doMes(K.lista(),k), tot=totalMes(K.lista(),k);
   var h=monthBar();
-  h+='<div class="card hero"><div class="lbl">'+(kind==='receita'?'Receitas':'Despesas')+' de '+ymLabel(k)+'</div><div class="big num" style="margin-bottom:4px">'+money(tot)+'</div><div class="lbl">'+
+  h+='<div class="card hero"><div class="lbl">'+(kind==='receita'?'Receitas':'Despesas')+' de '+ymLabel(k)+'</div><div class="big num" style="margin-bottom:4px">'+moneyBig(tot)+'</div><div class="lbl">'+
     (kind==='receita'?plural(list.length,'lançamento','lançamentos')+' · saídas do mês '+money(saidasMes(k)):
      'Pago '+money(despPagoMes(k))+' · falta '+money(tot-despPagoMes(k))+' · parcelas de dívidas '+money(parcelasMes(k)))+'</div></div>';
   if(!K.lista().length){
@@ -1238,12 +1345,12 @@ function pdfHTML(){
   function t(rows,cls){return '<table'+(cls?' class="'+cls+'"':'')+'><thead><tr>'+rows[0].map(function(c){return '<th>'+esc(c)+'</th>'}).join('')+'</tr></thead><tbody>'+rows.slice(1).map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table>'}
   var h='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><style>'+
     '@page{size:A4;margin:14mm 12mm}*{box-sizing:border-box}body{font-family:Roboto,Arial,sans-serif;color:#16211E;font-size:10.5pt;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
-    'header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #0F5C4D;padding-bottom:8px;margin-bottom:14px}'+
-    'h1{font-size:20pt;margin:0;color:#0F5C4D}header p{margin:2px 0 0;color:#51605B}h2{font-size:12pt;color:#0F5C4D;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.5px}'+
+    'header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #141414;padding-bottom:8px;margin-bottom:14px}'+
+    'h1{font-size:20pt;margin:0;color:#141414}header p{margin:2px 0 0;color:#51605B}h2{font-size:12pt;color:#141414;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.5px}'+
     '.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.kpi{border:1px solid #E3E8E6;border-radius:8px;padding:8px 10px}.kpi span{display:block;font-size:8.5pt;color:#51605B}.kpi b{font-size:13pt}'+
-    '.kpi.hl{background:#0F5C4D;color:#fff;border-color:#0F5C4D}.kpi.hl span{color:#CFE7DF}'+
-    'table{width:100%;border-collapse:collapse;font-size:9.5pt;page-break-inside:auto}th{background:#E3F1EC;color:#0B4A3E;text-align:left;padding:5px 6px;font-weight:600}td{padding:5px 6px;border-bottom:1px solid #E3E8E6}tr{page-break-inside:avoid}'+
-    'td.n,th.n{text-align:right}.neg{color:#C8412F}.pos{color:#1B8A5A}.muted{color:#8A9792;font-size:9pt}.diag p{margin:4px 0}footer{margin-top:18px;color:#8A9792;font-size:8.5pt;text-align:center}'+
+    '.kpi.hl{background:#141414;color:#fff;border-color:#141414}.kpi.hl span{color:#BDBDBD}'+
+    'table{width:100%;border-collapse:collapse;font-size:9.5pt;page-break-inside:auto}th{background:#EFEFEF;color:#111;text-align:left;padding:5px 6px;font-weight:600}td{padding:5px 6px;border-bottom:1px solid #E3E8E6}tr{page-break-inside:avoid}'+
+    'td.n,th.n{text-align:right}.neg{color:#E5484D}.pos{color:#1FA463}.muted{color:#8A9792;font-size:9pt}.diag p{margin:4px 0}footer{margin-top:18px;color:#8A9792;font-size:8.5pt;text-align:center}'+
     '</style></head><body>';
   h+='<header><div><h1>Quita — Relatório financeiro</h1><p>'+ymLabel(k).replace(/^./,function(c){return c.toUpperCase()})+'</p></div><p>Gerado em '+br(todayISO())+' às '+new Date().toTimeString().slice(0,5)+'</p></header>';
   h+='<div class="kpis"><div class="kpi"><span>Receitas do mês</span><b>'+money(rec)+'</b></div><div class="kpi"><span>Despesas do mês</span><b>'+money(desp)+'</b></div><div class="kpi"><span>Parcelas de dívidas</span><b>'+money(parc)+'</b></div><div class="kpi hl"><span>Sobra do mês</span><b>'+money(sobra)+'</b></div></div>';
