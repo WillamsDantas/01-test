@@ -1,0 +1,20 @@
+# Mural
+
+Organizador de referências visuais para Android, no espírito do PureRef: uma lousa infinita onde você solta imagens e arruma do seu jeito. Marca Auxano.
+
+## O que faz
+- Lousa infinita com arrastar e pinça para zoom, com inércia ao soltar.
+- Imagens da galeria (várias de uma vez), da área de transferência (print, imagem ou link copiado) e por link (páginas como Pinterest usam a imagem principal).
+- Compartilhar de qualquer app → Mural.
+- Toque para selecionar, arraste para mover, pinça com os dois dedos sobre a imagem selecionada para redimensionar (ou o ponto âmbar no canto).
+- Toque duplo numa imagem aproxima nela; num espaço vazio enquadra tudo.
+- Segurar num espaço vazio abre o menu de adicionar naquele ponto.
+- Frente, espelhar, duplicar, enviar e excluir (com desfazer).
+- Vários quadros, organizar em fileiras, tudo salvo no aparelho.
+
+## Técnica
+- Android nativo em Java (minSdk 24), interface em HTML/JS dentro de uma WebView (`app/src/main/assets/index.html`), sem bibliotecas externas.
+- Imagens grandes são reduzidas para 2400 px e salvas em `files/img/`; os dados ficam em `files/mural-data.json`.
+- Compilação sem Gradle (`build.sh`) via GitHub Actions; o APK vai para `dist/`.
+- Chave de assinatura: `keystore/mural.jks` (alias `mural`, senha `mural123`). Guarde: as próximas versões precisam dela para instalar por cima.
+- Sem lambdas no Java (o build não faz desugaring).
