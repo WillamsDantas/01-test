@@ -184,6 +184,19 @@ body.selecting #add{opacity:0;transform:scale(.85);pointer-events:none}
   color:var(--nevoa);font-weight:500;box-shadow:0 0 0 1px var(--linha) inset}
 .newboard:active{background:rgba(255,255,255,.04)}
 
+
+/* Exportar */
+.sheet .lead{margin:-8px 0 16px;font-size:14px;color:var(--cinza);max-width:42ch}
+.preview{border-radius:14px;background:var(--carvao);box-shadow:0 0 0 1px var(--linha) inset;height:200px;display:grid;place-items:center;overflow:hidden}
+.preview canvas{max-width:100%;max-height:100%;display:block;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 8px 24px rgba(0,0,0,.45);border-radius:3px}
+.swatches{display:flex;gap:10px;margin:14px 0 18px}
+.swatch{flex:1;height:48px;border-radius:14px;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:14px;color:var(--nevoa);
+  box-shadow:0 0 0 1px var(--linha) inset}
+.swatch i{width:20px;height:20px;border-radius:50%;box-shadow:0 0 0 1px rgba(255,255,255,.18) inset}
+.swatch[aria-pressed="true"]{box-shadow:0 0 0 1.5px var(--ambar) inset}
+.exportbts{display:flex;gap:10px}
+.exportbts .btn{flex:1}
+
 /* Diálogo */
 #dialog{position:fixed;left:20px;right:20px;top:50%;z-index:31;transform:translate(0,-46%) scale(.97);opacity:0;pointer-events:none;
   background:var(--grafite);border-radius:22px;padding:22px 20px 18px;box-shadow:0 0 0 1px var(--linha),0 30px 80px rgba(0,0,0,.6);
@@ -218,6 +231,7 @@ body.selecting #add{opacity:0;transform:scale(.85);pointer-events:none}
     <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4 9V5.5A1.5 1.5 0 015.5 4H9M15 4h3.5A1.5 1.5 0 0120 5.5V9M20 15v3.5a1.5 1.5 0 01-1.5 1.5H15M9 20H5.5A1.5 1.5 0 014 18.5V15"/></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="9" rx="1.2"/><rect x="13" y="4" width="7" height="5" rx="1.2"/><rect x="13" y="11" width="7" height="9" rx="1.2"/><rect x="4" y="15" width="7" height="5" rx="1.2"/></symbol>
     <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l1-4.5L15.8 4.7a1.8 1.8 0 012.5 0l1 1a1.8 1.8 0 010 2.5L8.5 19z"/><path d="M14 6.5l3.5 3.5"/></symbol>
+    <symbol id="i-export" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M4.5 15.5v3A1.5 1.5 0 006 20h12a1.5 1.5 0 001.5-1.5v-3"/></symbol>
     <symbol id="i-boards" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16"/></symbol>
   </defs>
 </svg>
@@ -278,6 +292,21 @@ body.selecting #add{opacity:0;transform:scale(.85);pointer-events:none}
   <div class="grip"></div>
   <h3 id="menuTitle">Este quadro</h3>
   <div class="list" id="menuList"></div>
+</section>
+
+<section class="sheet" id="sheetExport" aria-label="Exportar quadro">
+  <div class="grip"></div>
+  <h3>Exportar quadro</h3>
+  <p class="lead">Uma imagem só, com todas as referências do jeito que estão na lousa.</p>
+  <div class="preview"><canvas id="exportPreview"></canvas></div>
+  <div class="swatches" role="group" aria-label="Cor do fundo">
+    <button class="swatch" data-bg="#141518" aria-pressed="true"><i style="background:#141518"></i>Fundo carvão</button>
+    <button class="swatch" data-bg="#FFFFFF" aria-pressed="false"><i style="background:#FFFFFF"></i>Fundo branco</button>
+  </div>
+  <div class="exportbts">
+    <button class="btn" id="exportShare">Enviar</button>
+    <button class="btn primary" id="exportSave">Salvar na galeria</button>
+  </div>
 </section>
 
 <div id="dscrim"></div>
@@ -896,6 +925,7 @@ $('#menuBtn').addEventListener('click',function(){
   var rows=[];
   if(has) rows.push({icon:'i-fit',label:'Enquadrar tudo',sub:'Ou toque duas vezes num espaço vazio',fn:fitAll});
   if(board.items.length>1) rows.push({icon:'i-grid',label:'Organizar',sub:'Alinha tudo em fileiras, sem sobrepor',fn:arrange});
+  if(has) rows.push({icon:'i-export',label:'Exportar quadro',sub:'Salva ou envia como uma imagem só',fn:openExport});
   rows.push({icon:'i-pencil',label:'Renomear quadro',fn:function(){renameBoard(board)}});
   rows.push({icon:'i-boards',label:'Trocar de quadro',fn:function(){ renderBoards(); showSheet($('#sheetBoards')); }});
   menuRows(rows); showSheet($('#sheetMenu'));
@@ -928,6 +958,74 @@ function arrange(){
   })(t0);
   haptic('confirm');
 }
+
+
+/* ================= Exportar quadro ================= */
+var exportBg='#141518', exporting=false;
+function exportLayout(){
+  var b=bounds(board.items), pad=Math.max(b.w,b.h)*.06;
+  return {b:b,pad:pad,tw:b.w+pad*2,th:b.h+pad*2};
+}
+function drawPreview(){
+  var cv=$('#exportPreview'), L=exportLayout(), box=$('.preview');
+  var maxW=box.clientWidth-32, maxH=box.clientHeight-32, k=Math.min(maxW/L.tw,maxH/L.th), dpr=window.devicePixelRatio||1;
+  cv.style.width=Math.round(L.tw*k)+'px'; cv.style.height=Math.round(L.th*k)+'px';
+  cv.width=Math.round(L.tw*k*dpr); cv.height=Math.round(L.th*k*dpr);
+  var cx=cv.getContext('2d'); cx.setTransform(k*dpr,0,0,k*dpr,0,0);
+  cx.fillStyle=exportBg; cx.fillRect(0,0,L.tw,L.th);
+  board.items.forEach(function(it){
+    var im=els[it.id]&&els[it.id].querySelector('img'); if(!im||!im.naturalWidth) return;
+    drawCover(cx,im,it.x-L.b.x+L.pad,it.y-L.b.y+L.pad,it.w,it.h,it.flip);
+  });
+}
+function drawCover(cx,im,x,y,w,h,flip){
+  var ir=im.naturalWidth/im.naturalHeight, r=w/h, sx=0, sy=0, sw=im.naturalWidth, sh=im.naturalHeight;
+  if(ir>r){ sw=sh*r; sx=(im.naturalWidth-sw)/2; } else { sh=sw/r; sy=(im.naturalHeight-sh)/2; }
+  cx.save();
+  if(flip){ cx.translate(x+w,y); cx.scale(-1,1); cx.translate(-x,-y); }
+  cx.drawImage(im,sx,sy,sw,sh,x,y,w,h); cx.restore();
+}
+function openExport(){
+  if(!board.items.length){ toast('Adicione referências para exportar'); return; }
+  showSheet($('#sheetExport'));
+  requestAnimationFrame(drawPreview);
+}
+document.querySelectorAll('.swatch').forEach(function(b){
+  b.addEventListener('click',function(){
+    exportBg=b.dataset.bg; haptic('tick');
+    document.querySelectorAll('.swatch').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});
+    drawPreview();
+  });
+});
+function runExport(mode){
+  if(exporting) return; exporting=true;
+  closeSheets();
+  toast('Preparando a imagem',null,null,{busy:true,stay:true});
+  if(A){
+    var items=board.items.map(function(it){return {f:it.file,x:it.x,y:it.y,w:it.w,h:it.h,flip:!!it.flip}});
+    A.exportBoard(JSON.stringify(items),exportBg,mode,board.name);
+    return;
+  }
+  // navegador: gera e baixa o arquivo
+  setTimeout(function(){
+    var L=exportLayout(), sc=Math.min(3,3200/Math.max(L.tw,L.th)), cv=document.createElement('canvas');
+    cv.width=Math.round(L.tw*sc); cv.height=Math.round(L.th*sc);
+    var cx=cv.getContext('2d'); cx.scale(sc,sc); cx.fillStyle=exportBg; cx.fillRect(0,0,L.tw,L.th);
+    board.items.forEach(function(it){ var im=els[it.id].querySelector('img'); drawCover(cx,im,it.x-L.b.x+L.pad,it.y-L.b.y+L.pad,it.w,it.h,it.flip); });
+    var a=document.createElement('a'); a.download=board.name+'.jpg'; a.href=cv.toDataURL('image/jpeg',.93); a.click();
+    window.muralExported(mode,true,'');
+  },60);
+}
+window.muralExported=function(mode,ok,why){
+  exporting=false; hideToast();
+  if(ok){ haptic('confirm'); if(mode==='save') toast('Salvo na galeria, na pasta Mural',null,null,{ms:2800}); return; }
+  if(why==='perm') toast('Permita o acesso às fotos e toque em Salvar de novo',null,null,{ms:4200});
+  else if(why==='mem') toast('Quadro grande demais para exportar de uma vez',null,null,{ms:3600});
+  else toast('Não deu para exportar. Tente de novo',null,null,{ms:3200});
+};
+window.muralStoragePerm=function(ok){ if(ok) runExport('save'); };
+$('#exportSave').addEventListener('click',function(){ runExport('save'); });
+$('#exportShare').addEventListener('click',function(){ runExport('share'); });
 
 /* Diálogos */
 var dFn=null;
@@ -971,7 +1069,7 @@ view={x:board.view.x||0,y:board.view.y||0,s:board.view.s||1};
 renderAll(); applyView();
 if(!board.items.length && view.x===0 && view.y===0){ view.x=W()/2; view.y=H()/2; applyView(); }
 if(A){ A.ready(); setTimeout(function(){ takeShared(); checkClip(); },250); }
-window.__mural={state:function(){return state},view:function(){return view},addDataUrls:addDataUrls,fitAll:fitAll,arrange:arrange,select:select};
+window.__mural={openExport:openExport,state:function(){return state},view:function(){return view},addDataUrls:addDataUrls,fitAll:fitAll,arrange:arrange,select:select};
 })();
 </script>
 </body>

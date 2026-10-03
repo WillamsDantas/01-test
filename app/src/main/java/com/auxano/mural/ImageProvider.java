@@ -11,15 +11,18 @@ import android.provider.OpenableColumns;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-/** Entrega uma imagem salva do Mural para outro app (compartilhar), só leitura. */
+/** Entrega uma imagem do Mural (img/ ou export/) para outro app, só leitura. */
 public class ImageProvider extends ContentProvider {
 
     public static final String AUTH = "com.auxano.mural.images";
 
     private File fileFor(Uri uri) throws FileNotFoundException {
-        String name = uri.getLastPathSegment();
-        if (name == null || name.contains("/") || name.contains("..")) throw new FileNotFoundException();
-        File f = new File(new File(getContext().getFilesDir(), "img"), name);
+        java.util.List<String> seg = uri.getPathSegments();
+        if (seg.size() != 2) throw new FileNotFoundException();
+        String dir = seg.get(0), name = seg.get(1);
+        if (!dir.equals("img") && !dir.equals("export")) throw new FileNotFoundException();
+        if (name.contains("/") || name.contains("..")) throw new FileNotFoundException();
+        File f = new File(new File(getContext().getFilesDir(), dir), name);
         if (!f.exists()) throw new FileNotFoundException();
         return f;
     }
