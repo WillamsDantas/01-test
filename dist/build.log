@@ -5,9 +5,11 @@ Note: Recompile with -Xlint:deprecation for details.
 V3.0 Signer: certificate DN: CN=Auxano, O=Auxano, C=BR
 V3.0 Signer: certificate SHA-256 digest: 20e18d285d41d730f23e3f284db528981fab51ff7ee561caf35cfeac912b8207
 V3.0 Signer: certificate SHA-1 digest: 990817ec4b0792b26a76dd0567ae514404394a04
-total 180
-drwxr-xr-x 2 runner runner   4096 Oct  3 02:34 .
-drwxr-xr-x 8 runner runner   4096 Oct  3 02:34 ..
--rw-r--r-- 1 runner runner 161272 Oct  3 02:34 Mural-v1.0.0.apk
--rw-r--r-- 1 runner runner   5538 Oct  3 02:34 Mural-v1.0.0.apk.idsig
--rw-r--r-- 1 runner runner    506 Oct  3 02:34 build.log
+total 352
+drwxr-xr-x 2 runner runner   4096 Oct  3 02:54 .
+drwxr-xr-x 8 runner runner   4096 Oct  3 02:54 ..
+-rw-r--r-- 1 runner runner 161272 Oct  3 02:54 Mural-v1.0.0.apk
+-rw-r--r-- 1 runner runner   5538 Oct  3 02:54 Mural-v1.0.0.apk.idsig
+-rw-r--r-- 1 runner runner 165368 Oct  3 02:54 Mural-v1.1.0.apk
+-rw-r--r-- 1 runner runner   5538 Oct  3 02:54 Mural-v1.1.0.apk.idsig
+-rw-r--r-- 1 runner runner    506 Oct  3 02:54 build.log
