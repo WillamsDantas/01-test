@@ -9,9 +9,11 @@ Organizador de referências visuais para Android, no espírito do PureRef: uma l
 - Toque para selecionar, arraste para mover, pinça com os dois dedos sobre a imagem selecionada para redimensionar (ou o ponto âmbar no canto).
 - Toque duplo numa imagem aproxima nela; num espaço vazio enquadra tudo.
 - Segurar num espaço vazio abre o menu de adicionar naquele ponto.
-- Frente, espelhar, duplicar, enviar e excluir (com desfazer).
+- Frente, espelhar, duplicar, enviar e excluir.
+- Desfazer e refazer (botões no canto inferior esquerdo) para mover, redimensionar, excluir, espelhar, duplicar, organizar e adicionar.
+- Guias inteligentes: ao mover, linhas âmbar mostram bordas e centros alinhados; ao redimensionar, encaixa na mesma largura, altura ou tamanho de outra referência. Cada encaixe dá uma vibração leve.
 - Vários quadros, organizar em fileiras, tudo salvo no aparelho.
-- Exportar o quadro como uma imagem só (fundo carvão ou branco): salva em Imagens/Mural ou envia direto.
+- Exportar (ícone no topo) o quadro como uma imagem só (fundo carvão ou branco): salva em Imagens/Mural ou envia direto.
 
 ## Técnica
 - Android nativo em Java (minSdk 24), interface em HTML/JS dentro de uma WebView (`app/src/main/assets/index.html`), sem bibliotecas externas.

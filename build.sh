@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Compila o APK do Mural usando só o Android SDK (sem Gradle).
 set -euo pipefail
-VER_CODE=2
-VER_NAME=1.1.0
+VER_CODE=3
+VER_NAME=1.2.0
 SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
 [ -n "$SDK" ] || { echo "Defina ANDROID_HOME"; exit 1; }
 BT=$(ls -d "$SDK"/build-tools/* | sort -V | tail -1)
