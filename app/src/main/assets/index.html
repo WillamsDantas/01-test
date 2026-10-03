@@ -6,11 +6,9 @@
 <meta name="theme-color" content="#141518">
 <title>Mural</title>
 <style>
-@font-face{font-family:"Sans";src:url(fonts/instrument-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
-@font-face{font-family:"Sans";src:url(fonts/instrument-sans-latin-500-normal.woff2) format("woff2");font-weight:500}
-@font-face{font-family:"Sans";src:url(fonts/instrument-sans-latin-600-normal.woff2) format("woff2");font-weight:600}
-@font-face{font-family:"Serif";src:url(fonts/instrument-serif-latin-400-normal.woff2) format("woff2");font-style:normal}
-@font-face{font-family:"Serif";src:url(fonts/instrument-serif-latin-400-italic.woff2) format("woff2");font-style:italic}
+@font-face{font-family:"Sora";src:url(fonts/sora-latin-400-normal.woff2) format("woff2");font-weight:400}
+@font-face{font-family:"Sora";src:url(fonts/sora-latin-500-normal.woff2) format("woff2");font-weight:500}
+@font-face{font-family:"Sora";src:url(fonts/sora-latin-600-normal.woff2) format("woff2");font-weight:600}
 
 :root{
   --carvao:#141518;      /* fundo da lousa */
@@ -21,15 +19,15 @@
   --nevoa:#C6C9CF;       /* texto principal */
   --cinza:#82878F;       /* texto secundário */
   --cinza-2:#5C6168;
-  --ambar:#E3A955;       /* assinatura: seleção e ativo */
-  --ambar-tinta:#1C1509;
+  --ambar:#D3D6DC;       /* destaque: cinza claro suave (seleção e ativo) */
+  --ambar-tinta:#16171A;
   --alerta:#D58A7E;
   --ease:cubic-bezier(.22,1,.36,1);
   --sombra-folha:0 -24px 64px rgba(0,0,0,.55);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--carvao);color:var(--nevoa);
-  font:400 15px/1.45 "Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  font:400 14px/1.5 "Sora",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
   user-select:none;-webkit-user-select:none;overscroll-behavior:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 button:focus-visible{outline:2px solid var(--ambar);outline-offset:2px}
@@ -49,19 +47,10 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stro
 @keyframes chega{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 .item.lift .pic{box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 26px 60px rgba(0,0,0,.5),0 6px 14px rgba(0,0,0,.35)}
 
-/* Seleção: cantoneiras âmbar, como marcas de corte */
+/* Seleção: só uma borda fina contornando a imagem */
 #sel{position:fixed;left:0;top:0;pointer-events:none;display:none;will-change:transform}
 #sel.on{display:block}
-#sel .frame{position:absolute;inset:-1px;border:1px solid rgba(227,169,85,.28);border-radius:3px}
-#sel .c{position:absolute;width:16px;height:16px;border-color:var(--ambar);border-style:solid;border-width:0}
-#sel .tl{left:-6px;top:-6px;border-left-width:2px;border-top-width:2px}
-#sel .tr{right:-6px;top:-6px;border-right-width:2px;border-top-width:2px}
-#sel .bl{left:-6px;bottom:-6px;border-left-width:2px;border-bottom-width:2px}
-#sel .br{right:-6px;bottom:-6px;border-right-width:2px;border-bottom-width:2px}
-#sel .handle{position:absolute;right:-22px;bottom:-22px;width:44px;height:44px;pointer-events:auto;touch-action:none;
-  display:grid;place-items:center}
-#sel .handle::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--ambar);
-  box-shadow:0 0 0 3px rgba(20,21,24,.9),0 4px 12px rgba(0,0,0,.5)}
+#sel .frame{position:absolute;inset:-2px;border:1.5px solid var(--ambar);border-radius:4px;box-shadow:0 0 0 1px rgba(0,0,0,.35)}
 
 /* ---------- Interface que recua ---------- */
 .chrome{transition:opacity .38s var(--ease),transform .38s var(--ease)}
@@ -74,7 +63,7 @@ body.calm #add{transform:scale(.9)}
 #top::before{content:"";position:absolute;inset:0 0 -40px 0;pointer-events:none;
   background:linear-gradient(rgba(20,21,24,.82),rgba(20,21,24,0))}
 #title{position:relative;pointer-events:auto;text-align:left;padding:4px 0;max-width:calc(100vw - 132px)}
-#title b{display:block;font:italic 400 27px/1.05 "Serif",Georgia,serif;color:var(--nevoa);letter-spacing:.005em;
+#title b{display:block;font:600 20px/1.2 "Sora",sans-serif;color:var(--nevoa);letter-spacing:-.015em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #title small{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:12.5px;color:var(--cinza)}
 #title small svg{width:13px;height:13px}
@@ -89,7 +78,7 @@ body.calm #add{transform:scale(.9)}
 
 #zoom{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:6;padding:6px 12px;border-radius:999px;
   background:rgba(29,31,35,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  font:500 12.5px/1 "Sans";color:var(--nevoa);font-variant-numeric:tabular-nums;opacity:0;transition:opacity .3s;pointer-events:none}
+  font:500 12.5px/1 "Sora";color:var(--nevoa);font-variant-numeric:tabular-nums;opacity:0;transition:opacity .3s;pointer-events:none}
 #zoom.on{opacity:1}
 
 /* Barra de ações da seleção */
@@ -123,13 +112,8 @@ body.selecting #add{opacity:0;transform:scale(.85);pointer-events:none}
 #empty{position:fixed;left:0;right:0;top:50%;transform:translateY(-55%);text-align:center;padding:0 40px;pointer-events:none;
   transition:opacity .4s var(--ease)}
 #empty.off{opacity:0}
-#empty .marks{width:72px;height:56px;margin:0 auto 22px;position:relative}
-#empty .marks i{position:absolute;width:14px;height:14px;border-color:var(--cinza-2);border-style:solid;border-width:0}
-#empty .marks i:nth-child(1){left:0;top:0;border-left-width:1.5px;border-top-width:1.5px}
-#empty .marks i:nth-child(2){right:0;top:0;border-right-width:1.5px;border-top-width:1.5px}
-#empty .marks i:nth-child(3){left:0;bottom:0;border-left-width:1.5px;border-bottom-width:1.5px}
-#empty .marks i:nth-child(4){right:0;bottom:0;border-right-width:1.5px;border-bottom-width:1.5px}
-#empty h2{margin:0;font:italic 400 30px/1.1 "Serif",Georgia,serif;color:var(--nevoa)}
+#empty .marks{width:64px;height:48px;margin:0 auto 22px;border:1.5px solid var(--cinza-2);border-radius:6px}
+#empty h2{margin:0;font:600 21px/1.25 "Sora",sans-serif;color:var(--nevoa);letter-spacing:-.015em}
 #empty p{margin:12px auto 0;max-width:30ch;font-size:14.5px;color:var(--cinza);line-height:1.5}
 
 /* ---------- Folhas (bottom sheets) ---------- */
@@ -140,7 +124,7 @@ body.selecting #add{opacity:0;transform:scale(.85);pointer-events:none}
   padding:10px 20px 26px;transform:translateY(105%);transition:transform .42s var(--ease)}
 .sheet.on{transform:none}
 .sheet .grip{width:36px;height:4px;border-radius:2px;background:var(--ardosia-2);margin:0 auto 16px}
-.sheet h3{margin:2px 0 16px;font:italic 400 24px/1.1 "Serif",Georgia,serif;color:var(--nevoa)}
+.sheet h3{margin:2px 0 16px;font:600 19px/1.25 "Sora",sans-serif;color:var(--nevoa);letter-spacing:-.01em}
 .sheet .hint{margin:18px 2px 0;font-size:13px;color:var(--cinza);line-height:1.5}
 
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -153,9 +137,9 @@ body.selecting #add{opacity:0;transform:scale(.85);pointer-events:none}
 
 .linkrow{display:flex;gap:8px;margin-top:10px}
 .field{flex:1;min-width:0;height:48px;padding:0 14px;border-radius:14px;border:0;outline:0;background:var(--carvao);
-  color:var(--nevoa);font:400 15px "Sans";box-shadow:0 0 0 1px var(--linha) inset;user-select:text;-webkit-user-select:text}
+  color:var(--nevoa);font:400 15px "Sora";box-shadow:0 0 0 1px var(--linha) inset;user-select:text;-webkit-user-select:text}
 .field::placeholder{color:var(--cinza-2)}
-.field:focus{box-shadow:0 0 0 1px rgba(227,169,85,.55) inset}
+.field:focus{box-shadow:0 0 0 1px rgba(211,214,220,.5) inset}
 .btn{height:48px;padding:0 18px;border-radius:14px;background:var(--ardosia);font-weight:500;font-size:14.5px;color:var(--nevoa);
   box-shadow:0 0 0 1px var(--linha) inset}
 .btn:active{background:var(--ardosia-2)}
@@ -170,7 +154,7 @@ body.selecting #add{opacity:0;transform:scale(.85);pointer-events:none}
   box-shadow:0 0 0 1px var(--linha) inset}
 .row .thumb img{position:absolute;object-fit:cover;border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .row .meta{flex:1;min-width:0}
-.row .meta b{display:flex;align-items:center;gap:8px;font:italic 400 20px/1.15 "Serif",Georgia,serif;color:var(--nevoa)}
+.row .meta b{display:flex;align-items:center;gap:8px;font:500 15px/1.3 "Sora",sans-serif;color:var(--nevoa)}
 .row .meta b span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .meta small{display:block;font-size:12.5px;color:var(--cinza);margin-top:2px}
 .row .dot{width:7px;height:7px;border-radius:50%;background:var(--ambar);flex:none}
@@ -178,7 +162,7 @@ body.selecting #add{opacity:0;transform:scale(.85);pointer-events:none}
 .row .more:active{background:rgba(255,255,255,.06)}
 .row.plain{gap:14px;padding:13px 10px}
 .row.plain svg{color:var(--nevoa)}
-.row.plain .meta b{font:500 15px/1.3 "Sans";color:var(--nevoa)}
+.row.plain .meta b{font:500 15px/1.3 "Sora";color:var(--nevoa)}
 .row.plain.danger svg,.row.plain.danger .meta b{color:var(--alerta)}
 .newboard{margin-top:12px;width:100%;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;
   color:var(--nevoa);font-weight:500;box-shadow:0 0 0 1px var(--linha) inset}
@@ -203,7 +187,7 @@ body.calm #history{opacity:0;pointer-events:none}
 #guides rect{fill:none;stroke:var(--ambar);stroke-width:1;stroke-dasharray:4 3;opacity:.85}
 #guides circle{fill:var(--ambar)}
 #guideLabel{position:fixed;left:0;top:0;z-index:4;pointer-events:none;padding:3px 8px;border-radius:7px;background:var(--ambar);color:var(--ambar-tinta);
-  font:600 11.5px/1.3 "Sans";white-space:nowrap;transform:translate(-50%,-100%);opacity:0;transition:opacity .15s}
+  font:600 11.5px/1.3 "Sora";white-space:nowrap;transform:translate(-50%,-100%);opacity:0;transition:opacity .15s}
 #guideLabel.on{opacity:1}
 
 .topacts{display:flex;gap:2px;position:relative}
@@ -226,7 +210,7 @@ body.calm #history{opacity:0;pointer-events:none}
   background:var(--grafite);border-radius:22px;padding:22px 20px 18px;box-shadow:0 0 0 1px var(--linha),0 30px 80px rgba(0,0,0,.6);
   transition:transform .34s var(--ease),opacity .22s;max-width:420px;margin:0 auto}
 #dialog.on{opacity:1;transform:translate(0,-50%);pointer-events:auto}
-#dialog h4{margin:0 0 8px;font:italic 400 24px/1.15 "Serif",Georgia,serif}
+#dialog h4{margin:0 0 8px;font:600 19px/1.25 "Sora",sans-serif;letter-spacing:-.01em}
 #dialog p{margin:0 0 18px;color:var(--cinza);font-size:14.5px}
 #dialog .field{width:100%;margin-bottom:16px}
 #dialog .bts{display:flex;justify-content:flex-end;gap:8px}
@@ -267,10 +251,10 @@ body.calm #history{opacity:0;pointer-events:none}
 <svg id="guides" aria-hidden="true"></svg>
 <div id="guideLabel"></div>
 
-<div id="sel"><div class="frame"></div><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i><div class="handle" data-role="handle"></div></div>
+<div id="sel"><div class="frame"></div></div>
 
 <div id="empty">
-  <div class="marks"><i></i><i></i><i></i><i></i></div>
+  <div class="marks"></div>
   <h2>Um mural em branco</h2>
   <p>Toque em + para trazer imagens da galeria, colar um print ou buscar pelo link.</p>
 </div>
@@ -690,12 +674,12 @@ function startPinch(){
   if(g&&g.longT) clearTimeout(g.longT);
   var a=Array.from(pts.values()), p0=a[0], p1=a[1];
   var c={x:(p0.x+p1.x)/2,y:(p0.y+p1.y)/2}, d=Math.hypot(p1.x-p0.x,p1.y-p0.y)||1;
-  // Pinça com os dois dedos sobre a imagem selecionada = redimensiona a imagem
+  // Pinça com a imagem selecionada (ao menos um dedo sobre ela) = redimensiona a imagem
   var it=selId&&byId(selId), onSel=false;
   if(it){
     var w0=toWorld(p0.x,p0.y), w1=toWorld(p1.x,p1.y);
     var inside=function(w){return w.x>=it.x&&w.x<=it.x+it.w&&w.y>=it.y&&w.y<=it.y+it.h};
-    onSel=inside(w0)&&inside(w1);
+    onSel=inside(w0)||inside(w1);
   }
   var prevBefore=g&&g.before;
   if(g&&g.mode==='drag'&&g.item){ els[g.item.id].classList.remove('lift'); clearGuides(); }
@@ -782,21 +766,7 @@ function endPointer(e){
 stage.addEventListener('pointerup',endPointer);
 stage.addEventListener('pointercancel',endPointer);
 
-/* Alça de redimensionar (canto âmbar) */
-var handle=selEl.querySelector('.handle'), hg=null;
-handle.addEventListener('pointerdown',function(e){
-  e.stopPropagation(); var it=byId(selId); if(!it) return;
-  handle.setPointerCapture(e.pointerId); haptic('tick');
-  hg={it:it,r:it.h/it.w,before:snap()}; gestureCalm(true);
-});
-handle.addEventListener('pointermove',function(e){
-  if(!hg) return; var it=hg.it, w=toWorld(e.clientX,e.clientY), r=hg.r;
-  var nw=((w.x-it.x)+(w.y-it.y)*r)/(1+r*r);
-  nw=Math.max(24/view.s,nw); var ss=snapSize(it,nw,r,true); nw=ss.w;
-  it.w=nw; it.h=nw*r; drawGuides(ss.guides,it); posEl(it); placeSel();
-});
-function endHandle(){ if(hg){ var b=hg.before; hg=null; clearGuides(); commit(b); save(); gestureCalm(false);} }
-handle.addEventListener('pointerup',endHandle); handle.addEventListener('pointercancel',endHandle);
+var hg=null; // (alça removida: redimensionar é pela pinça)
 
 /* Roda do mouse (para testar no computador) */
 stage.addEventListener('wheel',function(e){

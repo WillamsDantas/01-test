@@ -6,12 +6,12 @@ Organizador de referências visuais para Android, no espírito do PureRef: uma l
 - Lousa infinita com arrastar e pinça para zoom, com inércia ao soltar.
 - Imagens da galeria (várias de uma vez), da área de transferência (print, imagem ou link copiado) e por link (páginas como Pinterest usam a imagem principal).
 - Compartilhar de qualquer app → Mural.
-- Toque para selecionar, arraste para mover, pinça com os dois dedos sobre a imagem selecionada para redimensionar (ou o ponto âmbar no canto).
+- Toque para selecionar, arraste para mover, pinça com a imagem selecionada (pelo menos um dedo sobre ela) para redimensionar.
 - Toque duplo numa imagem aproxima nela; num espaço vazio enquadra tudo.
 - Segurar num espaço vazio abre o menu de adicionar naquele ponto.
 - Frente, espelhar, duplicar, enviar e excluir.
 - Desfazer e refazer (botões no canto inferior esquerdo) para mover, redimensionar, excluir, espelhar, duplicar, organizar e adicionar.
-- Guias inteligentes: ao mover, linhas âmbar mostram bordas e centros alinhados; ao redimensionar, encaixa na mesma largura, altura ou tamanho de outra referência. Cada encaixe dá uma vibração leve.
+- Guias inteligentes: ao mover, linhas cinza-claro mostram bordas e centros alinhados; ao redimensionar, encaixa na mesma largura, altura ou tamanho de outra referência. Cada encaixe dá uma vibração leve.
 - Vários quadros, organizar em fileiras, tudo salvo no aparelho.
 - Exportar (ícone no topo) o quadro como uma imagem só (fundo carvão ou branco): salva em Imagens/Mural ou envia direto.
 

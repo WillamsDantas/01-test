@@ -8,6 +8,6 @@
         <item name="android:colorAccent">@color/accent</item>
     </style>
     <color name="bg">#141518</color>
-    <color name="accent">#E3A955</color>
+    <color name="accent">#D3D6DC</color>
     <color name="icon_bg">#17181C</color>
 </resources>

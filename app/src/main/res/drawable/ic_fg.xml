@@ -2,13 +2,13 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
-    <!-- três referências soltas na lousa; a da frente marcada em âmbar -->
+    <!-- três referências soltas na lousa; a da frente marcada em cinza claro -->
     <path android:fillColor="#3A3D44"
         android:pathData="M33,36h22a3,3 0 0 1 3,3v16a3,3 0 0 1 -3,3h-22a3,3 0 0 1 -3,-3v-16a3,3 0 0 1 3,-3z" />
     <path android:fillColor="#5A5E66"
         android:pathData="M62,32h12a3,3 0 0 1 3,3v22a3,3 0 0 1 -3,3h-12a3,3 0 0 1 -3,-3v-22a3,3 0 0 1 3,-3z" />
     <path android:fillColor="#9AA0A9"
         android:pathData="M44,52h22a3,3 0 0 1 3,3v14a3,3 0 0 1 -3,3h-22a3,3 0 0 1 -3,-3v-14a3,3 0 0 1 3,-3z" />
-    <path android:strokeColor="#E3A955" android:strokeWidth="2.6" android:fillColor="#00000000"
+    <path android:strokeColor="#D3D6DC" android:strokeWidth="2.6" android:fillColor="#00000000"
         android:pathData="M44,49.5h22a5.5,5.5 0 0 1 5.5,5.5v14a5.5,5.5 0 0 1 -5.5,5.5h-22a5.5,5.5 0 0 1 -5.5,-5.5v-14a5.5,5.5 0 0 1 5.5,-5.5z" />
 </vector>
