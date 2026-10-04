@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- ideia central com quatro ramos (mapa mental / videira) -->
+    <path android:strokeColor="#F6F3EE" android:strokeWidth="3.4" android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M54,54 C63,54 63,42 72,42 M54,54 C63,54 63,66 72,66 M54,54 C45,54 45,43 36,43 M54,54 C45,54 45,65 36,65" />
+    <path android:fillColor="#F6F3EE" android:pathData="M54,46.5 a7.5,7.5 0 1,1 0,15 a7.5,7.5 0 1,1 0,-15 Z" />
+    <path android:fillColor="#E0B25A" android:pathData="M72,38 a4,4 0 1,1 0,8 a4,4 0 1,1 0,-8 Z" />
+    <path android:fillColor="#F6F3EE" android:pathData="M72,62 a4,4 0 1,1 0,8 a4,4 0 1,1 0,-8 Z" />
+    <path android:fillColor="#F6F3EE" android:pathData="M36,39 a4,4 0 1,1 0,8 a4,4 0 1,1 0,-8 Z" />
+    <path android:fillColor="#9BCB6C" android:pathData="M36,61 a4,4 0 1,1 0,8 a4,4 0 1,1 0,-8 Z" />
+</vector>

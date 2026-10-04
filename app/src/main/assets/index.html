@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Videira</title>
+<style>
+@font-face{font-family:Manrope;src:url(fonts/manrope-latin-400-normal.woff2) format('woff2');font-weight:400}
+@font-face{font-family:Manrope;src:url(fonts/manrope-latin-500-normal.woff2) format('woff2');font-weight:500}
+@font-face{font-family:Manrope;src:url(fonts/manrope-latin-600-normal.woff2) format('woff2');font-weight:600}
+@font-face{font-family:Manrope;src:url(fonts/manrope-latin-700-normal.woff2) format('woff2');font-weight:700}
+:root{
+  --bg:#F6F3EE; --surface:#FFFFFF; --surface2:#EFEAE2; --ink:#221E26; --ink2:#5E5866; --ink3:#938C9A;
+  --line:#E2DCD3; --brand:#4E2C63; --brand-ink:#FFFFFF; --leaf:#5E8F35; --sel:#2F7FD8; --danger:#C2412E;
+  --dot:rgba(60,40,80,.13); --shadow:0 6px 24px rgba(40,25,50,.14); --tint:.13;
+}
+:root[data-theme="dark"]{
+  --bg:#17151B; --surface:#221F28; --surface2:#2B2732; --ink:#F1ECF4; --ink2:#B8B0C0; --ink3:#7E7688;
+  --line:#37323F; --brand:#B48AD0; --brand-ink:#1A1420; --leaf:#8DBE5F; --sel:#5DA2F0; --danger:#EE7461;
+  --dot:rgba(230,220,240,.10); --shadow:0 6px 24px rgba(0,0,0,.45); --tint:.24;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+input,textarea{font:inherit;color:var(--ink);-webkit-user-select:text;user-select:text}
+.screen{position:fixed;inset:0;display:none;flex-direction:column}
+.screen.on{display:flex}
+.ico{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- biblioteca ---------- */
+#lib header{display:flex;align-items:center;gap:10px;padding:18px 16px 8px}
+.brandmark{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.brandmark svg{width:34px;height:34px;flex:none}
+.brandmark h1{margin:0;font-size:24px;font-weight:700;letter-spacing:-.4px}
+.brandmark small{display:block;color:var(--ink3);font-size:12.5px;font-weight:500;margin-top:1px}
+.iconbtn{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--ink2);flex:none}
+.iconbtn:active{background:var(--surface2)}
+.iconbtn:disabled{opacity:.3}
+.search{margin:6px 16px 10px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 12px;height:46px;color:var(--ink3)}
+.search input{flex:1;border:0;outline:0;background:none;height:100%;font-size:15.5px}
+#libList{flex:1;overflow:auto;padding:4px 16px 110px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;align-content:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;position:relative;text-align:left;min-height:118px}
+.card:active{transform:scale(.985)}
+.card .t{font-weight:700;font-size:16.5px;line-height:1.25;padding-right:34px;word-break:break-word}
+.card .dots{display:flex;gap:5px;flex-wrap:wrap}
+.card .dots i{width:10px;height:10px;border-radius:50%;display:block}
+.card .meta{display:flex;gap:8px;color:var(--ink3);font-size:12.5px;font-weight:500;margin-top:auto;align-items:center}
+.card .meta b{font-weight:600;color:var(--ink2);background:var(--surface2);padding:2px 8px;border-radius:99px}
+.card .more{position:absolute;top:6px;right:6px}
+.empty{grid-column:1/-1;text-align:center;color:var(--ink3);padding:60px 20px;font-size:15px;line-height:1.5}
+.empty svg{width:72px;height:72px;opacity:.6;margin-bottom:8px}
+.fab{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom));height:56px;padding:0 22px 0 18px;border-radius:18px;background:var(--brand);color:var(--brand-ink);display:flex;align-items:center;gap:8px;font-weight:700;font-size:15.5px;box-shadow:var(--shadow)}
+.fab:active{transform:scale(.97)}
+
+/* ---------- mapa ---------- */
+#map{background:var(--bg)}
+#mapTop{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:2px;padding:8px 8px;background:linear-gradient(var(--bg) 60%,transparent)}
+#mapTitle{flex:1;min-width:0;font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;padding:0 6px;height:42px}
+#stage{position:absolute;inset:0;touch-action:none;overflow:hidden;background-image:radial-gradient(var(--dot) 1.3px,transparent 1.4px)}
+#svg{width:100%;height:100%;display:block;touch-action:none}
+#svg text{font-family:Manrope,system-ui,sans-serif;pointer-events:none}
+.n{cursor:pointer}
+.zoomctl{position:absolute;right:12px;top:64px;z-index:4;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.zoomctl button{width:42px;height:40px;display:grid;place-items:center;color:var(--ink2)}
+.zoomctl button+button{border-top:1px solid var(--line)}
+#bar{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(140%);z-index:6;display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:6px;box-shadow:var(--shadow);transition:transform .2s ease;max-width:calc(100% - 16px);overflow-x:auto}
+#bar.on{transform:translateX(-50%) translateY(0)}
+#bar button{min-width:50px;height:54px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:var(--ink2);padding:0 6px;flex:none}
+#bar button:active{background:var(--surface2)}
+#bar button.pri{color:var(--brand)}
+#bar button.del{color:var(--danger)}
+#bar button[hidden]{display:none}
+#hint{position:absolute;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:3;color:var(--ink3);font-size:13px;font-weight:500;background:var(--surface);border:1px solid var(--line);padding:8px 14px;border-radius:99px;white-space:nowrap;transition:opacity .2s}
+
+/* ---------- folhas (bottom sheets) ---------- */
+#scrim{position:fixed;inset:0;background:rgba(15,10,20,.42);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+#scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--surface);border-radius:22px 22px 0 0;padding:8px 18px calc(18px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .22s ease;max-height:88vh;overflow:auto;box-shadow:var(--shadow);max-width:640px;margin:0 auto}
+.sheet.on{transform:translateY(0)}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:4px auto 12px}
+.sheet h3{margin:2px 0 14px;font-size:17px;font-weight:700}
+.sheet label{display:block;font-size:12.5px;font-weight:600;color:var(--ink3);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.field{width:100%;border:1.5px solid var(--line);background:var(--bg);border-radius:14px;padding:12px 14px;font-size:16px;outline:0;resize:none}
+.field:focus{border-color:var(--brand)}
+textarea.field{min-height:120px;line-height:1.5}
+.row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.btn{height:48px;padding:0 16px;border-radius:14px;font-weight:700;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--surface2);color:var(--ink)}
+.btn.pri{background:var(--brand);color:var(--brand-ink)}
+.btn.danger{color:var(--danger)}
+.btn.grow{flex:1}
+.btn:active{opacity:.85}
+.list button{display:flex;width:100%;align-items:center;gap:14px;padding:13px 6px;border-radius:12px;font-size:15.5px;font-weight:600;text-align:left}
+.list button:active{background:var(--surface2)}
+.list button .ico{color:var(--ink2)}
+.list button small{display:block;color:var(--ink3);font-weight:500;font-size:13px;margin-top:2px}
+.list button.danger,.list button.danger .ico{color:var(--danger)}
+.list hr{border:0;border-top:1px solid var(--line);margin:6px 0}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.sw{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:2px solid transparent;position:relative}
+.sw.on{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--ink)}
+.sw.inherit{background:conic-gradient(#E4572E,#F3A712,#2E9E6B,#2F7FD8,#8B5CF6,#D6457E,#E4572E)}
+.sw.inherit::after{content:'';position:absolute;inset:7px;border-radius:50%;background:var(--surface)}
+.emojis{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:4px}
+.emojis button{height:44px;border-radius:12px;font-size:22px;display:grid;place-items:center}
+.emojis button.on{background:var(--surface2);box-shadow:inset 0 0 0 2px var(--ink2)}
+.emojis button.none{font-size:13px;font-weight:700;color:var(--ink3)}
+.toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 2px;font-weight:600;font-size:15.5px}
+.sw2{width:50px;height:30px;border-radius:99px;background:var(--line);position:relative;transition:background .2s;flex:none}
+.sw2::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw2.on{background:var(--brand)}
+.sw2.on::after{transform:translateX(20px)}
+.layouts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.layouts button{border:2px solid var(--line);border-radius:16px;padding:12px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:700;font-size:14px}
+.layouts button small{font-weight:500;color:var(--ink3);font-size:11.5px;text-align:center;line-height:1.3}
+.layouts button.on{border-color:var(--brand);background:var(--surface2)}
+.layouts svg{width:64px;height:44px}
+.tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tpls button{border:1.5px solid var(--line);border-radius:16px;padding:14px 12px;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:92px}
+.tpls button:active{background:var(--surface2)}
+.tpls button span{font-size:24px}
+.tpls button b{font-size:15px}
+.tpls button small{color:var(--ink3);font-size:12px;line-height:1.35}
+.seg{display:flex;background:var(--surface2);border-radius:12px;padding:3px;gap:3px}
+.seg button{flex:1;height:38px;border-radius:10px;font-weight:600;font-size:14px;color:var(--ink2)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+/* ---------- esboço ---------- */
+#outline{position:fixed;inset:0;z-index:15;background:var(--bg);display:none;flex-direction:column}
+#outline.on{display:flex}
+#outline header{display:flex;align-items:center;gap:4px;padding:8px;border-bottom:1px solid var(--line)}
+#outline header h2{flex:1;margin:0;font-size:16.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#olBody{flex:1;overflow:auto;padding:18px 20px 60px;max-width:820px;width:100%;margin:0 auto}
+.ol-root{font-size:calc(24px * var(--olz));font-weight:700;margin:4px 0 18px;line-height:1.25}
+.ol-item{display:flex;gap:10px;padding:7px 0;line-height:1.45;cursor:pointer;border-radius:8px}
+.ol-item:active{background:var(--surface2)}
+.ol-num{font-weight:700;flex:none;min-width:1.6em}
+.ol-txt{flex:1;min-width:0;word-break:break-word}
+.ol-note{white-space:pre-wrap;color:var(--ink2);font-size:.92em;margin-top:4px;border-left:3px solid var(--line);padding-left:10px}
+.d1{font-size:calc(18.5px * var(--olz));font-weight:700;margin-top:10px}
+.d2{font-size:calc(16.5px * var(--olz));font-weight:600}
+.d3{font-size:calc(15.5px * var(--olz));font-weight:500}
+
+/* ---------- toast / modal ---------- */
+#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:40;background:var(--ink);color:var(--bg);padding:10px 10px 10px 16px;border-radius:14px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:12px;opacity:0;pointer-events:none;transition:all .2s;max-width:calc(100% - 32px)}
+#toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#toast button{color:var(--bg);font-weight:800;padding:6px 10px;border-radius:9px;background:rgba(127,127,127,.25)}
+#toast button:empty{display:none}
+#modal{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,10,20,.45)}
+#modal.on{display:flex}
+#modal .box{background:var(--surface);border-radius:20px;padding:20px;width:100%;max-width:420px;box-shadow:var(--shadow)}
+#modal h3{margin:0 0 8px;font-size:17px}
+#modal p{margin:0 0 6px;color:var(--ink2);font-size:14.5px;line-height:1.5}
+#modal .row{justify-content:flex-end}
+</style>
+</head>
+<body>
+
+<!-- ======================= BIBLIOTECA ======================= -->
+<section id="lib" class="screen on">
+  <header>
+    <div class="brandmark">
+      <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="var(--brand)"/><g stroke="var(--bg)" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M20 20 C26 20 26 12 31 12"/><path d="M20 20 C26 20 26 28 31 28"/><path d="M20 20 C14 20 14 13 9 13"/><path d="M20 20 C14 20 14 27 9 27"/></g><circle cx="20" cy="20" r="5" fill="var(--bg)"/><circle cx="31" cy="12" r="2.6" fill="#E0B25A"/><circle cx="31" cy="28" r="2.6" fill="var(--bg)"/><circle cx="9" cy="13" r="2.6" fill="var(--bg)"/><circle cx="9" cy="27" r="2.6" fill="#9BCB6C"/></svg>
+      <div><h1>Videira</h1><small>Mapas de ideias, esboços e estudos</small></div>
+    </div>
+    <button class="iconbtn" id="btnSettings" aria-label="Ajustes"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+  </header>
+  <div class="search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Buscar mapas e tópicos" enterkeyhint="search"></div>
+  <div id="libList"></div>
+  <button class="fab" id="btnNew"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo mapa</button>
+</section>
+
+<!-- ======================= MAPA ======================= -->
+<section id="map" class="screen">
+  <div id="stage"><svg id="svg"><g id="vp"></g></svg></div>
+  <div id="mapTop">
+    <button class="iconbtn" id="btnBack" aria-label="Voltar"><svg class="ico" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button id="mapTitle"></button>
+    <button class="iconbtn" id="btnUndo" aria-label="Desfazer"><svg class="ico" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+    <button class="iconbtn" id="btnRedo" aria-label="Refazer"><svg class="ico" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
+    <button class="iconbtn" id="btnLayout" aria-label="Layout"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="4.5" cy="5.5" r="1.8"/><circle cx="19.5" cy="5.5" r="1.8"/><circle cx="4.5" cy="18.5" r="1.8"/><circle cx="19.5" cy="18.5" r="1.8"/><path d="M10 10.5 6 7M14 10.5 18 7M10 13.5 6 17M14 13.5l4 3.5"/></svg></button>
+    <button class="iconbtn" id="btnMapMenu" aria-label="Mais"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/></svg></button>
+  </div>
+  <div class="zoomctl">
+    <button id="zIn" aria-label="Aproximar"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button id="zOut" aria-label="Afastar"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+    <button id="zFit" aria-label="Ajustar"><svg class="ico" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  </div>
+  <div id="hint">Toque num tópico para selecionar · toque de novo para editar</div>
+  <div id="bar">
+    <button class="pri" id="bChild"><svg class="ico" viewBox="0 0 24 24"><path d="M4 12h7M15 7h5M15 17h5M11 12c2 0 2-5 4-5M11 12c2 0 2 5 4 5"/></svg>Filho</button>
+    <button class="pri" id="bSib"><svg class="ico" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="6" rx="2"/><rect x="5" y="14" width="14" height="6" rx="2"/><path d="M12 10v4"/></svg>Irmão</button>
+    <button id="bEdit"><svg class="ico" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Editar</button>
+    <button id="bNote"><svg class="ico" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Nota</button>
+    <button id="bStyle"><svg class="ico" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.3"/><circle cx="17.5" cy="10.5" r="1.3"/><circle cx="8.5" cy="7.5" r="1.3"/><circle cx="6.5" cy="12.5" r="1.3"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6h2c3.1 0 5.6-2.5 5.6-5.6C22 6 17.5 2 12 2z"/></svg>Estilo</button>
+    
+    <button id="bMore"><svg class="ico" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>Mais</button>
+    <button class="del" id="bDel"><svg class="ico" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>Excluir</button>
+  </div>
+</section>
+
+<!-- ======================= ESBOÇO ======================= -->
+<section id="outline">
+  <header>
+    <button class="iconbtn" id="olClose" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <h2>Esboço</h2>
+    <button class="iconbtn" id="olMinus" aria-label="Diminuir letra"><b style="font-size:14px">A−</b></button>
+    <button class="iconbtn" id="olPlus" aria-label="Aumentar letra"><b style="font-size:18px">A+</b></button>
+    <button class="iconbtn" id="olShare" aria-label="Compartilhar"><svg class="ico" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+  </header>
+  <div id="olBody"></div>
+</section>
+
+<div id="scrim"></div>
+<div class="sheet" id="sheet"></div>
+<div id="toast"><span></span><button></button></div>
+<div id="modal"><div class="box"></div></div>
+<input type="file" id="fileIn" accept=".json,application/json,text/plain" style="display:none">
+
+<script>
+"use strict";
+/* =========================================================
+   Videira — mapas mentais (v1.0.0)
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const NATIVE = typeof window.Android !== 'undefined';
+const VERSION = '1.0.0';
+const PALETTE = ['#E4572E','#2F7FD8','#2E9E6B','#F0A202','#8B5CF6','#D6457E','#14A3A3','#7A8B2E','#C46A2E','#5468D4'];
+const ROOT_COLOR_LIGHT = '#4E2C63', ROOT_COLOR_DARK = '#7E55A0';
+const EMOJIS = ['📖','✝️','🙏','🕊️','👑','🔥','💡','⭐','❗','❓','✅','❌','🎯','📌','🔑','❤️','⚠️','📝','🗣️','👥','🌱','🍇','⛪','🎓','💰','📈','🛒','🧪','📣','⏰','🏁','💬','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣'];
+const LAYOUT_NAMES = {radial:'Radial', tree:'Árvore', free:'Livre'};
+
+let S = { maps: [], settings: { theme: 'auto' } };
+let cur = null;          // mapa aberto
+let sel = null;          // id do tópico selecionado
+let view = { x: 0, y: 0, k: 1 };
+let P = {};              // posições calculadas do último render
+let hist = [], redo = [];
+let olZoom = 1;
+
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const node = (text, children = [], extra = {}) => Object.assign({ id: uid(), text, note: '', color: null, icon: null, bold: false, collapsed: false, children }, extra);
+
+/* ---------------- persistência ---------------- */
+function loadData() {
+  let raw = '';
+  try { raw = NATIVE ? Android.load() : (localStorage.getItem('videira') || ''); } catch (e) {}
+  if (raw) { try { const d = JSON.parse(raw); if (d && Array.isArray(d.maps)) S = Object.assign(S, d); } catch (e) {} }
+  S.settings = Object.assign({ theme: 'auto' }, S.settings || {});
+}
+let saveT = 0;
+function save() { clearTimeout(saveT); saveT = setTimeout(flush, 350); }
+function flush() {
+  clearTimeout(saveT);
+  if (cur) cur.view = { x: view.x, y: view.y, k: view.k };
+  const json = JSON.stringify(S);
+  try { if (NATIVE) Android.save(json); else localStorage.setItem('videira', json); } catch (e) {}
+}
+window.kgFlush = flush;
+
+/* ---------------- tema ---------------- */
+function isDark() {
+  if (S.settings.theme === 'dark') return true;
+  if (S.settings.theme === 'light') return false;
+  try { if (NATIVE) return Android.isNight(); } catch (e) {}
+  return matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function applyTheme() {
+  const dark = isDark();
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+  try { if (NATIVE) Android.setBars(bg, !dark); } catch (e) {}
+  if (cur) render();
+}
+window.kgSysTheme = () => { if (S.settings.theme === 'auto') applyTheme(); };
+matchMedia('(prefers-color-scheme: dark)').addEventListener && matchMedia('(prefers-color-scheme: dark)').addEventListener('change', window.kgSysTheme);
+
+/* ---------------- modelos ---------------- */
+const TEMPLATES = [
+  { key: 'blank', emoji: '💡', name: 'Em branco', desc: 'Só a ideia central, layout radial', layout: 'radial',
+    make: () => node('Ideia central') },
+  { key: 'sermon', emoji: '🗣️', name: 'Pregação', desc: 'Introdução, contexto, pontos, aplicação', layout: 'tree',
+    make: () => node('Título da pregação', [
+      node('Texto base', [], { icon: '📖' }), node('Introdução'),
+      node('Contexto', [node('Contexto imediato'), node('Contexto remoto')]),
+      node('Proposição'), node('Ponto 1'), node('Ponto 2'), node('Ponto 3'),
+      node('Aplicação'), node('Conclusão')]) },
+  { key: 'study', emoji: '📖', name: 'Estudo bíblico', desc: 'Observação, interpretação, aplicação', layout: 'tree',
+    make: () => node('Livro capítulo:versículos', [
+      node('Texto', [], { icon: '📖' }),
+      node('Observação', [node('Quem?'), node('O quê?'), node('Onde e quando?'), node('Palavras repetidas')]),
+      node('Interpretação', [node('Contexto histórico'), node('Palavras-chave (original)'), node('Referências cruzadas')]),
+      node('Aplicação'), node('Oração', [], { icon: '🙏' })]) },
+  { key: 'ebd', emoji: '⛪', name: 'Aula de EBD', desc: 'Objetivo, texto áureo, tópicos, perguntas', layout: 'tree',
+    make: () => node('Lição: tema da aula', [
+      node('Objetivo da aula', [], { icon: '🎯' }), node('Texto áureo', [], { icon: '📖' }), node('Introdução'),
+      node('Tópico I'), node('Tópico II'), node('Tópico III'),
+      node('Perguntas para discussão', [], { icon: '💬' }), node('Conclusão')]) },
+  { key: 'offer', emoji: '🎯', name: 'Validar oferta', desc: 'Público, promessa, mecanismo, teste', layout: 'radial',
+    make: () => node('Nome da oferta', [
+      node('Público-alvo', [node('Dor principal'), node('Desejo')]),
+      node('Promessa', [], { icon: '⭐' }), node('Mecanismo único', [], { icon: '🔑' }),
+      node('Entregáveis'), node('Preço e bônus', [], { icon: '💰' }),
+      node('Objeções', [], { icon: '❓' }),
+      node('Validação', [node('Teste de anúncio'), node('Métrica de sucesso')], { icon: '🧪' }),
+      node('Concorrentes')]) },
+];
+
+/* ---------------- utilidades da árvore ---------------- */
+function walk(n, fn, parent = null, depth = 0) { if (fn(n, parent, depth) === false) return; n.children.forEach(c => walk(c, fn, n, depth + 1)); }
+function find(id) { let r = null; walk(cur.root, (n, p) => { if (n.id === id) { r = { n, p }; return false; } }); return r; }
+function isDesc(anc, id) { let f = false; walk(anc, n => { if (n.id === id) f = true; }); return f; }
+function countNodes(r) { let c = 0; walk(r, () => { c++; }); return c; }
+function cloneFresh(n) { const c = JSON.parse(JSON.stringify(n)); walk(c, x => { x.id = uid(); }); return c; }
+
+/* ---------------- histórico ---------------- */
+function snap() { return JSON.stringify({ root: cur.root, layout: cur.layout, free: !!cur.free }); }
+function pushHist() { hist.push(snap()); if (hist.length > 80) hist.shift(); redo = []; updUndo(); }
+function restore(s) { const o = JSON.parse(s); cur.root = o.root; cur.layout = o.layout; cur.free = o.free; if (sel && !find(sel)) sel = null; }
+function undo() { if (!hist.length) return; redo.push(snap()); restore(hist.pop()); touch(); render(); updUndo(); }
+function redoFn() { if (!redo.length) return; hist.push(snap()); restore(redo.pop()); touch(); render(); updUndo(); }
+function updUndo() { $('#btnUndo').disabled = !hist.length; $('#btnRedo').disabled = !redo.length; }
+function touch() { if (cur) cur.updated = Date.now(); save(); }
+function commit(fn) { pushHist(); fn(); touch(); render(); }
+
+/* =========================================================
+   BIBLIOTECA
+   ========================================================= */
+function fmtDate(t) {
+  const d = new Date(t), now = new Date();
+  const days = Math.floor((new Date(now.toDateString()) - new Date(d.toDateString())) / 864e5);
+  if (days === 0) return 'hoje, ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  if (days === 1) return 'ontem';
+  if (days < 7) return 'há ' + days + ' dias';
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: d.getFullYear() !== now.getFullYear() ? 'numeric' : undefined });
+}
+const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+function renderLib() {
+  const q = norm($('#q').value.trim());
+  const list = $('#libList');
+  let maps = [...S.maps].sort((a, b) => b.updated - a.updated);
+  if (q) maps = maps.filter(m => { let hit = false; walk(m.root, n => { if (norm(n.text).includes(q) || norm(n.note).includes(q)) hit = true; }); return hit; });
+  if (!maps.length) {
+    list.innerHTML = q ? `<div class="empty">Nada encontrado para “${esc($('#q').value)}”.</div>` :
+      `<div class="empty"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="32" cy="32" r="8"/><circle cx="10" cy="14" r="5"/><circle cx="54" cy="14" r="5"/><circle cx="10" cy="50" r="5"/><circle cx="54" cy="50" r="5"/><path d="M25 27 14 18M39 27l11-9M25 37 14 46M39 37l11 9"/></svg><br>Nenhum mapa ainda.<br>Toque em <b>Novo mapa</b> para começar — tem modelo pronto para pregação, estudo, EBD e oferta.</div>`;
+    return;
+  }
+  list.innerHTML = maps.map(m => {
+    const cols = m.root.children.slice(0, 8).map((c, i) => `<i style="background:${c.color || PALETTE[i % PALETTE.length]}"></i>`).join('');
+    return `<div class="card" data-open="${m.id}">
+      <div class="t">${m.root.icon ? m.root.icon + ' ' : ''}${esc(m.root.text || 'Sem título')}</div>
+      <div class="dots">${cols}</div>
+      <div class="meta"><b>${LAYOUT_NAMES[m.layout]}</b><span>${countNodes(m.root)} tópicos</span><span style="margin-left:auto">${fmtDate(m.updated)}</span></div>
+      <button class="iconbtn more" data-more="${m.id}" aria-label="Opções"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/></svg></button>
+    </div>`;
+  }).join('');
+}
+$('#libList').addEventListener('click', e => {
+  const more = e.target.closest('[data-more]');
+  if (more) { e.stopPropagation(); mapOptions(more.dataset.more); return; }
+  const c = e.target.closest('[data-open]');
+  if (c) openMap(c.dataset.open);
+});
+$('#q').addEventListener('input', renderLib);
+$('#btnNew').onclick = () => {
+  openSheet(`<h3>Novo mapa</h3><div class="tpls">${TEMPLATES.map(t => `<button data-tpl="${t.key}"><span>${t.emoji}</span><b>${t.name}</b><small>${t.desc}</small></button>`).join('')}</div>`);
+  $('#sheet').querySelectorAll('[data-tpl]').forEach(b => b.onclick = () => {
+    const t = TEMPLATES.find(x => x.key === b.dataset.tpl);
+    const m = { id: uid(), layout: t.layout, free: false, root: t.make(), created: Date.now(), updated: Date.now(), view: null };
+    S.maps.push(m); save(); closeSheet(); openMap(m.id, true);
+  });
+};
+function mapOptions(id) {
+  const m = S.maps.find(x => x.id === id); if (!m) return;
+  openSheet(`<h3>${esc(m.root.text)}</h3><div class="list">
+    <button data-a="open"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Abrir</button>
+    <button data-a="dup"><svg class="ico" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Duplicar</button>
+    <hr><button data-a="del" class="danger"><svg class="ico" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>Excluir mapa</button></div>`);
+  $('#sheet').querySelector('[data-a="open"]').onclick = () => { closeSheet(); openMap(id); };
+  $('#sheet').querySelector('[data-a="dup"]').onclick = () => { closeSheet(); dupMap(m); renderLib(); toast('Mapa duplicado'); };
+  $('#sheet').querySelector('[data-a="del"]').onclick = () => {
+    closeSheet();
+    confirmBox('Excluir mapa?', `“${esc(m.root.text)}” e todos os seus ${countNodes(m.root)} tópicos serão apagados.`, 'Excluir', () => {
+      const idx = S.maps.indexOf(m); S.maps.splice(idx, 1); save(); renderLib();
+      toast('Mapa excluído', 'Desfazer', () => { S.maps.splice(idx, 0, m); save(); renderLib(); });
+    });
+  };
+}
+function dupMap(m) {
+  const c = JSON.parse(JSON.stringify(m));
+  c.id = uid(); c.root = cloneFresh(m.root); c.root.text = m.root.text + ' (cópia)'; c.created = c.updated = Date.now();
+  S.maps.push(c); save(); return c;
+}
+$('#btnSettings').onclick = () => {
+  const t = S.settings.theme;
+  openSheet(`<h3>Ajustes</h3>
+    <label>Tema</label>
+    <div class="seg" id="segTheme"><button data-t="auto" class="${t === 'auto' ? 'on' : ''}">Automático</button><button data-t="light" class="${t === 'light' ? 'on' : ''}">Claro</button><button data-t="dark" class="${t === 'dark' ? 'on' : ''}">Escuro</button></div>
+    <label>Backup</label>
+    <div class="list">
+      <button id="bkOut"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Fazer backup<small>Salva todos os mapas em Downloads/Videira</small></span></button>
+      <button id="bkIn"><svg class="ico" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M5 21h14"/></svg><span>Restaurar backup<small>Importa mapas de um arquivo .json</small></span></button>
+    </div>
+    <p style="color:var(--ink3);font-size:12.5px;text-align:center;margin:18px 0 0">Videira v${VERSION} · Auxano</p>`);
+  $('#segTheme').querySelectorAll('button').forEach(b => b.onclick = () => {
+    S.settings.theme = b.dataset.t; save(); applyTheme();
+    $('#segTheme').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  });
+  $('#bkOut').onclick = () => { closeSheet(); exportBackup(); };
+  $('#bkIn').onclick = () => { closeSheet(); $('#fileIn').value = ''; $('#fileIn').click(); };
+};
+function exportBackup() {
+  flush();
+  const d = new Date(), pad = n => String(n).padStart(2, '0');
+  const name = `videira-backup-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}.json`;
+  const json = JSON.stringify({ app: 'videira', version: VERSION, exported: Date.now(), maps: S.maps }, null, 1);
+  if (NATIVE) { const r = Android.exportFile(name, 'application/json', json); toast(r.startsWith('ERRO') ? 'Não foi possível salvar: ' + r.slice(6) : r); }
+  else { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' })); a.download = name; a.click(); toast('Backup baixado'); }
+}
+$('#fileIn').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      const maps = Array.isArray(d) ? d : d.maps;
+      if (!Array.isArray(maps)) throw 0;
+      let add = 0, upd = 0;
+      maps.forEach(m => {
+        if (!m || !m.root || !m.id) return;
+        const ex = S.maps.find(x => x.id === m.id);
+        if (!ex) { S.maps.push(m); add++; }
+        else if ((m.updated || 0) > (ex.updated || 0)) { Object.assign(ex, m); upd++; }
+      });
+      save(); renderLib();
+      toast(`${add} mapa(s) importado(s)` + (upd ? `, ${upd} atualizado(s)` : ''));
+    } catch (err) { toast('Arquivo de backup inválido'); }
+  };
+  r.readAsText(f);
+});
+
+/* =========================================================
+   MAPA — abrir / fechar
+   ========================================================= */
+function openMap(id, fresh) {
+  cur = S.maps.find(m => m.id === id); if (!cur) return;
+  hist = []; redo = []; sel = null; updUndo();
+  $('#lib').classList.remove('on'); $('#map').classList.add('on');
+  render();
+  if (cur.view && !fresh) { view = Object.assign({}, cur.view); applyView(); } else fit();
+  $('#hint').style.opacity = countNodes(cur.root) <= 1 ? 1 : 0;
+  if (fresh) { freshFit = true; sel = cur.root.id; render(); setTimeout(() => editNode(cur.root.id, 'title', true), 120); }
+}
+function closeMap() {
+  flush(); cur = null; sel = null;
+  $('#map').classList.remove('on'); $('#lib').classList.add('on'); $('#bar').classList.remove('on');
+  renderLib();
+}
+$('#btnBack').onclick = closeMap;
+$('#btnUndo').onclick = undo;
+$('#btnRedo').onclick = redoFn;
+
+/* =========================================================
+   MEDIÇÃO E LAYOUT
+   ========================================================= */
+const mctx = document.createElement('canvas').getContext('2d');
+function fontFor(n, depth) {
+  const fs = depth === 0 ? 20 : depth === 1 ? 16.5 : 15;
+  const w = depth === 0 || n.bold ? 700 : depth === 1 ? 600 : 500;
+  return { fs, w, css: `${w} ${fs}px Manrope, system-ui, sans-serif`, lh: Math.round(fs * 1.32) };
+}
+function wrap(text, maxW) {
+  const out = [];
+  String(text).split('\n').forEach(para => {
+    const words = para.split(/\s+/).filter(Boolean);
+    let line = '';
+    words.forEach(w => {
+      const t = line ? line + ' ' + w : w;
+      if (mctx.measureText(t).width <= maxW) { line = t; return; }
+      if (line) out.push(line);
+      if (mctx.measureText(w).width > maxW) {           // palavra longa: quebra por caractere
+        let part = '';
+        for (const ch of w) { if (mctx.measureText(part + ch).width > maxW && part) { out.push(part); part = ch; } else part += ch; }
+        line = part;
+      } else line = w;
+    });
+    out.push(line);
+  });
+  return out.length ? out : [''];
+}
+function measure(n, depth) {
+  const f = fontFor(n, depth);
+  mctx.font = f.css;
+  const maxW = depth === 0 ? 270 : depth === 1 ? 240 : 220;
+  const label = (n.icon ? n.icon + ' ' : '') + ((n.text || '').trim() || 'Sem título');
+  const lines = wrap(label, maxW);
+  const tw = Math.max(...lines.map(l => mctx.measureText(l).width));
+  const padX = depth === 0 ? 22 : depth === 1 ? 16 : 13, padY = depth === 0 ? 14 : depth === 1 ? 10 : 8;
+  return { lines, f, w: Math.ceil(Math.max(tw + padX * 2, depth === 0 ? 120 : 56)), h: lines.length * f.lh + padY * 2, padY };
+}
+function effColor(n, parentCol, depth, idx, dark) {
+  if (n.color) return n.color;
+  if (depth === 0) return dark ? ROOT_COLOR_DARK : ROOT_COLOR_LIGHT;
+  if (depth === 1) return PALETTE[idx % PALETTE.length];
+  return parentCol;
+}
+
+function computeLayout() {
+  const dark = isDark();
+  const pos = {}, order = [];
+  (function visit(n, p, depth, idx, pcol) {
+    const m = measure(n, depth);
+    const col = effColor(n, pcol, depth, idx, dark);
+    pos[n.id] = Object.assign(m, { n, p: p ? p.id : null, depth, col, x: 0, y: 0, kids: n.collapsed ? [] : n.children.map(c => c.id) });
+    order.push(n.id);
+    if (!n.collapsed) n.children.forEach((c, i) => visit(c, n, depth + 1, i, col));
+  })(cur.root, null, 0, 0, null);
+
+  const L = cur.layout;
+  if (L === 'tree') layoutTree(pos);
+  else if (L === 'radial') layoutRadial(pos);
+  else layoutFree(pos);
+  return { pos, order };
+}
+
+function layoutTree(pos) {
+  const VG = 14;
+  const sub = {};
+  const hOf = id => {
+    const q = pos[id];
+    if (!q.kids.length) return sub[id] = q.h;
+    const s = q.kids.reduce((a, k) => a + hOf(k), 0) + VG * (q.kids.length - 1);
+    return sub[id] = Math.max(q.h, s);
+  };
+  hOf(cur.root.id);
+  (function place(id, left, top) {
+    const q = pos[id];
+    q.x = left + q.w / 2; q.y = top + sub[id] / 2;
+    const total = q.kids.reduce((a, k) => a + sub[k], 0) + VG * (q.kids.length - 1);
+    let y = q.y - total / 2;
+    const gap = q.depth === 0 ? 70 : 46;
+    q.kids.forEach(k => { place(k, left + q.w + gap, y); y += sub[k] + VG; });
+  })(cur.root.id, 0, 0);
+  const r = pos[cur.root.id]; const ox = r.x, oy = r.y;
+  for (const id in pos) { pos[id].x -= ox; pos[id].y -= oy; }
+}
+
+function layoutRadial(pos) {
+  const rootId = cur.root.id;
+  const leaves = {};
+  const lf = id => leaves[id] = pos[id].kids.length ? pos[id].kids.reduce((a, k) => a + lf(k), 0) : 1;
+  lf(rootId);
+  // ângulos
+  const byDepth = {};
+  (function ang(id, a0, a1) {
+    const q = pos[id];
+    q.a = (a0 + a1) / 2;
+    (byDepth[q.depth] = byDepth[q.depth] || []).push(id);
+    let a = a0;
+    const share = (a1 - a0) / Math.max(1, leaves[id]);
+    q.kids.forEach(k => { const span = share * leaves[k]; ang(k, a, a + span); a += span; });
+  })(rootId, -Math.PI / 2, Math.PI * 1.5);
+  const root = pos[rootId]; root.x = 0; root.y = 0;
+  const ext = (q, a) => Math.abs(Math.cos(a)) * q.w / 2 + Math.abs(Math.sin(a)) * q.h / 2;
+  let outer = Math.max(root.w, root.h) / 2;
+  const maxD = Math.max(...Object.keys(byDepth).map(Number));
+  for (let d = 1; d <= maxD; d++) {
+    const ids = byDepth[d] || []; if (!ids.length) break;
+    let inner = outer + (d === 1 ? 64 : 44);
+    // distância mínima para vizinhos não se sobreporem
+    const sorted = ids.slice().sort((a, b) => pos[a].a - pos[b].a);
+    if (sorted.length > 1) {
+      for (let i = 0; i < sorted.length; i++) {
+        const A = pos[sorted[i]], B = pos[sorted[(i + 1) % sorted.length]];
+        let da = B.a - A.a; if (i === sorted.length - 1) da += Math.PI * 2;
+        if (da <= 0.0001) continue;
+        const m = (A.a + B.a) / 2;
+        const need = Math.abs(Math.cos(m)) * (A.h + B.h) / 2 + Math.abs(Math.sin(m)) * (A.w + B.w) / 2 + 14;
+        const r = need / (2 * Math.sin(Math.min(da, Math.PI) / 2)) - (ext(A, A.a) + ext(B, B.a)) / 2;
+        if (r > inner) inner = Math.min(r, inner + 900);
+      }
+    }
+    let o = inner;
+    ids.forEach(id => {
+      const q = pos[id], e = ext(q, q.a), r = inner + e;
+      q.x = Math.cos(q.a) * r; q.y = Math.sin(q.a) * r;
+      o = Math.max(o, r + e);
+    });
+    outer = o;
+  }
+}
+
+function layoutFree(pos) {
+  // usa posições salvas (fx, fy); quem não tem ganha posição perto do pai
+  (function place(id) {
+    const q = pos[id], n = q.n;
+    if (typeof n.fx === 'number') { q.x = n.fx; q.y = n.fy; }
+    else if (!q.p) { q.x = n.fx = 0; q.y = n.fy = 0; }
+    else {
+      const p = pos[q.p];
+      const gp = p.p ? pos[p.p] : null;
+      let side = gp ? Math.sign(p.x - gp.x) || 1 : 1;
+      if (!gp) { // filho da raiz: alterna lados
+        const i = p.kids.indexOf(id); side = i % 2 === 0 ? 1 : -1;
+      }
+      const sibs = p.kids.filter(k => k !== id && typeof pos[k].n.fx === 'number' && Math.sign(pos[k].n.fx - p.x) === side);
+      q.x = p.x + side * (p.w / 2 + 64 + q.w / 2);
+      if (sibs.length) {
+        const bottom = Math.max(...sibs.map(k => pos[k].n.fy + pos[k].h / 2));
+        q.y = bottom + 14 + q.h / 2;
+      } else q.y = p.y;
+      n.fx = q.x; n.fy = q.y; save();
+    }
+    q.kids.forEach(place);
+  })(cur.root.id);
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+const svg = $('#svg'), vp = $('#vp'), stage = $('#stage');
+let dropTarget = null, dragGhost = null;
+
+function hexA(hex, a) {
+  const h = hex.replace('#', ''); const n = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+  return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`;
+}
+function mixHex(a, b, t) {
+  const p = h => { h = h.replace('#', ''); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+  const A = p(a), B = p(b);
+  return '#' + A.map((v, i) => Math.round(v * t + B[i] * (1 - t)).toString(16).padStart(2, '0')).join('');
+}
+function render() {
+  if (!cur) return;
+  const { pos, order } = computeLayout();
+  P = pos;
+  const dark = isDark();
+  const tint = dark ? .24 : .13;
+  const ink = dark ? '#F1ECF4' : '#221E26';
+  const surface = dark ? '#221F28' : '#FFFFFF';
+  const L = cur.layout;
+  let edges = '', nodes = '';
+  order.forEach(id => {
+    const q = pos[id];
+    if (q.p) {
+      const p = pos[q.p];
+      let x1, y1, x2, y2;
+      if (L === 'tree') { x1 = p.x + p.w / 2; y1 = p.y; x2 = q.x - q.w / 2; y2 = q.y; }
+      else { x1 = p.x; y1 = p.y; x2 = q.x; y2 = q.y; }
+      const dx = (x2 - x1) * (L === 'tree' ? .5 : .55);
+      const sw = q.depth === 1 ? 3.4 : q.depth === 2 ? 2.4 : 1.8;
+      edges += `<path d="M${x1} ${y1} C${x1 + dx} ${y1} ${x2 - dx} ${y2} ${x2} ${y2}" fill="none" stroke="${hexA(q.col, dark ? .8 : .75)}" stroke-width="${sw}" stroke-linecap="round"/>`;
+    }
+  });
+  order.forEach(id => {
+    const q = pos[id], n = q.n;
+    const x = q.x - q.w / 2, y = q.y - q.h / 2;
+    const rr = q.depth === 0 ? 18 : q.depth === 1 ? 13 : 10;
+    let fill, stroke, txt, sw;
+    if (q.depth === 0) { fill = q.col; stroke = q.col; txt = '#FFFFFF'; sw = 0; }
+    else if (q.depth === 1) { fill = mixHex(q.col, surface, tint); stroke = q.col; txt = ink; sw = 2.2; }
+    else { fill = mixHex(q.col, surface, tint * .6); stroke = hexA(q.col, .7); txt = ink; sw = 1.4; }
+    let g = `<g class="n" data-id="${id}">`;
+    if (sel === id) g += `<rect x="${x - 5}" y="${y - 5}" width="${q.w + 10}" height="${q.h + 10}" rx="${rr + 5}" fill="none" stroke="var(--sel)" stroke-width="2.6"/>`;
+    if (dropTarget === id) g += `<rect x="${x - 6}" y="${y - 6}" width="${q.w + 12}" height="${q.h + 12}" rx="${rr + 6}" fill="${hexA('#2F7FD8', .12)}" stroke="var(--sel)" stroke-width="2.4" stroke-dasharray="6 5"/>`;
+    g += `<rect x="${x}" y="${y}" width="${q.w}" height="${q.h}" rx="${rr}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+    const ty = y + q.padY + q.f.lh * .5;
+    g += `<text x="${q.x}" font-size="${q.f.fs}" font-weight="${q.f.w}" fill="${txt}" text-anchor="middle" dominant-baseline="central">` +
+      q.lines.map((l, i) => `<tspan x="${q.x}" y="${ty + i * q.f.lh}">${esc(l)}</tspan>`).join('') + `</text>`;
+    if (n.note && n.note.trim()) {
+      g += `<g data-act="note" data-id="${id}"><circle cx="${x + q.w - 2}" cy="${y + 2}" r="13" fill="transparent"/><circle cx="${x + q.w - 2}" cy="${y + 2}" r="8.5" fill="${q.depth === 0 ? '#E0B25A' : q.col}" stroke="${surface}" stroke-width="2"/>` +
+        `<path d="M${x + q.w - 6} ${y} h8 M${x + q.w - 6} ${y + 3.5} h5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></g>`;
+    }
+    if (q.depth > 0 && n.children.length) {
+      let ux, uy;
+      if (L === 'tree') { ux = 1; uy = 0; }
+      else { const p = pos[q.p]; const dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 1; ux = dx / d; uy = dy / d; }
+      const e = Math.abs(ux) * q.w / 2 + Math.abs(uy) * q.h / 2;
+      const bx = q.x + ux * (e + 12), by = q.y + uy * (e + 12);
+      if (n.collapsed) {
+        const cnt = countNodes(n) - 1;
+        const label = cnt > 99 ? '99+' : String(cnt);
+        const bw = Math.max(22, 10 + label.length * 7.5);
+        g += `<g data-act="fold" data-id="${id}"><rect x="${bx - bw / 2 - 6}" y="${by - 17}" width="${bw + 12}" height="34" fill="transparent"/><rect x="${bx - bw / 2}" y="${by - 11}" width="${bw}" height="22" rx="11" fill="${q.col}"/><text x="${bx}" y="${by + .5}" font-size="12" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">${label}</text></g>`;
+      } else if (sel === id) {
+        g += `<g data-act="fold" data-id="${id}"><circle cx="${bx}" cy="${by}" r="17" fill="transparent"/><circle cx="${bx}" cy="${by}" r="10" fill="${surface}" stroke="${q.col}" stroke-width="2"/><path d="M${bx - 4.5} ${by} h9" stroke="${q.col}" stroke-width="2.2" stroke-linecap="round"/></g>`;
+      }
+    }
+    g += `</g>`;
+    nodes += g;
+  });
+  vp.innerHTML = edges + nodes + (dragGhost || '');
+  $('#mapTitle').textContent = (cur.root.icon ? cur.root.icon + ' ' : '') + (cur.root.text || 'Sem título');
+  updBar();
+}
+
+/* ---------------- câmera ---------------- */
+function applyView() {
+  vp.setAttribute('transform', `translate(${view.x} ${view.y}) scale(${view.k})`);
+  const s = 22 * view.k;
+  stage.style.backgroundSize = `${s}px ${s}px`;
+  stage.style.backgroundPosition = `${view.x}px ${view.y}px`;
+}
+let viewSaveT = 0;
+function viewChanged() { applyView(); clearTimeout(viewSaveT); viewSaveT = setTimeout(save, 600); }
+function bounds() {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const id in P) { const q = P[id]; x0 = Math.min(x0, q.x - q.w / 2); x1 = Math.max(x1, q.x + q.w / 2); y0 = Math.min(y0, q.y - q.h / 2); y1 = Math.max(y1, q.y + q.h / 2); }
+  return { x0, y0, x1, y1 };
+}
+function fit() {
+  const W = stage.clientWidth, H = stage.clientHeight;
+  const b = bounds();
+  const bw = b.x1 - b.x0 + 60, bh = b.y1 - b.y0 + 60;
+  const top = 60, bottom = 90;
+  const k = Math.max(.15, Math.min(1.3, W / bw, (H - top - bottom) / bh));
+  view.k = k;
+  view.x = W / 2 - (b.x0 + b.x1) / 2 * k;
+  view.y = top + (H - top - bottom) / 2 - (b.y0 + b.y1) / 2 * k;
+  viewChanged();
+}
+function zoomAt(f, cx, cy) {
+  const k = Math.max(.12, Math.min(3, view.k * f));
+  const r = k / view.k;
+  view.x = cx - (cx - view.x) * r; view.y = cy - (cy - view.y) * r; view.k = k;
+  viewChanged();
+}
+function ensureVisible(id) {
+  const q = P[id]; if (!q) return;
+  const W = stage.clientWidth, H = stage.clientHeight;
+  const sx = view.x + q.x * view.k, sy = view.y + q.y * view.k;
+  const hw = q.w * view.k / 2 + 30, hh = q.h * view.k / 2 + 20;
+  let dx = 0, dy = 0;
+  if (sx - hw < 0) dx = hw - sx; else if (sx + hw > W) dx = W - hw - sx;
+  if (sy - hh < 64) dy = 64 + hh - sy; else if (sy + hh > H - 100) dy = H - 100 - hh - sy;
+  if (dx || dy) animateView(view.x + dx, view.y + dy, view.k);
+}
+function animateView(x, y, k) {
+  const s = Object.assign({}, view), t0 = performance.now();
+  (function step(t) {
+    const p = Math.min(1, (t - t0) / 220), e = 1 - Math.pow(1 - p, 3);
+    view.x = s.x + (x - s.x) * e; view.y = s.y + (y - s.y) * e; view.k = s.k + (k - s.k) * e;
+    applyView();
+    if (p < 1) requestAnimationFrame(step); else viewChanged();
+  })(t0);
+}
+function centerOn(id) {
+  const q = P[id]; if (!q) return;
+  const W = stage.clientWidth, H = stage.clientHeight;
+  const k = Math.max(view.k, .8);
+  animateView(W / 2 - q.x * k, H / 2 - q.y * k, k);
+}
+$('#zIn').onclick = () => zoomAt(1.25, stage.clientWidth / 2, stage.clientHeight / 2);
+$('#zOut').onclick = () => zoomAt(.8, stage.clientWidth / 2, stage.clientHeight / 2);
+$('#zFit').onclick = fit;
+window.addEventListener('resize', () => { if (cur) applyView(); });
+
+/* ---------------- toques: pan, pinça, arrastar ---------------- */
+const pts = new Map();
+let gest = null;        // {type:'pan'|'pinch'|'node', ...}
+const toWorld = (cx, cy) => ({ x: (cx - view.x) / view.k, y: (cy - view.y) / view.k });
+
+svg.addEventListener('pointerdown', e => {
+  svg.setPointerCapture(e.pointerId);
+  pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pts.size === 2) {
+    if (gest && gest.type === 'node' && gest.moved) endNodeDrag(gest, false);
+    const [a, b] = [...pts.values()];
+    gest = { type: 'pinch', d: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, vx: view.x, vy: view.y, k: view.k };
+    return;
+  }
+  if (pts.size > 2) return;
+  const actEl = e.target.closest('[data-act]');
+  const nEl = e.target.closest('.n');
+  if (actEl) gest = { type: 'act', act: actEl.dataset.act, id: actEl.dataset.id, sx: e.clientX, sy: e.clientY };
+  else if (nEl) gest = { type: 'node', id: nEl.dataset.id, sx: e.clientX, sy: e.clientY, moved: false };
+  else gest = { type: 'pan', sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y, moved: false };
+});
+svg.addEventListener('pointermove', e => {
+  if (!pts.has(e.pointerId)) return;
+  pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (!gest) return;
+  if (gest.type === 'pinch' && pts.size >= 2) {
+    const [a, b] = [...pts.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const k = Math.max(.12, Math.min(3, gest.k * d / gest.d));
+    const wx = (gest.mx - gest.vx) / gest.k, wy = (gest.my - gest.vy) / gest.k;
+    view.k = k; view.x = mx - wx * k; view.y = my - wy * k;
+    viewChanged(); return;
+  }
+  const dx = e.clientX - gest.sx, dy = e.clientY - gest.sy;
+  if (gest.type === 'pan') {
+    if (!gest.moved && Math.hypot(dx, dy) > 6) gest.moved = true;
+    if (gest.moved) { view.x = gest.vx + dx; view.y = gest.vy + dy; viewChanged(); }
+  } else if (gest.type === 'node') {
+    if (!gest.moved && Math.hypot(dx, dy) > 9) startNodeDrag(gest);
+    if (gest.moved) moveNodeDrag(gest, e.clientX, e.clientY);
+  } else if (gest.type === 'act' && Math.hypot(dx, dy) > 9) {
+    gest = { type: 'pan', sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y, moved: true };
+  }
+});
+function ptrEnd(e) {
+  if (!pts.has(e.pointerId)) return;
+  pts.delete(e.pointerId);
+  if (!gest) return;
+  if (gest.type === 'pinch') { if (pts.size === 0) gest = null; else { const [p] = [...pts.values()]; gest = { type: 'pan', sx: p.x, sy: p.y, vx: view.x, vy: view.y, moved: true }; } return; }
+  if (pts.size) return;
+  const g = gest; gest = null;
+  if (g.type === 'pan' && !g.moved) { if (sel) { sel = null; render(); } }
+  else if (g.type === 'act') {
+    if (g.act === 'fold') toggleFold(g.id);
+    else if (g.act === 'note') { sel = g.id; render(); editNode(g.id, 'note'); }
+  } else if (g.type === 'node') {
+    if (g.moved) endNodeDrag(g, e.type !== 'pointercancel');
+    else tapNode(g.id);
+  }
+}
+svg.addEventListener('pointerup', ptrEnd);
+svg.addEventListener('pointercancel', ptrEnd);
+svg.addEventListener('wheel', e => {
+  e.preventDefault();
+  if (e.ctrlKey || Math.abs(e.deltaY) > 0 && !e.shiftKey && Math.abs(e.deltaX) < 1 && e.deltaMode === 0 && Math.abs(e.deltaY) >= 50) zoomAt(Math.exp(-e.deltaY * .0016), e.clientX, e.clientY);
+  else { view.x -= e.deltaX; view.y -= e.deltaY; viewChanged(); }
+}, { passive: false });
+
+function tapNode(id) {
+  if (sel === id) { editNode(id, 'title'); return; }
+  sel = id; render();
+}
+
+function startNodeDrag(g) {
+  g.moved = true;
+  sel = g.id;
+  const q = P[g.id];
+  g.isRoot = !q.p;
+  if (g.isRoot && cur.layout !== 'free') { // arrastar a raiz = mover a tela
+    Object.assign(g, { type: 'pan', vx: view.x, vy: view.y }); return;
+  }
+  g.free = cur.layout === 'free';
+  g.w0 = toWorld(g.sx, g.sy);
+  g.orig = { x: q.x, y: q.y };
+  g.ex = new Set(); walk(q.n, n => { g.ex.add(n.id); });
+  if (g.free) {
+    pushHist(); g.pushed = true;
+    g.start = []; walk(q.n, n => { if (typeof n.fx === 'number') g.start.push({ n, x: n.fx, y: n.fy }); });
+  }
+}
+function hitTest(wx, wy, ex) {
+  let best = null;
+  for (const id in P) {
+    if (ex && ex.has(id)) continue;
+    const q = P[id];
+    if (Math.abs(wx - q.x) <= q.w / 2 + 6 && Math.abs(wy - q.y) <= q.h / 2 + 6) best = id;
+  }
+  return best;
+}
+let dragRaf = 0;
+function moveNodeDrag(g, cx, cy) {
+  const w = toWorld(cx, cy);
+  const dx = w.x - g.w0.x, dy = w.y - g.w0.y;
+  const q = P[g.id];
+  const tgt = hitTest(w.x, w.y, g.ex);
+  dropTarget = tgt && tgt !== q.p ? tgt : null;
+  if (g.free) {
+    g.start.forEach(s => { s.n.fx = s.x + dx; s.n.fy = s.y + dy; });
+    dragGhost = null;
+  } else {
+    const x = g.orig.x + dx - q.w / 2, y = g.orig.y + dy - q.h / 2;
+    dragGhost = `<rect x="${x}" y="${y}" width="${q.w}" height="${q.h}" rx="12" fill="${hexA(q.col, .22)}" stroke="${q.col}" stroke-width="2" stroke-dasharray="5 4" pointer-events="none"/>` +
+      `<text x="${x + q.w / 2}" y="${y + q.h / 2}" font-size="${q.f.fs}" font-weight="600" fill="${q.col}" text-anchor="middle" dominant-baseline="central" pointer-events="none">${esc(q.lines[0])}${q.lines.length > 1 ? '…' : ''}</text>`;
+  }
+  cancelAnimationFrame(dragRaf);
+  dragRaf = requestAnimationFrame(render);
+  // auto-rolagem perto das bordas
+  const W = stage.clientWidth, H = stage.clientHeight, m = 40;
+  let px = 0, py = 0;
+  if (cx < m) px = 8; else if (cx > W - m) px = -8;
+  if (cy < m + 50) py = 8; else if (cy > H - m) py = -8;
+  if (px || py) { view.x += px; view.y += py; g.w0.x -= px / view.k; g.w0.y -= py / view.k; viewChanged(); }
+}
+function endNodeDrag(g, apply) {
+  cancelAnimationFrame(dragRaf);
+  const tgt = dropTarget; dropTarget = null; dragGhost = null;
+  const id = g.id || sel;
+  if (apply && tgt && id && tgt !== id) {
+    const f = find(id), t = find(tgt);
+    if (f && t && f.p && !isDesc(f.n, tgt)) {
+      if (!g.pushed) pushHist();
+      f.p.children.splice(f.p.children.indexOf(f.n), 1);
+      t.n.children.push(f.n); t.n.collapsed = false;
+      touch(); render(); toast('Movido para “' + trunc(t.n.text, 28) + '”'); return;
+    }
+  }
+  if (g.free && g.pushed) { touch(); }
+  render();
+}
+const trunc = (s, n) => { s = (s || 'Sem título').trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+
+/* =========================================================
+   AÇÕES SOBRE TÓPICOS
+   ========================================================= */
+function updBar() {
+  const bar = $('#bar');
+  if (!sel || !P[sel]) { bar.classList.remove('on'); return; }
+  const f = find(sel); if (!f) { bar.classList.remove('on'); return; }
+  const isRoot = !f.p;
+  bar.classList.add('on');
+  $('#hint').style.opacity = 0;
+  $('#bSib').hidden = isRoot; $('#bDel').hidden = isRoot;
+}
+let pendingNew = null;
+let freshFit = false;   // tópico recém-criado (apagado se ficar vazio)
+function addNode(kind) {
+  if (!sel) return;
+  const f = find(sel); if (!f) return;
+  const nn = node('');
+  pushHist();
+  if (kind === 'child' || !f.p) { f.n.collapsed = false; f.n.children.push(nn); }
+  else { f.p.children.splice(f.p.children.indexOf(f.n) + 1, 0, nn); }
+  sel = nn.id; pendingNew = nn.id;
+  touch(); render(); ensureVisible(nn.id);
+  editNode(nn.id, 'title', true);
+}
+function deleteNode(id) {
+  const f = find(id); if (!f || !f.p) return;
+  const cnt = countNodes(f.n);
+  const idx = f.p.children.indexOf(f.n);
+  commit(() => { f.p.children.splice(idx, 1); sel = f.p.id; });
+  toast(cnt > 1 ? `Excluído com ${cnt - 1} subtópico(s)` : 'Tópico excluído', 'Desfazer', undo);
+}
+function toggleFold(id) {
+  const f = find(id); if (!f || !f.n.children.length) return;
+  commit(() => { f.n.collapsed = !f.n.collapsed; });
+}
+function moveSibling(id, dir) {
+  const f = find(id); if (!f || !f.p) return;
+  const arr = f.p.children, i = arr.indexOf(f.n), j = i + dir;
+  if (j < 0 || j >= arr.length) { toast(dir < 0 ? 'Já é o primeiro' : 'Já é o último'); return; }
+  commit(() => { arr.splice(i, 1); arr.splice(j, 0, f.n); });
+}
+$('#bChild').onclick = () => addNode('child');
+$('#bSib').onclick = () => addNode('sib');
+$('#bEdit').onclick = () => sel && editNode(sel, 'title');
+$('#bNote').onclick = () => sel && editNode(sel, 'note');
+$('#bStyle').onclick = () => sel && styleSheet(sel);
+$('#bDel').onclick = () => sel && deleteNode(sel);
+$('#bMore').onclick = () => sel && nodeMore(sel);
+$('#mapTitle').onclick = () => { sel = cur.root.id; render(); editNode(cur.root.id, 'title'); };
+
+/* ---------- editor (título + nota) ---------- */
+let editing = null;
+function editNode(id, focus, isNew) {
+  const f = find(id); if (!f) return;
+  editing = { id, text0: f.n.text, note0: f.n.note || '' };
+  const isRoot = !f.p;
+  openSheet(`<h3>${isRoot ? 'Ideia central' : 'Tópico'}</h3>
+    <input class="field" id="edTitle" placeholder="${isRoot ? 'Título do mapa' : 'Escreva o tópico'}" value="${esc(f.n.text)}" enterkeyhint="done" autocomplete="off">
+    <label>Nota</label>
+    <textarea class="field" id="edNote" placeholder="Versículo, explicação, ilustração, ideia…">${esc(f.n.note || '')}</textarea>
+    <div class="row">
+      <button class="btn" id="edChild"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Filho</button>
+      ${isRoot ? '' : '<button class="btn" id="edSib"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Irmão</button>'}
+      <button class="btn pri grow" id="edDone">Concluir</button>
+    </div>`, finishEdit);
+  const t = $('#edTitle'), no = $('#edNote');
+  t.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); closeSheet(); } });
+  $('#edDone').onclick = () => closeSheet();
+  $('#edChild').onclick = () => { closeSheet(); addNode('child'); };
+  if (!isRoot) $('#edSib').onclick = () => { closeSheet(); addNode('sib'); };
+  setTimeout(() => {
+    const el = focus === 'note' ? no : t;
+    el.focus();
+    if (focus === 'note') el.setSelectionRange(el.value.length, el.value.length);
+    else if (!isNew) el.select();
+  }, 230);
+}
+function finishEdit() {
+  if (!editing) return;
+  if (freshFit) { freshFit = false; setTimeout(fit, 40); }
+  const ed = editing; editing = null;
+  const t = $('#edTitle'), no = $('#edNote');
+  const f = find(ed.id); if (!f) return;
+  const text = t ? t.value.trim() : f.n.text, note = no ? no.value.replace(/\s+$/, '') : f.n.note;
+  if (pendingNew === ed.id) {
+    pendingNew = null;
+    if (!text && !note && !f.n.children.length) { // novo e vazio: desfaz a criação
+      hist.pop(); f.p.children.splice(f.p.children.indexOf(f.n), 1); sel = f.p.id; updUndo(); touch(); render(); return;
+    }
+    f.n.text = text || 'Novo tópico'; f.n.note = note; touch(); render(); return;
+  }
+  if (text !== ed.text0 || note !== ed.note0) {
+    commit(() => { f.n.text = text || (f.p ? 'Novo tópico' : 'Ideia central'); f.n.note = note; });
+  }
+}
+
+/* ---------- estilo ---------- */
+function styleSheet(id) {
+  const f = find(id); if (!f) return;
+  const q = P[id];
+  const isRoot = !f.p;
+  const draw = () => {
+    const n = find(id).n;
+    openSheet(`<h3>Estilo do tópico</h3>
+      <label>Cor ${isRoot ? '' : '<span style="text-transform:none;font-weight:500">— os subtópicos herdam a cor do ramo</span>'}</label>
+      <div class="swatches">
+        <button class="sw inherit ${!n.color ? 'on' : ''}" data-c="" aria-label="Automática"></button>
+        ${PALETTE.map(c => `<button class="sw ${n.color === c ? 'on' : ''}" style="background:${c}" data-c="${c}"></button>`).join('')}
+        <button class="sw ${n.color === '#4E2C63' ? 'on' : ''}" style="background:#4E2C63" data-c="#4E2C63"></button>
+        <button class="sw ${n.color === '#3B4252' ? 'on' : ''}" style="background:#3B4252" data-c="#3B4252"></button>
+      </div>
+      <div class="toggle">Negrito <button class="sw2 ${n.bold || isRoot ? 'on' : ''}" id="stBold" ${isRoot ? 'disabled style="opacity:.5"' : ''}></button></div>
+      <label>Ícone</label>
+      <div class="emojis"><button class="none ${!n.icon ? 'on' : ''}" data-e="">Sem</button>${EMOJIS.map(e => `<button class="${n.icon === e ? 'on' : ''}" data-e="${e}">${e}</button>`).join('')}</div>
+      ${n.children.length ? `<div class="list" style="margin-top:12px"><button id="stReset"><svg class="ico" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Uniformizar ramo<small>Remove cores próprias dos subtópicos, que voltam a seguir este ramo</small></span></button></div>` : ''}
+      <div class="row"><button class="btn pri grow" id="stDone">Pronto</button></div>`);
+    $('#sheet').querySelectorAll('[data-c]').forEach(b => b.onclick = () => { commit(() => { find(id).n.color = b.dataset.c || null; }); draw(); });
+    $('#sheet').querySelectorAll('[data-e]').forEach(b => b.onclick = () => { commit(() => { find(id).n.icon = b.dataset.e || null; }); draw(); });
+    if (!isRoot) $('#stBold').onclick = () => { commit(() => { const x = find(id).n; x.bold = !x.bold; }); draw(); };
+    const rs = $('#stReset'); if (rs) rs.onclick = () => { commit(() => { find(id).n.children.forEach(c => walk(c, x => { x.color = null; })); }); toast('Ramo uniformizado'); draw(); };
+    $('#stDone').onclick = () => closeSheet();
+  };
+  draw();
+}
+
+/* ---------- mais ações do tópico ---------- */
+function nodeMore(id) {
+  const f = find(id); if (!f) return;
+  const isRoot = !f.p;
+  openSheet(`<h3>${esc(trunc(f.n.text, 40))}</h3><div class="list">
+    ${isRoot ? '' : `<button data-a="up"><svg class="ico" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Mover para cima</button>
+    <button data-a="down"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>Mover para baixo</button>
+    <button data-a="dup"><svg class="ico" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Duplicar ramo</button>
+    <button data-a="promote"><svg class="ico" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Subir um nível<small>Vira irmão do tópico pai</small></span></button>`}
+    ${f.n.children.length && !isRoot ? `<button data-a="fold"><svg class="ico" viewBox="0 0 24 24"><path d="${f.n.collapsed ? 'm7 10 5 5 5-5' : 'm7 15 5-5 5 5'}"/></svg>${f.n.collapsed ? 'Expandir' : 'Recolher'} este ramo</button>` : ''}
+    ${f.n.children.length ? `<button data-a="expall"><svg class="ico" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg>Expandir tudo neste ramo</button>` : ''}
+    <button data-a="center"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>Centralizar na tela</button>
+    <hr><p style="color:var(--ink3);font-size:13px;margin:6px 6px 0;line-height:1.45">Dica: arraste um tópico e solte sobre outro para mudá-lo de lugar.</p>
+  </div>`);
+  const on = (a, fn) => { const b = $('#sheet').querySelector(`[data-a="${a}"]`); if (b) b.onclick = () => { closeSheet(); fn(); }; };
+  on('up', () => moveSibling(id, -1));
+  on('down', () => moveSibling(id, 1));
+  on('dup', () => { const c = cloneFresh(f.n); walk(c, x => { delete x.fx; delete x.fy; }); commit(() => { f.p.children.splice(f.p.children.indexOf(f.n) + 1, 0, c); sel = c.id; }); toast('Ramo duplicado'); });
+  on('promote', () => {
+    const gp = find(f.p.id).p;
+    if (!gp) { toast('Já está no primeiro nível'); return; }
+    commit(() => { f.p.children.splice(f.p.children.indexOf(f.n), 1); gp.children.splice(gp.children.indexOf(f.p) + 1, 0, f.n); delete f.n.fx; delete f.n.fy; });
+  });
+  on('fold', () => toggleFold(id));
+  on('expall', () => commit(() => walk(f.n, x => { x.collapsed = false; })));
+  on('center', () => centerOn(id));
+}
+
+/* ---------- layout ---------- */
+const LAYOUT_ICONS = {
+  radial: '<svg viewBox="0 0 64 44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="24" y="17" width="16" height="10" rx="4" fill="currentColor"/><path d="M24 20 12 9M40 20l12-11M24 25 12 35M40 25l12 10M32 17V6M32 27v11"/><circle cx="10" cy="8" r="3"/><circle cx="54" cy="8" r="3"/><circle cx="10" cy="36" r="3"/><circle cx="54" cy="36" r="3"/><circle cx="32" cy="4" r="3"/><circle cx="32" cy="40" r="3"/></svg>',
+  tree: '<svg viewBox="0 0 64 44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="17" width="16" height="10" rx="4" fill="currentColor"/><path d="M20 22c6 0 6-14 12-14M20 22h12M20 22c6 0 6 14 12 14"/><rect x="33" y="4" width="14" height="8" rx="3"/><rect x="33" y="18" width="14" height="8" rx="3"/><rect x="33" y="32" width="14" height="8" rx="3"/><path d="M47 36h6"/><rect x="53" y="33" width="8" height="6" rx="2"/></svg>',
+  free: '<svg viewBox="0 0 64 44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="22" y="15" width="16" height="10" rx="4" fill="currentColor"/><path d="M38 20c6 0 8-12 14-12M22 22c-6 0-6 10-12 12M34 25c0 6 6 9 10 11"/><rect x="50" y="4" width="10" height="7" rx="3"/><rect x="2" y="32" width="10" height="7" rx="3"/><rect x="42" y="34" width="10" height="7" rx="3"/></svg>',
+};
+$('#btnLayout').onclick = () => {
+  const L = cur.layout;
+  openSheet(`<h3>Layout do mapa</h3>
+    <div class="layouts">
+      <button data-l="radial" class="${L === 'radial' ? 'on' : ''}">${LAYOUT_ICONS.radial}Radial<small>Ramos em volta da ideia central</small></button>
+      <button data-l="tree" class="${L === 'tree' ? 'on' : ''}">${LAYOUT_ICONS.tree}Árvore<small>Em ordem, para a direita</small></button>
+      <button data-l="free" class="${L === 'free' ? 'on' : ''}">${LAYOUT_ICONS.free}Livre<small>Você posiciona cada tópico</small></button>
+    </div>
+    ${L === 'free' ? `<div class="list" style="margin-top:12px"><button id="lyReset"><svg class="ico" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Reorganizar automaticamente<small>Recomeça as posições a partir do layout radial</small></span></button></div>` : ''}`);
+  $('#sheet').querySelectorAll('[data-l]').forEach(b => b.onclick = () => { closeSheet(); setLayout(b.dataset.l); });
+  const r = $('#lyReset'); if (r) r.onclick = () => { closeSheet(); setLayout('free', 'radial'); };
+};
+function setLayout(L, seedFrom) {
+  if (L === cur.layout && !seedFrom) return;
+  commit(() => {
+    if (L === 'free' && (!cur.free || seedFrom)) {
+      // semeia posições livres a partir do layout atual (ou do indicado)
+      const prev = cur.layout; cur.layout = seedFrom || (prev === 'free' ? 'radial' : prev);
+      walk(cur.root, n => { delete n.fx; delete n.fy; });
+      const { pos } = computeLayout();
+      for (const id in pos) { pos[id].n.fx = pos[id].x; pos[id].n.fy = pos[id].y; }
+      cur.free = true;
+    }
+    cur.layout = L;
+  });
+  setTimeout(fit, 30);
+  toast('Layout: ' + LAYOUT_NAMES[L]);
+}
+
+/* ---------- menu do mapa ---------- */
+$('#btnMapMenu').onclick = () => {
+  openSheet(`<h3>${esc(trunc(cur.root.text, 40))}</h3><div class="list">
+    <button data-a="outline"><svg class="ico" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Ver como esboço<small>Lista em tópicos com as notas — boa para pregar ou dar aula</small></span></button>
+    <button data-a="fit"><svg class="ico" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Ajustar à tela</button>
+    <button data-a="exp"><svg class="ico" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg>Expandir tudo</button>
+    <button data-a="col"><svg class="ico" viewBox="0 0 24 24"><path d="m7 15 5-5 5 5"/></svg>Recolher até o 1º nível</button>
+    <button data-a="share"><svg class="ico" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Compartilhar como texto</button>
+    <button data-a="dup"><svg class="ico" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Duplicar mapa</button>
+  </div>`);
+  const on = (a, fn) => { $('#sheet').querySelector(`[data-a="${a}"]`).onclick = () => { closeSheet(); fn(); }; };
+  on('outline', openOutline);
+  on('fit', fit);
+  on('exp', () => { commit(() => walk(cur.root, n => { n.collapsed = false; })); setTimeout(fit, 30); });
+  on('col', () => { commit(() => walk(cur.root, (n, p, d) => { if (d >= 1 && n.children.length) n.collapsed = true; })); setTimeout(fit, 30); });
+  on('share', shareText);
+  on('dup', () => { const c = dupMap(cur); toast('Cópia criada: ' + trunc(c.root.text, 30)); });
+};
+
+/* ---------- esboço ---------- */
+const roman = n => { const r = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]]; let s = ''; r.forEach(([k, v]) => { while (n >= v) { s += k; n -= v; } }); return s; };
+const numFor = (d, i) => d === 1 ? roman(i + 1) + '.' : d === 2 ? (i + 1) + '.' : d === 3 ? String.fromCharCode(97 + i % 26) + ')' : '•';
+function openOutline() {
+  const dark = isDark();
+  let h = `<div class="ol-root">${cur.root.icon ? cur.root.icon + ' ' : ''}${esc(cur.root.text)}</div>`;
+  if (cur.root.note) h += `<div class="ol-note" style="margin:-8px 0 14px">${esc(cur.root.note)}</div>`;
+  (function rec(n, d, col) {
+    n.children.forEach((c, i) => {
+      const cc = c.color || (d === 1 ? PALETTE[i % PALETTE.length] : col);
+      h += `<div class="ol-item d${Math.min(d, 3)}" data-goto="${c.id}" style="padding-left:${(d - 1) * 22}px">
+        <span class="ol-num" style="color:${cc}">${numFor(d, i)}</span>
+        <div class="ol-txt">${c.icon ? c.icon + ' ' : ''}${esc(c.text)}${c.note ? `<div class="ol-note">${esc(c.note)}</div>` : ''}</div></div>`;
+      rec(c, d + 1, cc);
+    });
+  })(cur.root, 1, null);
+  $('#olBody').innerHTML = h;
+  $('#olBody').style.setProperty('--olz', olZoom);
+  $('#outline').classList.add('on');
+  $('#outline h2').textContent = 'Esboço';
+}
+$('#olBody').addEventListener('click', e => {
+  const it = e.target.closest('[data-goto]'); if (!it) return;
+  const id = it.dataset.goto;
+  // expande os ancestrais e foca no tópico
+  const path = []; (function f(n, acc) { if (n.id === id) { path.push(...acc); return true; } return n.children.some(c => f(c, acc.concat(n))); })(cur.root, []);
+  let changed = false; path.forEach(n => { if (n.collapsed) { n.collapsed = false; changed = true; } });
+  if (changed) touch();
+  sel = id; $('#outline').classList.remove('on'); render(); centerOn(id);
+});
+$('#olClose').onclick = () => $('#outline').classList.remove('on');
+$('#olPlus').onclick = () => { olZoom = Math.min(2, olZoom + .12); $('#olBody').style.setProperty('--olz', olZoom); };
+$('#olMinus').onclick = () => { olZoom = Math.max(.7, olZoom - .12); $('#olBody').style.setProperty('--olz', olZoom); };
+$('#olShare').onclick = shareText;
+function asText() {
+  let t = (cur.root.icon ? cur.root.icon + ' ' : '') + cur.root.text + '\n';
+  if (cur.root.note) t += cur.root.note + '\n';
+  t += '\n';
+  (function rec(n, d) {
+    n.children.forEach((c, i) => {
+      const ind = '   '.repeat(d - 1);
+      t += `${ind}${numFor(d, i)} ${c.icon ? c.icon + ' ' : ''}${c.text}\n`;
+      if (c.note) t += c.note.split('\n').map(l => ind + '   ' + l).join('\n') + '\n';
+      rec(c, d + 1);
+    });
+  })(cur.root, 1);
+  return t;
+}
+function shareText() {
+  const t = asText();
+  if (NATIVE) Android.share(cur.root.text, t);
+  else if (navigator.share) navigator.share({ title: cur.root.text, text: t }).catch(() => {});
+  else { navigator.clipboard && navigator.clipboard.writeText(t); toast('Texto copiado'); }
+}
+
+/* =========================================================
+   FOLHA, TOAST, MODAL
+   ========================================================= */
+let sheetClose = null;
+function openSheet(html, onClose) {
+  if (sheetClose) { const f = sheetClose; sheetClose = null; f(); }
+  $('#sheet').innerHTML = '<div class="grab"></div>' + html;
+  $('#sheet').scrollTop = 0;
+  $('#sheet').classList.add('on'); $('#scrim').classList.add('on');
+  sheetClose = onClose || null;
+}
+function closeSheet() {
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  const f = sheetClose; sheetClose = null;
+  if (f) f();
+  $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on');
+}
+$('#scrim').onclick = () => closeSheet();
+let toastT = 0;
+function toast(msg, act, fn) {
+  const t = $('#toast');
+  t.querySelector('span').textContent = msg;
+  const b = t.querySelector('button'); b.textContent = act || '';
+  b.onclick = () => { t.classList.remove('on'); fn && fn(); };
+  t.classList.add('on'); clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('on'), act ? 4500 : 2200);
+}
+function confirmBox(title, text, okLabel, onOk) {
+  const m = $('#modal');
+  m.querySelector('.box').innerHTML = `<h3>${title}</h3><p>${text}</p><div class="row"><button class="btn" id="mdNo">Cancelar</button><button class="btn pri" id="mdOk" style="background:var(--danger);color:#fff">${okLabel}</button></div>`;
+  m.classList.add('on');
+  $('#mdNo').onclick = () => m.classList.remove('on');
+  $('#mdOk').onclick = () => { m.classList.remove('on'); onOk(); };
+}
+
+/* ---------------- voltar (botão do Android) ---------------- */
+window.kgBack = function () {
+  if ($('#modal').classList.contains('on')) { $('#modal').classList.remove('on'); return true; }
+  if ($('#sheet').classList.contains('on')) { closeSheet(); return true; }
+  if ($('#outline').classList.contains('on')) { $('#outline').classList.remove('on'); return true; }
+  if (cur && sel) { sel = null; render(); return true; }
+  if (cur) { closeMap(); return true; }
+  return false;
+};
+
+/* ---------------- teclado físico ---------------- */
+document.addEventListener('keydown', e => {
+  if (!cur || $('#sheet').classList.contains('on') || $('#outline').classList.contains('on')) {
+    if (e.key === 'Escape') window.kgBack();
+    return;
+  }
+  const mod = e.ctrlKey || e.metaKey;
+  if (mod && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redoFn() : undo(); return; }
+  if (mod && e.key.toLowerCase() === 'y') { e.preventDefault(); redoFn(); return; }
+  if (e.key === 'Escape') { window.kgBack(); return; }
+  if (!sel) { if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); sel = cur.root.id; render(); } return; }
+  if (e.key === 'Tab') { e.preventDefault(); addNode('child'); }
+  else if (e.key === 'Enter') { e.preventDefault(); addNode('sib'); }
+  else if (e.key === 'F2' || e.key === ' ') { e.preventDefault(); editNode(sel, 'title'); }
+  else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteNode(sel); }
+});
+
+/* ---------------- início ---------------- */
+loadData();
+applyTheme();
+renderLib();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (cur) render(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) flush(); });
+</script>
+</body>
+</html>
