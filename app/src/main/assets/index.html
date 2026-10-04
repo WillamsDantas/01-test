@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Kerygma</title>
+<style>
+@font-face{font-family:Literata;font-weight:400;font-style:normal;src:url(fonts/literata-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Literata;font-weight:400;font-style:italic;src:url(fonts/literata-latin-400-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F}
+@font-face{font-family:Literata;font-weight:600;font-style:normal;src:url(fonts/literata-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F}
+@font-face{font-family:Literata;font-weight:600;font-style:italic;src:url(fonts/literata-latin-600-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F}
+@font-face{font-family:Literata;font-weight:700;font-style:normal;src:url(fonts/literata-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F}
+@font-face{font-family:Literata;font-weight:400;font-style:normal;src:url(fonts/literata-greek-400-normal.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+@font-face{font-family:Literata;font-weight:400;font-style:italic;src:url(fonts/literata-greek-400-italic.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+@font-face{font-family:Literata;font-weight:600;font-style:normal;src:url(fonts/literata-greek-600-normal.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+@font-face{font-family:Literata;font-weight:700;font-style:normal;src:url(fonts/literata-greek-700-normal.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+@font-face{font-family:Literata;font-weight:400;font-style:normal;src:url(fonts/literata-greek-ext-400-normal.woff2) format('woff2');unicode-range:U+1F00-1FFF}
+@font-face{font-family:Literata;font-weight:400;font-style:italic;src:url(fonts/literata-greek-ext-400-italic.woff2) format('woff2');unicode-range:U+1F00-1FFF}
+@font-face{font-family:Literata;font-weight:600;font-style:normal;src:url(fonts/literata-greek-ext-600-normal.woff2) format('woff2');unicode-range:U+1F00-1FFF}
+@font-face{font-family:Literata;font-weight:700;font-style:normal;src:url(fonts/literata-greek-ext-700-normal.woff2) format('woff2');unicode-range:U+1F00-1FFF}
+@font-face{font-family:Manrope;font-weight:400;src:url(fonts/manrope-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:Manrope;font-weight:500;src:url(fonts/manrope-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:Manrope;font-weight:600;src:url(fonts/manrope-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:Manrope;font-weight:700;src:url(fonts/manrope-latin-700-normal.woff2) format('woff2')}
+
+:root{
+  --bg:#F4EFE6;--surface:#FBF8F2;--surface2:#EFE7DA;--ink:#231E18;--ink2:#5E554A;--ink3:#8E8476;
+  --line:#E3DACB;--accent:#7A2E24;--accent-ink:#FFF8F2;--accent-soft:#F2E1D8;
+  --verse-bg:#F5E6C6;--verse-ink:#6A4512;--verse-bar:#C08A3E;--mark:#F6E09A;
+  --shadow:0 1px 2px rgba(60,40,20,.06),0 6px 24px rgba(60,40,20,.07);
+  --serif:Literata,Georgia,'Noto Serif',serif;--sans:Manrope,system-ui,sans-serif;
+  --r:16px;
+}
+:root[data-theme="dark"]{
+  --bg:#13110E;--surface:#1C1915;--surface2:#26221C;--ink:#EEE7DA;--ink2:#BDB3A3;--ink3:#857B6E;
+  --line:#322D26;--accent:#E39A7B;--accent-ink:#1A120D;--accent-soft:#3A251E;
+  --verse-bg:#352A17;--verse-ink:#F1C983;--verse-bar:#C79747;--mark:#5A481A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;overscroll-behavior:none}
+body{transition:background .2s}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0;outline:none}
+input,textarea,select{font:inherit;color:inherit}
+svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.view{position:fixed;inset:0;display:none;flex-direction:column}
+.view.on{display:flex}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* ---------- barra superior ---------- */
+.top{display:flex;align-items:center;gap:8px;padding:12px 16px;min-height:64px;border-bottom:1px solid var(--line);background:var(--bg)}
+.top h1{font-family:var(--serif);font-weight:600;font-size:24px;margin:0;letter-spacing:-.01em}
+.top .sp{flex:1}
+.ib{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--ink2)}
+.ib:active{background:var(--surface2)}
+.btn{height:44px;padding:0 18px;border-radius:12px;display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;background:var(--surface2);color:var(--ink)}
+.btn.pri{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;border:1px solid var(--line)}
+.btn:active{filter:brightness(.94)}
+.btn svg.i{width:20px;height:20px}
+.status{font-size:13px;color:var(--ink3);padding:0 6px;white-space:nowrap}
+
+/* ---------- biblioteca ---------- */
+.lib-head{padding:28px 0 8px;display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.lib-head .t{flex:1;min-width:220px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lib-head h2{font-family:var(--serif);font-weight:600;font-size:34px;margin:4px 0 0;letter-spacing:-.015em}
+.search{display:flex;align-items:center;gap:10px;height:48px;border-radius:14px;background:var(--surface);border:1px solid var(--line);padding:0 14px;margin:16px 0 12px}
+.search input{flex:1;border:0;outline:0;background:transparent;font-size:16px}
+.search svg{color:var(--ink3)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 14px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:500;color:var(--ink2);white-space:nowrap}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding-bottom:110px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 14px;display:flex;flex-direction:column;gap:10px;text-align:left;box-shadow:var(--shadow);position:relative}
+.card:active{transform:scale(.995)}
+.card .meta{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink3);flex-wrap:wrap}
+.card h3{font-family:var(--serif);font-weight:600;font-size:21px;line-height:1.25;margin:0;letter-spacing:-.01em}
+.card .snip{font-family:var(--serif);font-size:14.5px;line-height:1.5;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.9em}
+.card .foot{display:flex;align-items:center;gap:6px;border-top:1px solid var(--line);padding-top:10px;margin-top:2px}
+.card .foot .n{font-size:13px;color:var(--ink3);flex:1}
+.pill{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:8px;background:var(--verse-bg);color:var(--verse-ink);font-size:13px;font-weight:600}
+.tag{font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:999px}
+.mini{height:36px;padding:0 12px;border-radius:10px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:6px;color:var(--ink2)}
+.mini.pri{color:var(--accent)}
+.mini:active{background:var(--surface2)}
+.mini svg.i{width:18px;height:18px}
+.fab{position:fixed;right:22px;bottom:calc(22px + env(safe-area-inset-bottom));height:58px;padding:0 24px;border-radius:18px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 30px rgba(122,46,36,.35);z-index:5}
+.empty{text-align:center;padding:70px 20px;color:var(--ink2)}
+.empty h3{font-family:var(--serif);font-weight:600;font-size:24px;color:var(--ink);margin:14px 0 6px}
+.empty p{margin:0 auto 22px;max-width:380px;line-height:1.55}
+
+/* ---------- editor ---------- */
+.ed-body{flex:1;display:flex;min-height:0}
+.outline{width:250px;flex:none;border-right:1px solid var(--line);overflow-y:auto;padding:18px 10px 40px;display:none}
+.outline .lab{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:0 10px 10px}
+.outline button{display:flex;gap:10px;width:100%;text-align:left;padding:10px;border-radius:10px;font-size:14.5px;color:var(--ink2);line-height:1.3;align-items:baseline}
+.outline button .no{font-size:12px;color:var(--ink3);font-weight:700;min-width:18px}
+.outline button.empty-s{opacity:.55}
+.outline button:active{background:var(--surface2)}
+@media (min-width:900px){.outline{display:block}}
+.ed-main{flex:1;overflow-y:auto;padding-bottom:140px}
+.ed-inner{max-width:820px;margin:0 auto;padding:22px 20px}
+.metaform{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow);margin-bottom:22px}
+.ti{width:100%;border:0;outline:0;background:transparent;font-family:var(--serif);font-weight:600;font-size:30px;letter-spacing:-.015em;padding:4px 0 10px}
+.ti::placeholder{color:var(--ink3);opacity:.7}
+.mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld span{font-size:12px;font-weight:600;color:var(--ink3);letter-spacing:.02em}
+.fld input{height:42px;border-radius:10px;border:1px solid var(--line);background:var(--bg);padding:0 12px;outline:0;font-size:15px;min-width:0}
+.fld input:focus{border-color:var(--accent)}
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow);scroll-margin-top:16px}
+.sec-h{display:flex;align-items:center;gap:6px;padding:10px 8px 4px 18px}
+.sec-h .no{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--accent);min-width:22px}
+.sec-h input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-weight:700;font-size:16px;letter-spacing:.01em;height:40px}
+.sec-h .ib{width:38px;height:38px;color:var(--ink3)}
+.sec-h .ib svg.i{width:19px;height:19px}
+.sec textarea{display:block;width:100%;border:0;outline:0;resize:none;background:transparent;padding:4px 20px 18px;font-family:var(--serif);font-size:17px;line-height:1.6;min-height:72px;overflow:hidden}
+.sec textarea::placeholder{color:var(--ink3);opacity:.75;font-style:italic}
+.addsec{width:100%;height:56px;border-radius:var(--r);border:1.5px dashed var(--line);color:var(--ink2);font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
+.addsec:active{background:var(--surface)}
+.fmtbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:none;justify-content:center;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(0,0,0,.06)}
+.fmtbar.on{display:flex}
+.fmtbar .in{display:flex;gap:6px;overflow-x:auto;max-width:100%;scrollbar-width:none}
+.fmtbar button{flex:none;height:42px;padding:0 14px;border-radius:10px;background:var(--surface2);font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px;color:var(--ink)}
+.fmtbar button b{font-family:var(--serif);font-size:16px}
+.fmtbar button:active{filter:brightness(.92)}
+.fmtbar .done{background:var(--accent);color:var(--accent-ink)}
+
+/* ---------- conteúdo renderizado (púlpito e PDF) ---------- */
+.rd{font-family:var(--serif);line-height:1.55}
+.rd p{margin:0 0 .6em}
+.rd .li{position:relative;padding-left:1.15em;margin:0 0 .45em}
+.rd .li::before{content:'';position:absolute;left:.15em;top:.62em;width:.36em;height:.36em;border-radius:50%;background:var(--accent)}
+.rd .li.l2{margin-left:1.2em;font-size:.92em;color:var(--ink2)}
+.rd .li.l2::before{background:transparent;border:1.5px solid var(--ink3);width:.32em;height:.32em}
+.rd .li.num{padding-left:1.6em}
+.rd .li.num::before{content:attr(data-n);background:none;width:auto;height:auto;top:0;left:0;border-radius:0;font-weight:700;color:var(--accent);font-size:.9em}
+.rd h4{font-family:var(--sans);font-size:.72em;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:1.1em 0 .45em;font-weight:700}
+.rd h4:first-child{margin-top:0}
+.rd blockquote{margin:.3em 0 .8em;padding:.55em .8em .55em 1em;border-left:4px solid var(--verse-bar);background:var(--verse-bg);color:var(--verse-ink);border-radius:0 10px 10px 0;font-style:italic}
+.rd blockquote p{margin:0 0 .3em}
+.rd blockquote p:last-child{margin:0}
+.rd .ref{font-family:var(--sans);font-style:normal;font-weight:700;font-size:.86em;background:var(--verse-bg);color:var(--verse-ink);padding:.06em .42em;border-radius:.35em;white-space:nowrap}
+.rd blockquote .ref{background:transparent;padding:0}
+.rd mark{background:var(--mark);color:inherit;padding:0 .12em;border-radius:.2em}
+.rd strong{font-weight:700}
+.rd .gap{height:.5em}
+
+/* ---------- púlpito ---------- */
+#pulpit{background:var(--bg)}
+.pp-top{display:flex;align-items:center;gap:6px;padding:8px 10px 0 14px}
+.pp-title{flex:1;min-width:0;display:flex;align-items:baseline;gap:10px;overflow:hidden;white-space:nowrap}
+.pp-title b{font-family:var(--serif);font-weight:600;font-size:17px;overflow:hidden;text-overflow:ellipsis}
+.pp-title .pill{height:24px;font-size:12.5px}
+.pp-clock{font-size:14px;font-weight:600;color:var(--ink3);font-variant-numeric:tabular-nums;padding:0 6px}
+.pp-chips{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;scrollbar-width:none;border-bottom:1px solid var(--line)}
+.pp-chips::-webkit-scrollbar{display:none}
+.pp-chips button{flex:none;height:38px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--ink2);background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;gap:7px}
+.pp-chips button i{font-style:normal;font-size:12px;color:var(--ink3)}
+.pp-chips button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.pp-chips button.on i{color:inherit;opacity:.75}
+.pp-prog{height:3px;background:var(--line)}
+.pp-prog div{height:100%;background:var(--accent);transition:width .25s}
+.pp-stage{flex:1;position:relative;overflow:hidden}
+.pp-track{display:flex;height:100%;transition:transform .32s cubic-bezier(.2,.7,.2,1);will-change:transform}
+.pp-page{flex:0 0 100%;height:100%;overflow-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.pp-inner{max-width:1000px;margin:0 auto;padding:22px 34px 120px}
+.pp-label{font-family:var(--sans);font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);font-size:.5em;margin-bottom:.5em;display:flex;gap:.8em;align-items:center}
+.pp-label span{color:var(--ink3)}
+.pp-h{font-family:var(--serif);font-weight:600;font-size:1.25em;line-height:1.2;margin:0 0 .6em;letter-spacing:-.01em}
+.pp-scroll .pp-sec{padding-bottom:1.4em;margin-bottom:1.2em;border-bottom:1px solid var(--line);scroll-margin-top:12px}
+.pp-nav{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom));display:flex;gap:10px;right:18px;z-index:3}
+.pp-nav button{width:58px;height:58px;border-radius:18px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);color:var(--ink)}
+.pp-nav button:disabled{opacity:.3}
+.pp-nav button svg.i{width:26px;height:26px}
+.pp-font{display:flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;height:40px}
+.pp-font button{width:40px;height:40px;font-weight:700;color:var(--ink2);font-family:var(--serif)}
+.pp-font .v{font-size:13px;color:var(--ink3);min-width:28px;text-align:center;font-variant-numeric:tabular-nums}
+.pp-end{text-align:center;color:var(--ink3);font-family:var(--sans);font-size:.5em;letter-spacing:.12em;text-transform:uppercase;padding-top:1.5em}
+
+/* ---------- folhas e diálogos ---------- */
+.scrim{position:fixed;inset:0;background:rgba(20,14,8,.42);z-index:50;display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .18s}
+.scrim.on{opacity:1}
+.sheet{background:var(--surface);width:100%;max-width:560px;border-radius:22px 22px 0 0;max-height:88vh;display:flex;flex-direction:column;transform:translateY(30px);transition:transform .2s;padding-bottom:env(safe-area-inset-bottom)}
+.scrim.on .sheet{transform:none}
+@media (min-width:700px){.scrim{align-items:center}.sheet{border-radius:22px;max-height:84vh}}
+.sheet-h{padding:20px 22px 8px;display:flex;align-items:center;gap:8px}
+.sheet-h h3{flex:1;margin:0;font-family:var(--serif);font-weight:600;font-size:21px}
+.sheet-b{padding:4px 22px 18px;overflow-y:auto}
+.sheet-b p{color:var(--ink2);line-height:1.55;margin:0 0 12px}
+.sheet-f{display:flex;gap:10px;justify-content:flex-end;padding:8px 22px 20px;flex-wrap:wrap}
+.opt{display:flex;align-items:center;gap:14px;width:100%;padding:14px 12px;border-radius:12px;text-align:left;font-size:16px;font-weight:500}
+.opt:active{background:var(--surface2)}
+.opt svg.i{color:var(--ink2)}
+.opt.danger,.opt.danger svg.i{color:#B3261E}
+:root[data-theme="dark"] .opt.danger,:root[data-theme="dark"] .opt.danger svg.i{color:#F2867D}
+.txtin{width:100%;height:48px;border-radius:12px;border:1px solid var(--line);background:var(--bg);padding:0 14px;outline:0;font-size:16px}
+.txtin:focus{border-color:var(--accent)}
+.set-g{margin-bottom:22px}
+.set-g>.lab{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.seg{display:flex;background:var(--surface2);border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;height:40px;border-radius:9px;font-weight:600;font-size:14.5px;color:var(--ink2)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.tpl-row{display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.tpl-row .no{width:22px;font-size:13px;color:var(--ink3);font-weight:700}
+.tpl-row input{flex:1;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--bg);padding:0 12px;outline:0;font-size:15px;min-width:0}
+.tpl-row .ib{width:38px;height:38px}
+.help .rd{font-size:16px;background:var(--bg);border-radius:12px;padding:14px 16px;margin:6px 0 14px}
+.help code{font-family:ui-monospace,monospace;font-size:13.5px;background:var(--surface2);padding:2px 6px;border-radius:6px;white-space:pre}
+.help table{width:100%;border-collapse:collapse;font-size:14.5px}
+.help td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+.help td:first-child{white-space:nowrap;padding-right:12px}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-size:14.5px;z-index:90;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+.hide{display:none!important}
+@media (max-width:600px){
+  .lib-head h2{font-size:28px}
+  .grid{grid-template-columns:1fr}
+  .ti{font-size:25px}
+  .pp-inner{padding:18px 20px 110px}
+  .top .btn .lbl{display:none}
+  .top .btn{padding:0 12px}
+  .pp-title .pill{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- BIBLIOTECA -->
+<section class="view on" id="library">
+  <div class="top">
+    <h1>Kerygma</h1>
+    <div class="sp"></div>
+    <button class="ib" data-act="toggleTheme" aria-label="Tema"><svg class="i"><use href="#i-moon"/></svg></button>
+    <button class="ib" data-act="settings" aria-label="Ajustes"><svg class="i"><use href="#i-gear"/></svg></button>
+  </div>
+  <div class="scroll" id="libScroll">
+    <div class="wrap">
+      <div class="lib-head"><div class="t"><div class="eyebrow">Biblioteca de sermões</div><h2 id="libCount">Seus sermões</h2></div></div>
+      <label class="search"><svg class="i"><use href="#i-search"/></svg><input id="q" type="search" placeholder="Buscar por título, texto, série ou conteúdo" autocomplete="off"></label>
+      <div class="chips" id="seriesChips"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+  <button class="fab" data-act="newSermon"><svg class="i"><use href="#i-plus"/></svg>Novo sermão</button>
+</section>
+
+<!-- EDITOR -->
+<section class="view" id="editor">
+  <div class="top">
+    <button class="ib" data-act="closeEditor" aria-label="Voltar"><svg class="i"><use href="#i-back"/></svg></button>
+    <div class="status" id="saveStatus">Salvo</div>
+    <div class="sp"></div>
+    <button class="ib" data-act="sermonMenu" aria-label="Mais opções"><svg class="i"><use href="#i-more"/></svg></button>
+    <button class="btn pri" data-act="preach"><svg class="i"><use href="#i-play"/></svg><span class="lbl">Pregar</span></button>
+  </div>
+  <div class="ed-body">
+    <nav class="outline" id="outline"></nav>
+    <div class="ed-main" id="edMain"><div class="ed-inner" id="edInner"></div></div>
+  </div>
+  <div class="fmtbar" id="fmtbar"><div class="in">
+    <button data-fmt="li"><svg class="i"><use href="#i-dot"/></svg>Tópico</button>
+    <button data-fmt="li2"><svg class="i"><use href="#i-sub"/></svg>Subtópico</button>
+    <button data-fmt="num">1.&nbsp;Lista</button>
+    <button data-fmt="quote"><svg class="i"><use href="#i-quote"/></svg>Versículo</button>
+    <button data-fmt="h"><svg class="i"><use href="#i-head"/></svg>Subtítulo</button>
+    <button data-fmt="bold"><b>N</b>Negrito</button>
+    <button data-fmt="mark"><svg class="i"><use href="#i-mark"/></svg>Destaque</button>
+    <button data-fmt="done" class="done">OK</button>
+  </div></div>
+</section>
+
+<!-- PÚLPITO -->
+<section class="view" id="pulpit">
+  <div class="pp-top">
+    <button class="ib" data-act="closePulpit" aria-label="Sair"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="pp-title"><b id="ppTitle"></b><span class="pill" id="ppRef"></span></div>
+    <span class="pp-clock" id="ppClock"></span>
+    <div class="pp-font"><button data-act="fontDown" aria-label="Diminuir letra">A−</button><span class="v" id="ppFontV"></span><button data-act="fontUp" aria-label="Aumentar letra">A+</button></div>
+    <button class="ib" data-act="ppMode" aria-label="Modo de leitura" id="ppModeBtn"><svg class="i"><use href="#i-pages"/></svg></button>
+    <button class="ib" data-act="toggleTheme" aria-label="Tema"><svg class="i"><use href="#i-moon"/></svg></button>
+  </div>
+  <div class="pp-chips" id="ppChips"></div>
+  <div class="pp-prog"><div id="ppProg"></div></div>
+  <div class="pp-stage" id="ppStage"></div>
+</section>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept=".json,application/json,text/plain" class="hide">
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M4 19V5M8 5h9a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H8z" /><path d="M11 9h5M11 13h5"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.9l7.6-4.6M8.2 13.1l7.6 4.6"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="7" cy="12" r="2.2" fill="currentColor"/><path d="M12 12h8"/></symbol>
+  <symbol id="i-sub" viewBox="0 0 24 24"><circle cx="11" cy="12" r="2"/><path d="M15 12h6M3 7v3"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M4 5v14M8 8h12M8 12h12M8 16h8"/></symbol>
+  <symbol id="i-head" viewBox="0 0 24 24"><path d="M5 5v14M13 5v14M5 12h8M17 10l2-1.5V19"/></symbol>
+  <symbol id="i-mark" viewBox="0 0 24 24"><path d="M9 15l-3 3v2h4l3-3M9 15l7-10 4 3-7 10-4-3z"/></symbol>
+  <symbol id="i-pages" viewBox="0 0 24 24"><rect x="3" y="5" width="8" height="14" rx="1.5"/><rect x="13" y="5" width="8" height="14" rx="1.5"/></symbol>
+  <symbol id="i-scroll" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+  <symbol id="i-down-file" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-up-file" viewBox="0 0 24 24"><path d="M12 15V4M7 9l5-5 5 5M5 20h14"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6c-2-1.5-5-2-8-1.5V19c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5C17 4 14 4.5 12 6zM12 6v14.5"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.4v.8M12 17h.01"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+</svg>
+
+<script>
+'use strict';
+/* =================== Estado e armazenamento =================== */
+var HAS_NATIVE = typeof window.Android !== 'undefined';
+var DEFAULT_TEMPLATE = ['Introdução','Leitura do texto','Contexto imediato','Contexto remoto','Proposição','Ponto 1','Ponto 2','Ponto 3','Aplicação','Conclusão e apelo'];
+var HINTS = {
+  'introducao':'Como você vai prender a atenção e conduzir ao texto? Uma pergunta, uma situação, uma tensão…',
+  'leitura do texto':'Referência e trechos-chave que serão lidos.',
+  'contexto imediato':'O que vem antes e depois do texto; o argumento do capítulo e onde a passagem se encaixa.',
+  'contexto remoto':'Autor, destinatários, ocasião, data, propósito do livro e lugar na história da redenção.',
+  'proposicao':'A ideia central do texto em uma frase.',
+  'exegese':'Termos-chave, gramática, estrutura do texto.',
+  'aplicacao':'O que o texto exige de quem ouve? Fé, arrependimento, prática concreta.',
+  'conclusao e apelo':'Retome a proposição e faça o chamado final.',
+  'conclusao':'Retome a proposição e faça o chamado final.',
+  'ilustracao':'História, imagem ou exemplo que torna a verdade concreta.'
+};
+var state = { v:1, sermons:[], settings:{ theme:'auto', fontSize:30, ppMode:'pages', skipEmpty:true, template:DEFAULT_TEMPLATE.slice() }, seeded:false };
+var ui = { view:'library', current:null, filterSeries:'', q:'', pp:{ idx:0, pages:[] }, focusTa:null };
+var saveTimer = null, dirty = false;
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function norm(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+function today(){ var d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+var MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function fmtDate(s){ if(!s) return ''; var p = s.split('-'); if(p.length<3) return s; return (+p[2])+' '+MESES[(+p[1])-1]+' '+p[0]; }
+function $(id){ return document.getElementById(id); }
+
+function load(){
+  var raw = '';
+  try { raw = HAS_NATIVE ? Android.load() : (localStorage.getItem('kerygma') || ''); } catch(e){}
+  if (raw) {
+    try {
+      var d = JSON.parse(raw);
+      if (d && Array.isArray(d.sermons)) {
+        state.sermons = d.sermons;
+        state.seeded = !!d.seeded;
+        if (d.settings) for (var k in d.settings) state.settings[k] = d.settings[k];
+      }
+    } catch(e){}
+  }
+  if (!Array.isArray(state.settings.template) || !state.settings.template.length) state.settings.template = DEFAULT_TEMPLATE.slice();
+}
+function persist(){
+  var json = JSON.stringify(state);
+  var ok = true;
+  try { if (HAS_NATIVE) ok = Android.save(json); else localStorage.setItem('kerygma', json); } catch(e){ ok = false; }
+  dirty = false;
+  var st = $('saveStatus'); if (st) st.textContent = ok ? 'Salvo' : 'Erro ao salvar';
+}
+function scheduleSave(){
+  dirty = true;
+  var st = $('saveStatus'); if (st) st.textContent = 'Salvando…';
+  clearTimeout(saveTimer); saveTimer = setTimeout(persist, 450);
+}
+window.kgFlush = function(){ if (dirty) { clearTimeout(saveTimer); persist(); } };
+window.addEventListener('pagehide', window.kgFlush);
+
+function getSermon(id){ for (var i=0;i<state.sermons.length;i++) if (state.sermons[i].id === id) return state.sermons[i]; return null; }
+function touch(s){ s.updated = Date.now(); scheduleSave(); }
+
+function newSermon(){
+  var s = { id:uid(), title:'', passage:'', series:'', date:today(), occasion:'', created:Date.now(), updated:Date.now(),
+    sections: state.settings.template.map(function(t){ return { id:uid(), title:t, body:'' }; }) };
+  state.sermons.unshift(s); persist(); return s;
+}
+
+/* =================== Tema =================== */
+function sysDark(){
+  try { if (HAS_NATIVE) return Android.isNight(); } catch(e){}
+  return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function isDark(){ var t = state.settings.theme; return t === 'dark' || (t === 'auto' && sysDark()); }
+function applyTheme(){
+  var dark = isDark();
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.querySelectorAll('[data-act="toggleTheme"] use').forEach(function(u){ u.setAttribute('href', dark ? '#i-sun' : '#i-moon'); });
+  syncBars();
+}
+function syncBars(){
+  if (!HAS_NATIVE) return;
+  var bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#F4EFE6';
+  try { Android.setBars(bg, !isDark(), ui.view === 'pulpit'); } catch(e){}
+}
+window.kgSysTheme = function(){ if (state.settings.theme === 'auto') applyTheme(); };
+if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', window.kgSysTheme);
+
+/* =================== Renderização do texto =================== */
+var BOOKS_FULL = 'Gênesis|Êxodo|Levítico|Números|Deuteronômio|Josué|Juízes|Rute|Samuel|Reis|Crônicas|Esdras|Neemias|Ester|Jó|Salmos?|Provérbios|Eclesiastes|Cantares|Cântico dos Cânticos|Isaías|Jeremias|Lamentações|Ezequiel|Daniel|Oséias|Oseias|Joel|Amós|Obadias|Jonas|Miquéias|Miqueias|Naum|Habacuque|Sofonias|Ageu|Zacarias|Malaquias|Mateus|Marcos|Lucas|João|Atos|Romanos|Coríntios|Gálatas|Efésios|Filipenses|Colossenses|Tessalonicenses|Timóteo|Tito|Filemom|Hebreus|Tiago|Pedro|Judas|Apocalipse';
+var BOOKS_ABBR = 'Gn|Êx|Ex|Lv|Nm|Dt|Js|Jz|Rt|Sm|Rs|Cr|Ed|Ne|Et|Jó|Sl|Pv|Ec|Ct|Is|Jr|Lm|Ez|Dn|Os|Jl|Am|Ob|Jn|Mq|Na|Hc|Sf|Ag|Zc|Ml|Mt|Mc|Lc|Jo|At|Rm|Co|Gl|Ef|Fp|Cl|Ts|Tm|Tt|Fm|Hb|Tg|Pe|Jd|Ap';
+var VERSES = '\\d{1,3}(?:[-–]\\d{1,3})?(?:\\s?[,;]\\s?\\d{1,3}(?:[-–]\\d{1,3})?(?!\\s?[A-ZÀ-Ý]|º))*';
+var REF_RE = new RegExp(
+  '(?<![\\wÀ-ÿ])(?:[1-3]º?\\s?)?(?:(?:' + BOOKS_FULL + ')\\s\\d{1,3}(?:\\s?[:.]\\s?' + VERSES + ')?' +
+  '|(?:' + BOOKS_ABBR + ')\\.?\\s?\\d{1,3}\\s?[:.]\\s?' + VERSES + ')(?![\\wÀ-ÿ])', 'g');
+
+function inline(s){
+  s = esc(s);
+  s = s.replace(REF_RE, function(m){ return '<span class="ref">' + m + '</span>'; });
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/==(.+?)==/g, '<mark>$1</mark>');
+  s = s.replace(/(^|[^\w*])_(.+?)_(?![\w])/g, '$1<em>$2</em>');
+  return s;
+}
+function renderBody(text){
+  var lines = String(text || '').replace(/\r/g,'').split('\n');
+  var out = [], quote = [];
+  function flushQuote(){ if (quote.length){ out.push('<blockquote>' + quote.map(function(q){ return '<p>' + inline(q) + '</p>'; }).join('') + '</blockquote>'); quote = []; } }
+  lines.forEach(function(line){
+    var m;
+    if ((m = line.match(/^\s*>\s?(.*)$/))) { quote.push(m[1]); return; }
+    flushQuote();
+    if (!line.trim()) { if (out.length && out[out.length-1] !== '<div class="gap"></div>') out.push('<div class="gap"></div>'); return; }
+    if ((m = line.match(/^\s*#{1,3}\s+(.*)$/))) { out.push('<h4>' + inline(m[1]) + '</h4>'); return; }
+    if ((m = line.match(/^(\s*)[-•*–]\s+(.*)$/))) { var lvl = m[1].replace(/\t/g,'  ').length >= 2 ? 'l2' : ''; out.push('<div class="li ' + lvl + '">' + inline(m[2]) + '</div>'); return; }
+    if ((m = line.match(/^\s*(\d{1,2})[.)]\s+(.*)$/))) { out.push('<div class="li num" data-n="' + m[1] + '.">' + inline(m[2]) + '</div>'); return; }
+    out.push('<p>' + inline(line) + '</p>');
+  });
+  flushQuote();
+  while (out.length && out[out.length-1] === '<div class="gap"></div>') out.pop();
+  return out.join('');
+}
+function plainSnippet(s){
+  for (var i=0;i<s.sections.length;i++){
+    var b = s.sections[i].body.replace(/[>#*=_•-]/g,' ').replace(/\s+/g,' ').trim();
+    if (b) return b;
+  }
+  return '';
+}
+
+/* =================== Navegação =================== */
+function show(view){
+  ui.view = view;
+  ['library','editor','pulpit'].forEach(function(v){ $(v).classList.toggle('on', v === view); });
+  if (HAS_NATIVE) { try { Android.keepAwake(view === 'pulpit'); } catch(e){} }
+  if (view === 'editor') growAll();
+  syncBars();
+}
+function growAll(){ document.querySelectorAll('#edInner textarea').forEach(autoGrow); }
+window.kgBack = function(){
+  var sc = document.querySelector('.scrim'); if (sc) { closeSheet(sc, null); return true; }
+  if (ui.view === 'pulpit') { closePulpit(); return true; }
+  if (ui.view === 'editor') { closeEditor(); return true; }
+  return false;
+};
+
+/* =================== Biblioteca =================== */
+function renderLibrary(){
+  var all = state.sermons.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||'') || b.updated - a.updated; });
+  var series = {};
+  all.forEach(function(s){ if (s.series && s.series.trim()) series[s.series.trim()] = (series[s.series.trim()]||0) + 1; });
+  var names = Object.keys(series).sort(function(a,b){ return a.localeCompare(b,'pt'); });
+  if (ui.filterSeries && !series[ui.filterSeries]) ui.filterSeries = '';
+  $('seriesChips').innerHTML = names.length ? ('<button class="chip ' + (ui.filterSeries ? '' : 'on') + '" data-series="">Todos</button>' +
+    names.map(function(n){ return '<button class="chip ' + (ui.filterSeries === n ? 'on' : '') + '" data-series="' + esc(n) + '">' + esc(n) + ' · ' + series[n] + '</button>'; }).join('')) : '';
+  var q = norm(ui.q.trim());
+  var list = all.filter(function(s){
+    if (ui.filterSeries && (s.series||'').trim() !== ui.filterSeries) return false;
+    if (!q) return true;
+    var hay = norm([s.title, s.passage, s.series, s.occasion].concat(s.sections.map(function(x){ return x.title + ' ' + x.body; })).join(' '));
+    return q.split(/\s+/).every(function(w){ return hay.indexOf(w) >= 0; });
+  });
+  $('libCount').textContent = state.sermons.length ? (state.sermons.length === 1 ? '1 sermão' : state.sermons.length + ' sermões') : 'Seus sermões';
+  if (!state.sermons.length) {
+    $('grid').innerHTML = '<div class="empty" style="grid-column:1/-1"><svg class="i" style="width:46px;height:46px;color:var(--accent)"><use href="#i-book"/></svg><h3>Nenhum sermão ainda</h3><p>Comece um esboço com as seções que você usa — introdução, contextos, pontos, aplicação — e leve tudo para o púlpito.</p><button class="btn pri" data-act="newSermon"><svg class="i"><use href="#i-plus"/></svg>Novo sermão</button></div>';
+    return;
+  }
+  if (!list.length) { $('grid').innerHTML = '<div class="empty" style="grid-column:1/-1"><h3>Nada encontrado</h3><p>Tente outra palavra ou limpe o filtro.</p></div>'; return; }
+  $('grid').innerHTML = list.map(function(s){
+    var filled = s.sections.filter(function(x){ return x.body.trim(); }).length;
+    return '<div class="card" data-open="' + s.id + '">' +
+      '<div class="meta">' + (s.passage ? '<span class="pill">' + esc(s.passage) + '</span>' : '') + (s.series ? '<span class="tag">' + esc(s.series) + '</span>' : '') + '</div>' +
+      '<h3>' + (s.title ? esc(s.title) : '<span style="color:var(--ink3)">Sem título</span>') + '</h3>' +
+      '<div class="snip">' + esc(plainSnippet(s) || 'Esboço vazio') + '</div>' +
+      '<div class="foot"><span class="n">' + (s.date ? fmtDate(s.date) + ' · ' : '') + filled + '/' + s.sections.length + ' seções</span>' +
+      '<button class="mini" data-cardmenu="' + s.id + '" aria-label="Opções"><svg class="i"><use href="#i-more"/></svg></button>' +
+      '<button class="mini pri" data-preach="' + s.id + '"><svg class="i"><use href="#i-play"/></svg>Pregar</button></div></div>';
+  }).join('');
+}
+
+/* =================== Editor =================== */
+function openEditor(id){
+  ui.current = id;
+  renderEditor();
+  show('editor');
+  $('edMain').scrollTop = 0;
+  $('saveStatus').textContent = 'Salvo';
+}
+function hintFor(title){ var n = norm(title).replace(/\s*\(.*\)/,'').trim(); if (/^ponto/.test(n)) return 'Afirmação do ponto, explicação do texto, ilustração e ponte para a aplicação.'; return HINTS[n] || 'Escreva os tópicos desta seção…'; }
+function renderEditor(){
+  var s = getSermon(ui.current); if (!s) return;
+  var h = '<div class="metaform">' +
+    '<input class="ti" data-meta="title" placeholder="Título do sermão" value="' + esc(s.title) + '">' +
+    '<div class="mrow">' +
+    '<label class="fld"><span>Texto-base</span><input data-meta="passage" placeholder="Ex.: Romanos 8:28-30" value="' + esc(s.passage) + '"></label>' +
+    '<label class="fld"><span>Série</span><input data-meta="series" list="seriesList" placeholder="Opcional" value="' + esc(s.series) + '"></label>' +
+    '<label class="fld"><span>Data</span><input type="date" data-meta="date" value="' + esc(s.date) + '"></label>' +
+    '<label class="fld"><span>Ocasião / igreja</span><input data-meta="occasion" placeholder="Opcional" value="' + esc(s.occasion) + '"></label>' +
+    '</div></div><datalist id="seriesList">' + uniqueSeries().map(function(n){ return '<option value="' + esc(n) + '">'; }).join('') + '</datalist>';
+  s.sections.forEach(function(sec, i){
+    h += '<div class="sec" id="sec-' + sec.id + '" data-sec="' + sec.id + '">' +
+      '<div class="sec-h"><span class="no">' + (i+1) + '</span>' +
+      '<input data-sectitle="' + sec.id + '" value="' + esc(sec.title) + '" placeholder="Nome da seção">' +
+      '<button class="ib" data-secup="' + sec.id + '" aria-label="Subir"' + (i === 0 ? ' disabled style="opacity:.3"' : '') + '><svg class="i"><use href="#i-up"/></svg></button>' +
+      '<button class="ib" data-secdown="' + sec.id + '" aria-label="Descer"' + (i === s.sections.length-1 ? ' disabled style="opacity:.3"' : '') + '><svg class="i"><use href="#i-down"/></svg></button>' +
+      '<button class="ib" data-secmenu="' + sec.id + '" aria-label="Opções da seção"><svg class="i"><use href="#i-more"/></svg></button></div>' +
+      '<textarea data-secbody="' + sec.id + '" placeholder="' + esc(hintFor(sec.title)) + '" spellcheck="true">' + esc(sec.body) + '</textarea></div>';
+  });
+  h += '<button class="addsec" data-act="addSection"><svg class="i"><use href="#i-plus"/></svg>Adicionar seção</button>';
+  $('edInner').innerHTML = h;
+  growAll();
+  renderOutline();
+}
+function renderOutline(){
+  var s = getSermon(ui.current); if (!s) return;
+  $('outline').innerHTML = '<div class="lab">Estrutura</div>' + s.sections.map(function(sec, i){
+    return '<button data-goto="' + sec.id + '" class="' + (sec.body.trim() ? '' : 'empty-s') + '"><span class="no">' + (i+1) + '</span><span>' + esc(sec.title || 'Sem nome') + '</span></button>';
+  }).join('');
+}
+function uniqueSeries(){ var o = {}; state.sermons.forEach(function(s){ if (s.series && s.series.trim()) o[s.series.trim()] = 1; }); return Object.keys(o).sort(); }
+function autoGrow(ta){ ta.style.height = 'auto'; ta.style.height = (ta.scrollHeight + 2) + 'px'; }
+function closeEditor(){
+  window.kgFlush();
+  var s = getSermon(ui.current);
+  if (s && !s.title.trim() && !s.passage.trim() && s.sections.every(function(x){ return !x.body.trim(); })) {
+    state.sermons = state.sermons.filter(function(x){ return x !== s; }); persist();
+  }
+  hideFmt();
+  ui.current = null; renderLibrary(); show('library');
+}
+function findSec(s, id){ for (var i=0;i<s.sections.length;i++) if (s.sections[i].id === id) return i; return -1; }
+
+/* Barra de formatação */
+function showFmt(ta){ ui.focusTa = ta; $('fmtbar').classList.add('on'); }
+function hideFmt(){ $('fmtbar').classList.remove('on'); ui.focusTa = null; }
+function applyFmt(kind){
+  var ta = ui.focusTa; if (!ta) return;
+  if (kind === 'done') { ta.blur(); hideFmt(); return; }
+  var v = ta.value, a = ta.selectionStart, b = ta.selectionEnd;
+  if (kind === 'bold' || kind === 'mark') {
+    var w = kind === 'bold' ? '**' : '==';
+    var sel = v.slice(a, b);
+    ta.value = v.slice(0, a) + w + sel + w + v.slice(b);
+    ta.selectionStart = a + w.length; ta.selectionEnd = b + w.length;
+  } else {
+    var pre = { li:'- ', li2:'    - ', num:'1. ', quote:'> ', h:'## ' }[kind];
+    var ls = v.lastIndexOf('\n', a - 1) + 1;
+    var lineEnd = v.indexOf('\n', b); if (lineEnd < 0) lineEnd = v.length;
+    var block = v.slice(ls, lineEnd);
+    var strip = /^(\s*(?:[-•*–]|\d{1,2}[.)]|>|#{1,3})\s?)/;
+    var n = 0;
+    var lines = block.split('\n').map(function(l){
+      var clean = l.replace(strip, '');
+      if (kind === 'num') { n++; return n + '. ' + clean; }
+      return pre + clean;
+    });
+    if (block === '' ) lines = [pre];
+    var nb = lines.join('\n');
+    ta.value = v.slice(0, ls) + nb + v.slice(lineEnd);
+    var pos = ls + nb.length; ta.selectionStart = ta.selectionEnd = pos;
+  }
+  ta.dispatchEvent(new Event('input', { bubbles:true }));
+  ta.focus();
+}
+/* Enter continua listas */
+function onTaKey(e){
+  if (e.key !== 'Enter' || e.shiftKey) return;
+  var ta = e.target, v = ta.value, a = ta.selectionStart;
+  if (a !== ta.selectionEnd) return;
+  var ls = v.lastIndexOf('\n', a - 1) + 1, line = v.slice(ls, a);
+  var m = line.match(/^(\s*)([-•*–]|\d{1,2}[.)]|>)\s(.*)$/);
+  if (!m) return;
+  e.preventDefault();
+  if (!m[3].trim()) { ta.value = v.slice(0, ls) + v.slice(a); ta.selectionStart = ta.selectionEnd = ls; }
+  else {
+    var mk = m[2];
+    var nm = mk.match(/^(\d+)([.)])$/); if (nm) mk = (+nm[1] + 1) + nm[2];
+    var ins = '\n' + m[1] + mk + ' ';
+    ta.value = v.slice(0, a) + ins + v.slice(a); ta.selectionStart = ta.selectionEnd = a + ins.length;
+  }
+  ta.dispatchEvent(new Event('input', { bubbles:true }));
+}
+
+/* =================== Púlpito =================== */
+function openPulpit(id, startSec){
+  var s = getSermon(id); if (!s) return;
+  window.kgFlush();
+  ui.current = id;
+  var pages = s.sections.filter(function(x){ return !state.settings.skipEmpty || x.body.trim(); });
+  if (!pages.length) { toast('Escreva o conteúdo de alguma seção antes de pregar.'); return; }
+  ui.pp = { idx:0, pages:pages, sid:id };
+  if (startSec) { var k = pages.findIndex(function(p){ return p.id === startSec; }); if (k >= 0) ui.pp.idx = k; }
+  $('ppTitle').textContent = s.title || 'Sem título';
+  $('ppRef').textContent = s.passage || ''; $('ppRef').classList.toggle('hide', !s.passage);
+  hideFmt();
+  show('pulpit');
+  renderPulpit();
+  tickClock();
+}
+function renderPulpit(){
+  var P = ui.pp, fs = state.settings.fontSize, scroll = state.settings.ppMode === 'scroll';
+  $('ppFontV').textContent = fs;
+  $('ppModeBtn').querySelector('use').setAttribute('href', scroll ? '#i-scroll' : '#i-pages');
+  $('ppChips').innerHTML = P.pages.map(function(p, i){ return '<button data-ppgo="' + i + '"><i>' + (i+1) + '</i>' + esc(p.title || 'Seção') + '</button>'; }).join('');
+  var total = P.pages.length;
+  var sec = function(p, i){ return '<div class="pp-label">' + esc(p.title || 'Seção') + '<span>' + (i+1) + ' / ' + total + '</span></div>' + '<div class="rd">' + renderBody(p.body) + '</div>'; };
+  var stage = $('ppStage');
+  if (scroll) {
+    stage.innerHTML = '<div class="pp-page pp-scroll" id="ppScroll" style="font-size:' + fs + 'px"><div class="pp-inner">' +
+      P.pages.map(function(p, i){ return '<div class="pp-sec" id="pps-' + i + '">' + sec(p, i) + '</div>'; }).join('') +
+      '<div class="pp-end">Fim do esboço</div></div></div>' + navHtml();
+    var sc = $('ppScroll');
+    sc.addEventListener('scroll', function(){
+      var y = sc.scrollTop + sc.clientHeight * 0.3, cur = 0;
+      for (var i=0;i<total;i++){ var el = $('pps-' + i); if (el && el.offsetTop <= y) cur = i; }
+      if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) cur = total - 1;
+      if (cur !== P.idx) { P.idx = cur; syncChips(); }
+    }, { passive:true });
+    requestAnimationFrame(function(){ var el = $('pps-' + P.idx); if (el) sc.scrollTop = el.offsetTop - 12; syncChips(); });
+  } else {
+    stage.innerHTML = '<div class="pp-track" id="ppTrack">' + P.pages.map(function(p, i){
+      return '<div class="pp-page" style="font-size:' + fs + 'px"><div class="pp-inner">' + sec(p, i) + (i === total-1 ? '<div class="pp-end">Fim do esboço</div>' : '') + '</div></div>';
+    }).join('') + '</div>' + navHtml();
+    bindSwipe($('ppTrack'));
+    goPage(P.idx, true);
+  }
+}
+function navHtml(){ return '<div class="pp-nav"><button data-act="ppPrev" aria-label="Anterior"><svg class="i"><use href="#i-back"/></svg></button><button data-act="ppNext" aria-label="Próximo"><svg class="i"><use href="#i-next"/></svg></button></div>'; }
+function syncChips(){
+  var P = ui.pp, total = P.pages.length;
+  document.querySelectorAll('#ppChips button').forEach(function(b, i){ b.classList.toggle('on', i === P.idx); });
+  var on = document.querySelector('#ppChips button.on');
+  if (on) { var c = $('ppChips'); c.scrollTo({ left: on.offsetLeft - c.clientWidth/2 + on.clientWidth/2, behavior:'smooth' }); }
+  $('ppProg').style.width = ((P.idx + 1) / total * 100) + '%';
+  var pv = document.querySelector('[data-act="ppPrev"]'), nx = document.querySelector('[data-act="ppNext"]');
+  if (pv) pv.disabled = P.idx === 0; if (nx) nx.disabled = P.idx === total - 1;
+}
+function goPage(i, instant){
+  var P = ui.pp; i = Math.max(0, Math.min(P.pages.length - 1, i));
+  if (state.settings.ppMode === 'scroll') {
+    P.idx = i; var el = $('pps-' + i), sc = $('ppScroll'); if (el && sc) sc.scrollTo({ top: el.offsetTop - 12, behavior:'smooth' }); syncChips(); return;
+  }
+  var tr = $('ppTrack'); if (!tr) return;
+  var changed = i !== P.idx; P.idx = i;
+  tr.style.transition = instant ? 'none' : '';
+  tr.style.transform = 'translateX(' + (-i * 100) + '%)';
+  if (instant) { void tr.offsetWidth; tr.style.transition = ''; }
+  if (changed) { var pg = tr.children[i]; if (pg) pg.scrollTop = 0; }
+  syncChips();
+}
+function bindSwipe(tr){
+  var sx = 0, sy = 0, dx = 0, mode = 0, w = 1;
+  tr.addEventListener('touchstart', function(e){ var t = e.touches[0]; sx = t.clientX; sy = t.clientY; dx = 0; mode = 0; w = tr.clientWidth; }, { passive:true });
+  tr.addEventListener('touchmove', function(e){
+    var t = e.touches[0], ddx = t.clientX - sx, ddy = t.clientY - sy;
+    if (!mode) { if (Math.abs(ddx) > 12 && Math.abs(ddx) > Math.abs(ddy) * 1.3) mode = 1; else if (Math.abs(ddy) > 12) mode = 2; }
+    if (mode === 1) {
+      dx = ddx;
+      var edge = (ui.pp.idx === 0 && dx > 0) || (ui.pp.idx === ui.pp.pages.length - 1 && dx < 0);
+      tr.style.transition = 'none';
+      tr.style.transform = 'translateX(calc(' + (-ui.pp.idx * 100) + '% + ' + (edge ? dx * 0.3 : dx) + 'px))';
+    }
+  }, { passive:true });
+  tr.addEventListener('touchend', function(){
+    if (mode === 1) {
+      tr.style.transition = '';
+      if (dx < -w * 0.15) goPage(ui.pp.idx + 1); else if (dx > w * 0.15) goPage(ui.pp.idx - 1); else goPage(ui.pp.idx);
+    }
+    mode = 0;
+  });
+}
+function setFont(d){
+  state.settings.fontSize = Math.max(16, Math.min(64, state.settings.fontSize + d));
+  $('ppFontV').textContent = state.settings.fontSize;
+  document.querySelectorAll('#ppStage .pp-page').forEach(function(p){ p.style.fontSize = state.settings.fontSize + 'px'; });
+  scheduleSave();
+}
+var clockT = null;
+function tickClock(){
+  clearTimeout(clockT);
+  if (ui.view !== 'pulpit') return;
+  var d = new Date(); $('ppClock').textContent = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  clockT = setTimeout(tickClock, (60 - d.getSeconds()) * 1000 + 50);
+}
+document.addEventListener('keydown', function(e){
+  if (ui.view !== 'pulpit') return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goPage(ui.pp.idx + 1); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goPage(ui.pp.idx - 1); }
+  else if (e.key === 'Escape') closePulpit();
+});
+
+/* =================== PDF e texto =================== */
+function pdfHtml(s){
+  var css = document.querySelector('style').textContent;
+  var meta = [s.passage, s.series, s.date ? fmtDate(s.date) : '', s.occasion].filter(Boolean).map(esc).join('  ·  ');
+  var body = s.sections.filter(function(x){ return x.body.trim(); }).map(function(x, i){
+    return '<section class="ps"><h2><span>' + (i+1) + '</span>' + esc(x.title) + '</h2><div class="rd">' + renderBody(x.body) + '</div></section>';
+  }).join('');
+  return '<!doctype html><html data-theme="light"><head><meta charset="utf-8"><style>' + css +
+    '@page{size:A4;margin:16mm 17mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}html,body{background:#fff;height:auto}body{color:#231E18;font-size:12pt}' +
+    '.doc{max-width:none}.doc h1{font-family:var(--serif);font-weight:600;font-size:22pt;margin:0 0 4pt;letter-spacing:-.01em}' +
+    '.doc .m{font-size:10pt;color:#6b6155;margin-bottom:14pt;padding-bottom:10pt;border-bottom:1.5px solid #7A2E24}' +
+    '.ps{margin:0 0 12pt;break-inside:auto}.ps h2{font-family:var(--sans);font-size:9.5pt;letter-spacing:.12em;text-transform:uppercase;color:#7A2E24;margin:0 0 5pt;break-after:avoid;display:flex;gap:8pt}' +
+    '.ps h2 span{color:#9a8f81}.rd{font-size:11.5pt}.rd blockquote{break-inside:avoid}' +
+    '.foot{margin-top:18pt;font-size:8.5pt;color:#9a8f81;text-align:center;letter-spacing:.1em;text-transform:uppercase}' +
+    '</style></head><body><div class="doc"><h1>' + esc(s.title || 'Sem título') + '</h1><div class="m">' + meta + '</div>' + body +
+    '<div class="foot">Kerygma</div></div></body></html>';
+}
+function fileName(s, ext){ return (norm(s.title || 'sermao').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'sermao') + ext; }
+function exportPdf(s){
+  var html = pdfHtml(s);
+  if (HAS_NATIVE) { Android.printPdf(html, fileName(s, '')); return; }
+  var f = document.createElement('iframe'); f.style.cssText = 'position:fixed;width:0;height:0;border:0;right:0;bottom:0';
+  document.body.appendChild(f); f.contentDocument.open(); f.contentDocument.write(html); f.contentDocument.close();
+  setTimeout(function(){ f.contentWindow.print(); setTimeout(function(){ f.remove(); }, 1000); }, 400);
+}
+function plainText(s){
+  var t = (s.title || 'Sem título') + '\n' + [s.passage, s.series, s.date ? fmtDate(s.date) : '', s.occasion].filter(Boolean).join(' · ') + '\n';
+  s.sections.forEach(function(x, i){ if (x.body.trim()) t += '\n' + (i+1) + '. ' + x.title.toUpperCase() + '\n' + x.body.trim() + '\n'; });
+  return t;
+}
+function shareText(s){
+  var t = plainText(s);
+  if (HAS_NATIVE) Android.share(s.title || 'Sermão', t);
+  else if (navigator.share) navigator.share({ title:s.title, text:t }).catch(function(){});
+  else { navigator.clipboard && navigator.clipboard.writeText(t); toast('Texto copiado'); }
+}
+
+/* =================== Backup =================== */
+function exportBackup(){
+  var d = new Date(), name = 'kerygma-backup-' + today() + '-' + String(d.getHours()).padStart(2,'0') + String(d.getMinutes()).padStart(2,'0') + '.json';
+  var json = JSON.stringify({ app:'kerygma', version:1, exported:new Date().toISOString(), sermons:state.sermons, settings:state.settings }, null, 1);
+  if (HAS_NATIVE) { var r = Android.exportFile(name, 'application/json', json); toast(r); return; }
+  var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([json], { type:'application/json' })); a.download = name; a.click();
+  toast('Backup baixado');
+}
+function importBackup(text){
+  var d; try { d = JSON.parse(text); } catch(e){ toast('Arquivo inválido'); return; }
+  if (!d || !Array.isArray(d.sermons)) { toast('Este arquivo não é um backup do Kerygma'); return; }
+  var add = 0, upd = 0;
+  d.sermons.forEach(function(s){
+    if (!s || !s.id || !Array.isArray(s.sections)) return;
+    var cur = getSermon(s.id);
+    if (!cur) { state.sermons.push(s); add++; }
+    else if ((s.updated||0) > (cur.updated||0)) { state.sermons[state.sermons.indexOf(cur)] = s; upd++; }
+  });
+  if (d.settings && Array.isArray(d.settings.template)) state.settings.template = d.settings.template;
+  persist(); renderLibrary();
+  toast(add + ' sermão(ões) adicionados' + (upd ? ', ' + upd + ' atualizados' : ''));
+}
+$('fileIn').addEventListener('change', function(){
+  var f = this.files && this.files[0]; if (!f) return;
+  var r = new FileReader(); r.onload = function(){ importBackup(String(r.result)); }; r.readAsText(f);
+  this.value = '';
+});
+
+/* =================== Folhas e diálogos =================== */
+function sheet(opts){
+  return new Promise(function(resolve){
+    var sc = document.createElement('div'); sc.className = 'scrim';
+    sc._resolve = resolve;
+    sc.innerHTML = '<div class="sheet" role="dialog">' + (opts.title ? '<div class="sheet-h"><h3>' + esc(opts.title) + '</h3>' + (opts.closeX ? '<button class="ib" data-close="1"><svg class="i"><use href="#i-x"/></svg></button>' : '') + '</div>' : '') +
+      '<div class="sheet-b">' + (opts.html || '') + (opts.items ? opts.items.map(function(it){
+        return '<button class="opt ' + (it.danger ? 'danger' : '') + '" data-val="' + esc(it.value) + '">' + (it.icon ? '<svg class="i"><use href="#' + it.icon + '"/></svg>' : '') + esc(it.label) + '</button>';
+      }).join('') : '') + '</div>' +
+      (opts.buttons ? '<div class="sheet-f">' + opts.buttons.map(function(b){ return '<button class="btn ' + (b.kind || '') + '" data-val="' + esc(b.value) + '">' + esc(b.label) + '</button>'; }).join('') + '</div>' : '') + '</div>';
+    document.body.appendChild(sc);
+    requestAnimationFrame(function(){ sc.classList.add('on'); });
+    sc.addEventListener('click', function(e){
+      if (e.target === sc || e.target.closest('[data-close]')) { closeSheet(sc, null); return; }
+      var b = e.target.closest('[data-val]');
+      if (b) {
+        var v = b.getAttribute('data-val');
+        var inp = sc.querySelector('.txtin');
+        closeSheet(sc, inp && v === 'ok' ? inp.value : v);
+      }
+    });
+    var inp = sc.querySelector('.txtin');
+    if (inp) { setTimeout(function(){ inp.focus(); inp.select(); }, 60); inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') closeSheet(sc, inp.value); }); }
+    if (opts.onMount) opts.onMount(sc);
+  });
+}
+function closeSheet(sc, val){ if (!sc || sc._closed) return; sc._closed = true; sc.classList.remove('on'); setTimeout(function(){ sc.remove(); }, 180); sc._resolve(val); }
+function confirmBox(title, text, okLabel, danger){ return sheet({ title:title, html:'<p>' + esc(text) + '</p>', buttons:[{ label:'Cancelar', value:'no', kind:'ghost' }, { label:okLabel || 'OK', value:'yes', kind:'pri' }] }).then(function(v){ return v === 'yes'; }); }
+function promptBox(title, value, placeholder){ return sheet({ title:title, html:'<input class="txtin" value="' + esc(value || '') + '" placeholder="' + esc(placeholder || '') + '">', buttons:[{ label:'Cancelar', value:'__x', kind:'ghost' }, { label:'OK', value:'ok', kind:'pri' }] }).then(function(v){ return v === '__x' || v === null ? null : v; }); }
+var toastT = null;
+function toast(msg){ var t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove('on'); }, 2600); }
+
+/* Menus */
+function sermonMenu(id, fromLib){
+  var s = getSermon(id); if (!s) return;
+  var items = [];
+  if (fromLib) items.push({ label:'Editar', value:'edit', icon:'i-list' });
+  items.push({ label:'Exportar PDF', value:'pdf', icon:'i-pdf' }, { label:'Compartilhar como texto', value:'share', icon:'i-share' }, { label:'Duplicar', value:'dup', icon:'i-copy' }, { label:'Excluir sermão', value:'del', icon:'i-trash', danger:true });
+  sheet({ title:s.title || 'Sem título', items:items }).then(function(v){
+    if (v === 'edit') openEditor(id);
+    else if (v === 'pdf') exportPdf(s);
+    else if (v === 'share') shareText(s);
+    else if (v === 'dup') {
+      var c = JSON.parse(JSON.stringify(s)); c.id = uid(); c.title = (s.title || 'Sem título') + ' (cópia)'; c.created = c.updated = Date.now();
+      c.sections.forEach(function(x){ x.id = uid(); });
+      state.sermons.unshift(c); persist(); if (fromLib) renderLibrary(); else openEditor(c.id); toast('Sermão duplicado');
+    } else if (v === 'del') {
+      confirmBox('Excluir sermão?', 'O esboço "' + (s.title || 'Sem título') + '" será apagado deste aparelho. Isso não pode ser desfeito.', 'Excluir').then(function(ok){
+        if (!ok) return;
+        state.sermons = state.sermons.filter(function(x){ return x.id !== id; }); persist();
+        if (ui.view === 'editor') { ui.current = null; show('library'); }
+        renderLibrary(); toast('Sermão excluído');
+      });
+    }
+  });
+}
+function sectionMenu(secId){
+  var s = getSermon(ui.current), i = findSec(s, secId); if (i < 0) return;
+  sheet({ title:s.sections[i].title || 'Seção', items:[
+    { label:'Pregar a partir daqui', value:'preach', icon:'i-play' },
+    { label:'Inserir seção abaixo', value:'below', icon:'i-plus' },
+    { label:'Duplicar seção', value:'dup', icon:'i-copy' },
+    { label:'Excluir seção', value:'del', icon:'i-trash', danger:true } ] }).then(function(v){
+    if (v === 'preach') { ui.backTo = 'editor'; openPulpit(s.id, secId); }
+    else if (v === 'below') addSection(i + 1);
+    else if (v === 'dup') { var c = { id:uid(), title:s.sections[i].title, body:s.sections[i].body }; s.sections.splice(i + 1, 0, c); touch(s); renderEditor(); }
+    else if (v === 'del') {
+      var go = function(){ s.sections.splice(i, 1); touch(s); renderEditor(); };
+      if (s.sections[i].body.trim()) confirmBox('Excluir seção?', 'O conteúdo de "' + s.sections[i].title + '" será apagado.', 'Excluir').then(function(ok){ if (ok) go(); });
+      else go();
+    }
+  });
+}
+function addSection(at){
+  var s = getSermon(ui.current);
+  var used = {}; s.sections.forEach(function(x){ used[norm(x.title)] = 1; });
+  var pts = s.sections.filter(function(x){ return /^ponto\s*\d+/i.test(norm(x.title)); }).length;
+  var opts = state.settings.template.filter(function(t){ return !used[norm(t)] && !/^ponto\s*\d+$/i.test(norm(t)); }).map(function(t){ return { label:t, value:'t:' + t, icon:'i-plus' }; });
+  opts.unshift({ label:'Ponto ' + (pts + 1), value:'t:Ponto ' + (pts + 1), icon:'i-plus' });
+  ['Ilustração','Exegese'].forEach(function(t){ if (!used[norm(t)] && !opts.some(function(o){ return o.label === t; })) opts.push({ label:t, value:'t:' + t, icon:'i-plus' }); });
+  opts.push({ label:'Seção personalizada…', value:'custom', icon:'i-list' });
+  sheet({ title:'Adicionar seção', items:opts }).then(function(v){
+    if (!v) return;
+    var p = v === 'custom' ? promptBox('Nome da seção', '', 'Ex.: Contexto histórico') : Promise.resolve(v.slice(2));
+    p.then(function(name){
+      if (!name || !name.trim()) return;
+      var sec = { id:uid(), title:name.trim(), body:'' };
+      if (at == null) s.sections.push(sec); else s.sections.splice(at, 0, sec);
+      touch(s); renderEditor();
+      setTimeout(function(){ var el = $('sec-' + sec.id); if (el) { el.scrollIntoView({ behavior:'smooth', block:'center' }); var ta = el.querySelector('textarea'); setTimeout(function(){ ta.focus(); }, 300); } }, 50);
+    });
+  });
+}
+
+/* Ajustes */
+function openSettings(){
+  var t = state.settings;
+  var html =
+    '<div class="set-g"><div class="lab">Tema</div><div class="seg" id="segTheme">' + [['auto','Automático'],['light','Claro'],['dark','Escuro']].map(function(o){ return '<button data-theme-set="' + o[0] + '" class="' + (t.theme === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div></div>' +
+    '<div class="set-g"><div class="lab">Modo púlpito</div><div class="seg" id="segMode"><button data-mode-set="pages" class="' + (t.ppMode !== 'scroll' ? 'on' : '') + '">Uma seção por tela</button><button data-mode-set="scroll" class="' + (t.ppMode === 'scroll' ? 'on' : '') + '">Rolagem contínua</button></div>' +
+    '<label style="display:flex;gap:10px;align-items:center;margin-top:12px;font-size:15px;color:var(--ink2)"><input type="checkbox" id="chkSkip" ' + (t.skipEmpty ? 'checked' : '') + ' style="width:20px;height:20px;accent-color:var(--accent)">Pular seções vazias ao pregar</label></div>' +
+    '<div class="set-g"><div class="lab">Modelo para novos sermões</div><div id="tplList"></div>' +
+    '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="btn ghost" data-tpl="add"><svg class="i"><use href="#i-plus"/></svg>Seção</button><button class="btn ghost" data-tpl="reset">Restaurar padrão</button></div></div>' +
+    '<div class="set-g"><div class="lab">Backup</div><p style="font-size:14.5px">Seus sermões ficam só neste aparelho. Exporte um backup de vez em quando e guarde no Drive.</p>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-bk="exp"><svg class="i"><use href="#i-down-file"/></svg>Exportar backup</button><button class="btn" data-bk="imp"><svg class="i"><use href="#i-up-file"/></svg>Importar backup</button></div></div>' +
+    '<div class="set-g"><button class="btn ghost" data-help="1"><svg class="i"><use href="#i-help"/></svg>Guia de formatação</button></div>' +
+    '<p style="font-size:12.5px;color:var(--ink3);text-align:center;margin:0">Kerygma ' + (HAS_NATIVE ? Android.version() : 'web') + ' · κήρυγμα, “proclamação”</p>';
+  sheet({ title:'Ajustes', html:html, closeX:true, onMount:function(sc){
+    var tplWork = t.template.slice();
+    function drawTpl(){
+      sc.querySelector('#tplList').innerHTML = tplWork.map(function(n, i){
+        return '<div class="tpl-row"><span class="no">' + (i+1) + '</span><input data-tpli="' + i + '" value="' + esc(n) + '">' +
+          '<button class="ib" data-tplup="' + i + '"' + (i === 0 ? ' style="opacity:.3"' : '') + '><svg class="i"><use href="#i-up"/></svg></button>' +
+          '<button class="ib" data-tpldel="' + i + '"><svg class="i"><use href="#i-x"/></svg></button></div>';
+      }).join('');
+    }
+    function saveTpl(){ t.template = tplWork.map(function(x){ return x.trim(); }).filter(Boolean); if (!t.template.length) t.template = DEFAULT_TEMPLATE.slice(); scheduleSave(); }
+    drawTpl();
+    sc.addEventListener('input', function(e){ var i = e.target.getAttribute('data-tpli'); if (i != null) { tplWork[+i] = e.target.value; saveTpl(); } });
+    sc.addEventListener('change', function(e){ if (e.target.id === 'chkSkip') { t.skipEmpty = e.target.checked; scheduleSave(); } });
+    sc.addEventListener('click', function(e){
+      var b;
+      if ((b = e.target.closest('[data-theme-set]'))) { t.theme = b.getAttribute('data-theme-set'); sc.querySelectorAll('[data-theme-set]').forEach(function(x){ x.classList.toggle('on', x === b); }); applyTheme(); scheduleSave(); }
+      else if ((b = e.target.closest('[data-mode-set]'))) { t.ppMode = b.getAttribute('data-mode-set'); sc.querySelectorAll('[data-mode-set]').forEach(function(x){ x.classList.toggle('on', x === b); }); scheduleSave(); }
+      else if ((b = e.target.closest('[data-tplup]'))) { var i = +b.getAttribute('data-tplup'); if (i > 0) { var x = tplWork[i]; tplWork[i] = tplWork[i-1]; tplWork[i-1] = x; drawTpl(); saveTpl(); } }
+      else if ((b = e.target.closest('[data-tpldel]'))) { tplWork.splice(+b.getAttribute('data-tpldel'), 1); drawTpl(); saveTpl(); }
+      else if ((b = e.target.closest('[data-tpl]'))) {
+        if (b.getAttribute('data-tpl') === 'add') { tplWork.push('Nova seção'); drawTpl(); saveTpl(); var ins = sc.querySelectorAll('[data-tpli]'); var last = ins[ins.length-1]; last.focus(); last.select(); }
+        else { tplWork = DEFAULT_TEMPLATE.slice(); drawTpl(); saveTpl(); }
+      }
+      else if ((b = e.target.closest('[data-bk]'))) { if (b.getAttribute('data-bk') === 'exp') exportBackup(); else $('fileIn').click(); }
+      else if (e.target.closest('[data-help]')) { closeSheet(sc, null); setTimeout(openHelp, 200); }
+    });
+  }}).then(function(){ window.kgFlush(); });
+}
+function openHelp(){
+  var ex = '## Primeira divisão\n- Tópico principal com **negrito**\n    - Subtópico\n> Porque Deus amou o mundo de tal maneira… (Jo 3.16)\n1. Primeiro\n2. Segundo\nVeja Romanos 8:28-30 e ==isto em destaque==.';
+  sheet({ title:'Guia de formatação', closeX:true, html:'<div class="help"><p>Escreva normalmente. Estes atalhos mudam a aparência no púlpito e no PDF — os botões da barra inferior inserem tudo pra você.</p>' +
+    '<table><tr><td><code>- texto</code></td><td>Tópico</td></tr><tr><td><code>    - texto</code></td><td>Subtópico (com recuo)</td></tr><tr><td><code>1. texto</code></td><td>Lista numerada</td></tr>' +
+    '<tr><td><code>&gt; texto</code></td><td>Versículo ou citação em destaque</td></tr><tr><td><code>## texto</code></td><td>Subtítulo dentro da seção</td></tr>' +
+    '<tr><td><code>**texto**</code></td><td>Negrito</td></tr><tr><td><code>==texto==</code></td><td>Marca-texto</td></tr><tr><td><code>_texto_</code></td><td>Itálico</td></tr>' +
+    '<tr><td>Referências</td><td>“Rm 8.28”, “Jo 3:16”, “Salmo 23” são destacadas sozinhas</td></tr></table>' +
+    '<p style="margin-top:14px">Exemplo:</p><div class="rd">' + renderBody(ex) + '</div>' +
+    '<p>No púlpito: deslize para os lados ou use as setas para trocar de seção; toque nos tópicos do topo para pular direto. Teclado ou pedal Bluetooth: setas ← → e Page Up/Down.</p></div>' });
+}
+
+/* =================== Eventos =================== */
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-act],[data-open],[data-preach],[data-cardmenu],[data-series],[data-secup],[data-secdown],[data-secmenu],[data-goto],[data-ppgo]');
+  if (!b || b.closest('.scrim')) return;
+  if (b.hasAttribute('data-cardmenu')) { e.stopPropagation(); sermonMenu(b.getAttribute('data-cardmenu'), true); return; }
+  if (b.hasAttribute('data-preach')) { e.stopPropagation(); ui.backTo = 'library'; openPulpit(b.getAttribute('data-preach')); return; }
+  if (b.hasAttribute('data-open')) { openEditor(b.getAttribute('data-open')); return; }
+  if (b.hasAttribute('data-series')) { ui.filterSeries = b.getAttribute('data-series'); renderLibrary(); return; }
+  var s = getSermon(ui.current), id, i;
+  if ((id = b.getAttribute('data-secup')) && s) { i = findSec(s, id); if (i > 0) { var x = s.sections.splice(i, 1)[0]; s.sections.splice(i - 1, 0, x); touch(s); renderEditor(); $('sec-' + id).scrollIntoView({ block:'nearest' }); } return; }
+  if ((id = b.getAttribute('data-secdown')) && s) { i = findSec(s, id); if (i >= 0 && i < s.sections.length - 1) { var y = s.sections.splice(i, 1)[0]; s.sections.splice(i + 1, 0, y); touch(s); renderEditor(); $('sec-' + id).scrollIntoView({ block:'nearest' }); } return; }
+  if ((id = b.getAttribute('data-secmenu'))) { sectionMenu(id); return; }
+  if ((id = b.getAttribute('data-goto'))) { var el = $('sec-' + id); if (el) el.scrollIntoView({ behavior:'smooth', block:'start' }); return; }
+  if (b.hasAttribute('data-ppgo')) { goPage(+b.getAttribute('data-ppgo')); return; }
+  switch (b.getAttribute('data-act')) {
+    case 'newSermon': openEditor(newSermon().id); setTimeout(function(){ var t = document.querySelector('.ti'); if (t) t.focus(); }, 80); break;
+    case 'closeEditor': closeEditor(); break;
+    case 'preach': ui.backTo = 'editor'; openPulpit(ui.current); break;
+    case 'sermonMenu': sermonMenu(ui.current, false); break;
+    case 'addSection': addSection(null); break;
+    case 'closePulpit': closePulpit(); break;
+    case 'ppPrev': goPage(ui.pp.idx - 1); break;
+    case 'ppNext': goPage(ui.pp.idx + 1); break;
+    case 'fontUp': setFont(2); break;
+    case 'fontDown': setFont(-2); break;
+    case 'ppMode': state.settings.ppMode = state.settings.ppMode === 'scroll' ? 'pages' : 'scroll'; scheduleSave(); renderPulpit(); toast(state.settings.ppMode === 'scroll' ? 'Rolagem contínua' : 'Uma seção por tela'); break;
+    case 'toggleTheme': state.settings.theme = isDark() ? 'light' : 'dark'; applyTheme(); scheduleSave(); break;
+    case 'settings': openSettings(); break;
+  }
+});
+function closePulpit(){
+  if (ui.backTo === 'editor' && getSermon(ui.current)) { renderEditor(); show('editor'); }
+  else { ui.current = null; renderLibrary(); show('library'); }
+}
+$('q').addEventListener('input', function(){ ui.q = this.value; renderLibrary(); });
+$('edInner').addEventListener('input', function(e){
+  var s = getSermon(ui.current); if (!s) return;
+  var t = e.target, k;
+  if ((k = t.getAttribute('data-meta'))) { s[k] = t.value; touch(s); return; }
+  if ((k = t.getAttribute('data-sectitle'))) { var i = findSec(s, k); if (i >= 0) { s.sections[i].title = t.value; touch(s); renderOutline(); } return; }
+  if ((k = t.getAttribute('data-secbody'))) {
+    var j = findSec(s, k); if (j >= 0) { var was = !!s.sections[j].body.trim(); s.sections[j].body = t.value; touch(s); autoGrow(t); if (was !== !!t.value.trim()) renderOutline(); }
+  }
+});
+$('edInner').addEventListener('keydown', function(e){ if (e.target.tagName === 'TEXTAREA') onTaKey(e); });
+$('edInner').addEventListener('focusin', function(e){ if (e.target.tagName === 'TEXTAREA') showFmt(e.target); else hideFmt(); });
+$('edInner').addEventListener('focusout', function(e){ if (e.target.tagName === 'TEXTAREA') setTimeout(function(){ if (document.activeElement !== e.target && !document.activeElement.closest('#fmtbar')) hideFmt(); }, 120); });
+$('fmtbar').addEventListener('pointerdown', function(e){ e.preventDefault(); });
+$('fmtbar').addEventListener('mousedown', function(e){ e.preventDefault(); });
+$('fmtbar').addEventListener('click', function(e){ var b = e.target.closest('[data-fmt]'); if (b) applyFmt(b.getAttribute('data-fmt')); });
+window.addEventListener('resize', function(){ document.querySelectorAll('#edInner textarea').forEach(autoGrow); if (ui.view === 'pulpit' && state.settings.ppMode !== 'scroll') goPage(ui.pp.idx, true); });
+
+/* =================== Exemplo inicial =================== */
+function seed(){
+  if (state.seeded || state.sermons.length) return;
+  state.seeded = true;
+  var b = {
+    'Introdução':'Todos nós vivemos para alguma coisa. A pergunta não é **se** vamos nos oferecer, mas **a quem**.\n- A tentação de separar o culto de domingo da vida de segunda-feira\n- Paulo não deixa essa separação existir',
+    'Leitura do texto':'> Rogo-vos, pois, irmãos, pela compaixão de Deus, que apresenteis o vosso corpo por sacrifício vivo, santo e agradável a Deus, que é o vosso culto racional. (Rm 12.1)\n> E não vos conformeis com este século, mas transformai-vos pela renovação da vossa mente… (Rm 12.2)',
+    'Contexto imediato':'- O **"pois"** liga o capítulo 12 aos capítulos 1–11\n    - Romanos 11:33-36 termina em adoração: tudo é dele, por ele e para ele\n- A partir daqui Paulo passa da doutrina para a vida (12–16)\n- Os vv. 1-2 são a porta de entrada de toda a ética que vem a seguir',
+    'Contexto remoto':'- Carta escrita por Paulo, provavelmente de Corinto, por volta de 57 d.C.\n- Igreja em Roma com judeus e gentios convertidos\n- Propósito: expor o evangelho da justiça de Deus pela fé (Rm 1.16-17) e unir a igreja',
+    'Proposição':'==Diante da misericórdia de Deus, a única resposta razoável é a entrega total da vida a ele.==',
+    'Ponto 1':'## O motivo: a misericórdia de Deus\n- Paulo não manda; ele **roga**\n- A base são as "compaixões" de Deus mostradas em Rm 1–11\n- A obediência cristã é resposta, não moeda de troca',
+    'Ponto 2':'## A oferta: um sacrifício vivo\n- O corpo inteiro — não só emoções ou ideias\n- Vivo: uma entrega contínua, todos os dias\n- "Culto racional": a adoração que faz sentido à luz do evangelho',
+    'Ponto 3':'## O caminho: a mente renovada\n- Não se moldar ao padrão desta era\n- Ser transformado de dentro para fora (2Co 3.18)\n- Resultado: discernir e aprovar a vontade de Deus',
+    'Aplicação':'1. Onde a sua semana ainda está separada do seu culto?\n2. Que hábitos alimentam a sua mente — e quais a conformam a este século?\n3. Que área do corpo/vida você precisa entregar hoje?',
+    'Conclusão e apelo':'Retomar a proposição.\n- O altar do Antigo Testamento recebia sacrifícios mortos; Cristo foi o sacrifício definitivo (Hb 10.10-14)\n- Por isso agora nós vivemos como oferta\n> Apresentai-vos a Deus, como ressurretos dentre os mortos… (Rm 6.13)'
+  };
+  var s = { id:uid(), title:'Um sacrifício vivo', passage:'Romanos 12:1-2', series:'Exemplo', date:today(), occasion:'', created:Date.now(), updated:Date.now(),
+    sections: DEFAULT_TEMPLATE.map(function(t){ return { id:uid(), title:t, body:b[t] || '' }; }) };
+  state.sermons.push(s); persist();
+}
+
+/* =================== Início =================== */
+load(); seed(); applyTheme(); renderLibrary();
+window.Kerygma = { state:state, renderBody:renderBody, pdfHtml:pdfHtml, importBackup:importBackup };
+</script>
+</body>
+</html>
