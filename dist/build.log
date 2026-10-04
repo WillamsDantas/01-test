@@ -1,0 +1,13 @@
+build-tools: /usr/local/lib/android/sdk/build-tools/37.0.0
+platform: /usr/local/lib/android/sdk/platforms/android-34
+Note: app/src/main/java/com/auxano/videira/MainActivity.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+V3.0 Signer: certificate DN: CN=Willams Dantas, O=Auxano, L=Maceio, ST=AL, C=BR
+V3.0 Signer: certificate SHA-256 digest: d9d9f4d49b12cb5b6fea293d4b3fd7ed6be5a5f4e4fef80973f2957159ede6bd
+V3.0 Signer: certificate SHA-1 digest: 40eba0bbfabfb1d1ccde07c69e082674c209d275
+total 152
+drwxr-xr-x 2 runner runner   4096 Oct  4 19:19 .
+drwxr-xr-x 8 runner runner   4096 Oct  4 19:19 ..
+-rw-r--r-- 1 runner runner 132473 Oct  4 19:19 Videira-v1.0.0.apk
+-rw-r--r-- 1 runner runner   5614 Oct  4 19:19 Videira-v1.0.0.apk.idsig
+-rw-r--r-- 1 runner runner    533 Oct  4 19:19 build.log
