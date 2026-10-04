@@ -1,0 +1,13 @@
+build-tools: /usr/local/lib/android/sdk/build-tools/37.0.0
+platform: /usr/local/lib/android/sdk/platforms/android-34
+Note: app/src/main/java/com/auxano/kerygma/MainActivity.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+V3.0 Signer: certificate DN: CN=Auxano, O=Auxano, C=BR
+V3.0 Signer: certificate SHA-256 digest: d75d5e29003ad97613c966aeab07bb23a8cf0a994ace4dff65e0dee22bfeae4a
+V3.0 Signer: certificate SHA-1 digest: 0a581219b02a6961a665a96d21fec67fcad6d4ac
+total 332
+drwxr-xr-x 2 runner runner   4096 Oct  4 17:28 .
+drwxr-xr-x 8 runner runner   4096 Oct  4 17:28 ..
+-rw-r--r-- 1 runner runner 318163 Oct  4 17:28 Kerygma-v1.0.0.apk
+-rw-r--r-- 1 runner runner   5538 Oct  4 17:28 Kerygma-v1.0.0.apk.idsig
+-rw-r--r-- 1 runner runner    508 Oct  4 17:28 build.log
