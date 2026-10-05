@@ -62,8 +62,7 @@ public class MainActivity extends Activity {
         } catch (Exception ignored) { }
         if ("light".equals(tema)) return false;
         if ("auto".equals(tema)) {
-            int m = getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
-            return m != android.content.res.Configuration.UI_MODE_NIGHT_NO;
+            return systemDark();
         }
         return true;
     }
@@ -177,6 +176,17 @@ public class MainActivity extends Activity {
             }
         });
         printView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
+    }
+
+    private boolean systemDark() {
+        int m = getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+        return m == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+    }
+
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (web != null) web.evaluateJavascript("window.quitaSysTheme && window.quitaSysTheme()", null);
     }
 
     @Override
@@ -378,6 +388,11 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public boolean systemDark() {
+            return MainActivity.this.systemDark();
+        }
+
+        @JavascriptInterface
         public void haptic() {
             runOnUiThread(new Runnable() { @Override public void run() {
                 int c = Build.VERSION.SDK_INT >= 30 ? HapticFeedbackConstants.CONFIRM : HapticFeedbackConstants.VIRTUAL_KEY;
@@ -449,7 +464,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.6.7";
+            return "1.6.8";
         }
     }
 }

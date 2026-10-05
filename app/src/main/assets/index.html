@@ -563,7 +563,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.6.7';
+var VERSION = '1.6.8';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1794,11 +1794,13 @@ function updSyncDot(state){
 var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
 function applyTheme(){
   var t=(S&&S.ajustes&&S.ajustes.tema)||'dark';
-  var dark=t==='auto'?(mq?mq.matches:true):t==='dark';
+  var sys=(HAS_NATIVE&&Android.systemDark)?Android.systemDark():(mq?mq.matches:true);
+  var dark=t==='auto'?sys:t==='dark';
   document.documentElement.setAttribute('data-theme',dark?'dark':'light');
   if(HAS_NATIVE&&Android.setBars)try{Android.setBars(dark)}catch(e){}
 }
 if(mq&&mq.addEventListener)mq.addEventListener('change',function(){if(S&&S.ajustes.tema==='auto')applyTheme()});
+window.quitaSysTheme=function(){if(S&&S.ajustes.tema==='auto')applyTheme()};
 window.addEventListener('scroll',function(){$('#top').classList.toggle('scrolled',window.scrollY>4)},{passive:true});
 var TITLES={painel:'Visão geral',receitas:'Receitas',despesas:'Despesas',dividas:'Dívidas',relatorio:'Relatório'};
 
@@ -1817,7 +1819,7 @@ $('#fab').onclick=function(){if(curTab==='dividas')openDebtForm();else if(curTab
 $('#btnSettings').onclick=openSettings;
 $('#btnSync').onclick=function(){syncNow(true)};
 window.quitaBack=function(){if(sheetOpen){closeSheet();return true}if(curTab!=='painel'){setTab('painel');return true}return false};
-window.quitaResume=function(){renderAll();if(S.ajustes.url&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync()};
+window.quitaResume=function(){if(S&&S.ajustes.tema==='auto')applyTheme();renderAll();if(S.ajustes.url&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync()};
 
 load();
 applyTheme();
