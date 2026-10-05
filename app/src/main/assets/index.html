@@ -748,7 +748,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.9.4';
+var VERSION = '1.9.5';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1694,7 +1694,7 @@ function openGoogleIntro(){
   var g=document.getElementById('gate');if(!g){g=document.createElement('div');g.id='gate';document.body.appendChild(g)}
   g.innerHTML='<div class="gt-wrap"><div class="gt-top"><div class="gt-logo">'+QMARK+'</div><div class="gt-brand">Quita</div>'+
     '<h1>Seus dados protegidos na sua conta Google</h1><p class="gt-lead">Trocou de celular? Entre com a mesma conta e tudo&nbsp;volta.</p></div>'+
-    '<div class="gt-peek"><span class="gt-pk">'+ICON.shieldOk+'</span><span class="gt-pt"><b>Cópia automática</b><span>'+ICON.check+'Feita sozinha a cada alteração</span></span></div>'+
+    '<div class="gt-peek"><span class="gt-pk">'+ICON.shieldOk+'</span><span class="gt-pt"><b>Backup automático</b><span>'+ICON.check+'Feito a cada alteração</span></span></div>'+
     '<div class="gt-list">'+
       '<div><span class="gt-li">'+ICON.cloud+'</span><span><b>Nada se perde</b><em>Tudo guardado na sua conta Google</em></span></div>'+
       '<div><span class="gt-li">'+ICON.phone+'</span><span><b>Em qualquer celular</b><em>Continue de onde parou</em></span></div>'+
