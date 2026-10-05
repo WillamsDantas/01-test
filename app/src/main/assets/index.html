@@ -478,6 +478,9 @@ body.locked main,body.locked nav.bottom,body.locked .top,body.locked .fab{visibi
 .lk-keys button svg{width:24px;height:24px;stroke-width:1.75}
 .lk-keys button.lk-txt{font:500 13px var(--f-text);background:none;border:0;color:var(--ink-2)}
 .lk-keys button[data-k=del],.lk-keys button[data-k=bio]{background:none;border:0}
+
+/* troca de tema suave */
+html.theming,html.theming *,html.theming *::before,html.theming *::after{transition:background-color .4s ease,color .4s ease,border-color .4s ease,fill .4s ease,stroke .4s ease,box-shadow .4s ease!important}
 </style>
 </head>
 <body>
@@ -602,7 +605,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.7.0';
+var VERSION = '1.7.1';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1980,11 +1983,14 @@ function updSyncDot(state){
 
 /* ---------------- tema ---------------- */
 var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+var themeReady=false;
 function applyTheme(){
   var t=(S&&S.ajustes&&S.ajustes.tema)||'dark';
   var sys=(HAS_NATIVE&&Android.systemDark)?Android.systemDark():(mq?mq.matches:true);
   var dark=t==='auto'?sys:t==='dark';
-  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  var root=document.documentElement,novo=dark?'dark':'light',antes=root.getAttribute('data-theme');
+  if(themeReady&&antes&&antes!==novo){root.classList.add('theming');clearTimeout(applyTheme._t);applyTheme._t=setTimeout(function(){root.classList.remove('theming')},500)}
+  root.setAttribute('data-theme',novo);themeReady=true;
   if(HAS_NATIVE&&Android.setBars)try{Android.setBars(dark)}catch(e){}
 }
 if(mq&&mq.addEventListener)mq.addEventListener('change',function(){if(S&&S.ajustes.tema==='auto')applyTheme()});
@@ -2011,7 +2017,7 @@ window.quitaResume=function(away){var lc=lockCfg();if(lc.on&&lc.pin&&away>30000&
 
 load();
 applyTheme();
-if(lockCfg().on&&lockCfg().pin)showLock('unlock');
+if(lockCfg().on&&lockCfg().pin){var _nl=/[?&]nolock=1/.test(location.search),_aw=0;try{_aw=HAS_NATIVE&&Android.awayMs?Android.awayMs():0}catch(e){}if(!_nl||_aw>30000)showLock('unlock')}
 setTab('painel');
 if(!S.ajustes.onboard&&!S.dividas.length&&!S.receitas.length&&!S.despesas.length)setTimeout(function(){openOnboarding(0)},350);
 syncAlerts();

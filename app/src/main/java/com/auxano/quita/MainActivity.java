@@ -72,6 +72,11 @@ public class MainActivity extends Activity {
         themeDark = wantsDark();
         setTheme(themeDark ? R.style.AppTheme : R.style.AppThemeLight);
         super.onCreate(savedInstanceState);
+        boolean themeSwap = false;
+        if (savedInstanceState != null) {
+            pausedAt = savedInstanceState.getLong("pausedAt", 0);
+            themeSwap = savedInstanceState.getBoolean("themeSwap", false);
+        }
         Window w = getWindow();
         w.setStatusBarColor(0xFF111113);
         w.setNavigationBarColor(0xFF111113);
@@ -126,7 +131,7 @@ public class MainActivity extends Activity {
             web.clearCache(true);
             sp.edit().putInt("vc", vc).apply();
         }
-        web.loadUrl("file:///android_asset/index.html?v=" + vc);
+        web.loadUrl("file:///android_asset/index.html?v=" + vc + (themeSwap ? "&nolock=1" : ""));
     }
 
     @Override
@@ -204,6 +209,26 @@ public class MainActivity extends Activity {
     }
 
     private long pausedAt = 0;
+    private Boolean pendingDark = null;
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (pendingDark != null && pendingDark != themeDark) {
+            themeDark = pendingDark;
+            swapping = true;
+            recreate();
+        }
+    }
+
+    private boolean swapping = false;
+
+    @Override
+    protected void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putLong("pausedAt", pausedAt);
+        out.putBoolean("themeSwap", swapping);
+    }
 
     @Override
     protected void onPause() {
@@ -451,6 +476,11 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public long awayMs() {
+            return pausedAt == 0 ? 0 : System.currentTimeMillis() - pausedAt;
+        }
+
+        @JavascriptInterface
         public boolean systemDark() {
             return MainActivity.this.systemDark();
         }
@@ -466,11 +496,23 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void setBars(final boolean dark) {
             runOnUiThread(new Runnable() { @Override public void run() {
-                if (dark != themeDark) { themeDark = dark; recreate(); return; }
-                int c = dark ? 0xFF111113 : 0xFFF3F4F6;
-                Window w = getWindow();
-                w.setStatusBarColor(c);
-                w.setNavigationBarColor(c);
+                // o tema nativo (calendário) é trocado quando o app for para segundo plano, sem piscar a tela
+                pendingDark = dark;
+                final int c = dark ? 0xFF111113 : 0xFFF3F4F6;
+                final Window w = getWindow();
+                int from = w.getStatusBarColor();
+                if (from != c) {
+                    android.animation.ValueAnimator va = android.animation.ValueAnimator.ofArgb(from, c);
+                    va.setDuration(350);
+                    va.addUpdateListener(new android.animation.ValueAnimator.AnimatorUpdateListener() {
+                        @Override public void onAnimationUpdate(android.animation.ValueAnimator a) {
+                            int v = (Integer) a.getAnimatedValue();
+                            w.setStatusBarColor(v);
+                            w.setNavigationBarColor(v);
+                        }
+                    });
+                    va.start();
+                }
                 int flags = 0;
                 if (!dark) {
                     flags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
@@ -527,7 +569,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.7.0";
+            return "1.7.1";
         }
     }
 }
