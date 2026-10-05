@@ -408,6 +408,23 @@ nav.bottom button span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .ob-item span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ob-item b{white-space:nowrap}
 .ob-nav{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:22px}
+
+/* seletor de meses */
+.month .m-mid{cursor:pointer;border-radius:9px;padding:3px 0}
+.month .m-mid:active{background:var(--surface-3)}
+.month .m-mid b::after{content:"";width:6px;height:6px;border-right:1.6px solid var(--ink-3);border-bottom:1.6px solid var(--ink-3);transform:rotate(45deg) translateY(-2px);margin-left:2px;flex:0 0 auto}
+.mp{position:relative}
+.mp-y{position:sticky;top:-6px;z-index:2;background:var(--surface);padding:10px 2px 8px;font:600 13px var(--f-disp);color:var(--ink-3);letter-spacing:.4px}
+.mp-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.mp-m{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);text-align:left;min-width:0}
+.mp-m b{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.mp-m span{font-size:12px;color:var(--ink-3);white-space:nowrap}
+.mp-m span.pos{color:var(--pos)}.mp-m span.neg{color:var(--neg)}
+.mp-m i{position:absolute;top:8px;right:8px;font-style:normal;font-size:10px;font-weight:600;color:var(--ink-3);text-transform:uppercase}
+.mp-m.now{border-color:var(--ink-3)}
+.mp-m.sel{background:var(--accent);border-color:var(--accent)}
+.mp-m.sel b,.mp-m.sel i{color:var(--on-accent)}
+.mp-m.sel span{color:var(--on-accent);opacity:.75}
 </style>
 </head>
 <body>
@@ -531,7 +548,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.6.0';
+var VERSION = '1.6.1';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -727,12 +744,13 @@ function monthBar(){
   var t=today(), dataHoje=pad(t.getDate())+' de '+MESES[t.getMonth()]+' de '+t.getFullYear();
   var p=curMonth.split('-'), rotulo=hoje?dataHoje:MESES[+p[1]-1]+' de '+p[0];
   return '<div class="month"><button data-m="-1" aria-label="Mês anterior">'+ICON.prev+'</button>'+
-    '<div class="m-mid">'+(hoje?'':'<button class="m-today" data-today>'+ICON.cal+'Hoje, '+pad(t.getDate())+'/'+pad(t.getMonth()+1)+'</button>')+'<b>'+(hoje?ICON.cal:'')+'<span>'+rotulo+'</span></b></div>'+
+    '<div class="m-mid" data-pick>'+(hoje?'':'<button class="m-today" data-today>'+ICON.cal+'Hoje, '+pad(t.getDate())+'/'+pad(t.getMonth()+1)+'</button>')+'<b>'+(hoje?ICON.cal:'')+'<span>'+rotulo+'</span></b></div>'+
     '<button data-m="1" aria-label="Próximo mês">'+ICON.next+'</button></div>';
 }
 function bindMonth(el){
   $$('[data-m]',el).forEach(function(b){b.onclick=function(){curMonth=ymAdd(curMonth,+b.dataset.m);renderAll()}});
-  var t=$('[data-today]',el);if(t)t.onclick=function(){curMonth=curYM();renderAll()};
+  var t=$('[data-today]',el);if(t)t.onclick=function(e){e.stopPropagation();curMonth=curYM();renderAll()};
+  var pk=$('[data-pick]',el);if(pk)pk.onclick=function(){openMonthPicker()};
 }
 function toast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on')},2600)}
 function setTab(t){
@@ -984,6 +1002,27 @@ function obList(items){
   return '<div class="ob-list">'+items.map(function(x){return '<div class="ob-item">'+ICON.check+'<span>'+esc(x[0])+'</span><b>'+money(x[1])+'</b></div>'}).join('')+'</div>';
 }
 function fimOnboarding(){S.ajustes.onboard=true;closeSheet();commit();if(S.receitas.length||S.despesas.length||S.dividas.length)snack('Tudo pronto! Seu mês já está montado.')}
+
+/* ---------------- seletor de meses ---------------- */
+function openMonthPicker(){
+  var cur=curYM(), ini=ymAdd(cur,-12), fim=ymAdd(cur,12);
+  S.receitas.concat(S.despesas).forEach(function(r){var m=ym(r.data);if(m<ini)ini=m});
+  S.dividas.forEach(function(d){if(d.primeiraMes<ini)ini=d.primeiraMes;var u=calc(d).ultimoMes;if(u>fim)fim=u});
+  if(ymDiff(ini,fim)>120)ini=ymAdd(fim,-120);
+  var h=head('Escolher mês')+'<div class="mp">', ano='';
+  for(var m=ini;m<=fim;m=ymAdd(m,1)){
+    var y=m.slice(0,4);if(y!==ano){if(ano)h+='</div>';ano=y;h+='<div class="mp-y">'+y+'</div><div class="mp-g">'}
+    var so=receitaMes(m)-saidasMes(m), tem=receitaMes(m)||saidasMes(m);
+    h+='<button class="mp-m'+(m===curMonth?' sel':'')+(m===cur?' now':'')+'" data-ym="'+m+'"><b>'+MESES[+m.slice(5)-1].replace(/^./,function(c){return c.toUpperCase()})+'</b>'+
+       '<span class="'+(tem?(so<0?'neg':'pos'):'')+'">'+(tem?moneyShort(so):'—')+'</span>'+(m===cur?'<i>hoje</i>':'')+'</button>';
+  }
+  h+='</div></div><p class="muted" style="text-align:center;margin:12px 0 0">O valor de cada mês é a sobra prevista.</p>';
+  openSheet(h,function(el){
+    $$('[data-ym]',el).forEach(function(b){b.onclick=function(){curMonth=b.dataset.ym;selDay=null;haptic();closeSheet();renderAll();window.scrollTo(0,0)}});
+    var sel=$('.mp-m.sel',el)||$('.mp-m.now',el);
+    if(sel)setTimeout(function(){var sh=$('#sheet');sh.scrollTop=Math.max(0,sel.offsetTop-sh.clientHeight/2+40)},30);
+  });
+}
 
 /* ---------------- Painel ---------------- */
 function renderPainel(){
