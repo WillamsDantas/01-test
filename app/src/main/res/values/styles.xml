@@ -1,13 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Modo escuro: destaque branco (calendário com bolinha branca e número preto) -->
     <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/bg</item>
         <item name="android:statusBarColor">@color/bg</item>
         <item name="android:navigationBarColor">@color/bg</item>
-        <item name="android:colorPrimary">@color/brand</item>
-        <item name="android:colorAccent">@color/brand</item>
+        <item name="android:colorPrimary">@color/bg</item>
+        <item name="android:colorAccent">@color/accent_dark</item>
+        <item name="android:datePickerDialogTheme">@style/PickerDark</item>
+        <item name="android:timePickerDialogTheme">@style/PickerDark</item>
     </style>
-    <color name="brand">#111113</color>
+    <style name="PickerDark" parent="@android:style/Theme.Material.Dialog.Alert">
+        <item name="android:colorAccent">@color/accent_dark</item>
+        <item name="android:colorPrimary">@color/surface_dark</item>
+        <item name="android:datePickerStyle">@style/DPDark</item>
+    </style>
+    <style name="DPDark" parent="@android:style/Widget.Material.DatePicker">
+        <item name="android:headerBackground">@color/surface_dark</item>
+    </style>
+
+    <!-- Modo claro (branco gelo): destaque preto -->
+    <style name="AppThemeLight" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/bg_light</item>
+        <item name="android:statusBarColor">@color/bg_light</item>
+        <item name="android:navigationBarColor">@color/bg_light</item>
+        <item name="android:colorPrimary">@color/bg_light</item>
+        <item name="android:colorAccent">@color/accent_light</item>
+        <item name="android:datePickerDialogTheme">@style/PickerLight</item>
+        <item name="android:timePickerDialogTheme">@style/PickerLight</item>
+    </style>
+    <style name="PickerLight" parent="@android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/accent_light</item>
+        <item name="android:colorPrimary">@color/accent_light</item>
+        <item name="android:datePickerStyle">@style/DPLight</item>
+    </style>
+    <style name="DPLight" parent="@android:style/Widget.Material.Light.DatePicker">
+        <item name="android:headerBackground">@color/accent_light</item>
+    </style>
+
     <color name="bg">#111113</color>
+    <color name="surface_dark">#1F1F23</color>
+    <color name="accent_dark">#F4F4F5</color>
+    <color name="bg_light">#F3F4F6</color>
+    <color name="accent_light">#111214</color>
     <color name="icon_bg">#0B0B0C</color>
 </resources>

@@ -48,8 +48,30 @@ public class MainActivity extends Activity {
     private static final int REQ_NOTIF = 7;
     private ValueCallback<Uri[]> fileCallback;
 
+    private boolean themeDark = true;
+
+    /** Lê o tema salvo pela interface (escuro / claro / automático) para o tema nativo (calendário, relógio). */
+    private boolean wantsDark() {
+        String tema = "dark";
+        try {
+            File f = new File(getFilesDir(), DATA_FILE);
+            if (f.exists()) {
+                JSONObject o = new JSONObject(readAll(new FileInputStream(f)));
+                tema = o.optJSONObject("ajustes") != null ? o.optJSONObject("ajustes").optString("tema", "dark") : "dark";
+            }
+        } catch (Exception ignored) { }
+        if ("light".equals(tema)) return false;
+        if ("auto".equals(tema)) {
+            int m = getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+            return m != android.content.res.Configuration.UI_MODE_NIGHT_NO;
+        }
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        themeDark = wantsDark();
+        setTheme(themeDark ? R.style.AppTheme : R.style.AppThemeLight);
         super.onCreate(savedInstanceState);
         Window w = getWindow();
         w.setStatusBarColor(0xFF111113);
@@ -366,6 +388,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void setBars(final boolean dark) {
             runOnUiThread(new Runnable() { @Override public void run() {
+                if (dark != themeDark) { themeDark = dark; recreate(); return; }
                 int c = dark ? 0xFF111113 : 0xFFF3F4F6;
                 Window w = getWindow();
                 w.setStatusBarColor(c);
@@ -426,7 +449,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.6.5";
+            return "1.6.6";
         }
     }
 }
