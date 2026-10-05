@@ -410,21 +410,23 @@ nav.bottom button span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .ob-nav{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:22px}
 
 /* menu suspenso de meses */
-.month{position:relative}
-.month .m-mid b{cursor:pointer;border-radius:8px;padding:4px 8px}
-.month .m-mid b:active{background:var(--surface-3)}
-.month .m-mid b::after{content:"";width:6px;height:6px;border-right:1.6px solid var(--ink-3);border-bottom:1.6px solid var(--ink-3);transform:rotate(45deg) translateY(-2px);margin-left:2px;flex:0 0 auto}
-.mdd{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);width:min(240px,100%);z-index:15;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:6px;animation:dd .15s ease}
-@keyframes dd{from{opacity:0;transform:translate(-50%,-4px)}to{opacity:1;transform:translate(-50%,0)}}
-.mdd-y{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 6px;border-bottom:1px solid var(--border);margin-bottom:4px}
-.mdd-y b{font:600 14px var(--f-disp)}
-.mdd-y button{width:30px!important;height:30px!important}
-.mdd-l{max-height:min(300px,45vh);overflow-y:auto;overscroll-behavior:contain}
-.month .mdd-m{width:100%!important;height:40px!important;display:flex!important;align-items:center;gap:8px;padding:0 10px!important;border-radius:8px!important;font-size:14px;color:var(--ink);text-align:left}
-.mdd-m span{flex:1}
-.mdd-m i{font-style:normal;font-size:10.5px;font-weight:600;color:var(--ink-3);text-transform:uppercase}
-.mdd-m svg{width:16px!important;height:16px!important;color:var(--pos)}
-.mdd-m.sel{background:var(--surface-3);font-weight:600}
+.month{display:block;position:relative;padding:0;border:0;background:none;margin:0 0 14px;gap:0}
+.month .m-btn{width:100%;display:flex;align-items:center;gap:10px;height:56px;padding:0 16px;border:1px solid var(--border);background:var(--surface);border-radius:14px;color:var(--ink);text-align:left}
+.month .m-btn:active{background:var(--surface-2)}
+.month .m-btn svg{width:20px;height:20px;color:var(--ink-2);stroke-width:1.75}
+.month .m-btn span{flex:1;min-width:0;font:600 clamp(17px,4.9vw,20px)/1.2 var(--f-disp);letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.month .m-btn .chev{width:9px;height:9px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s;flex:0 0 auto;margin-right:4px}
+.month.open .m-btn{border-color:var(--ink-3)}
+.month.open .chev{transform:rotate(-135deg) translate(-2px,-2px)}
+.mdd{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:15;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:6px;animation:dd .16s ease}
+@keyframes dd{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.mdd-l{max-height:min(340px,50vh);overflow-y:auto;overscroll-behavior:contain;position:relative}
+.mdd-y{position:sticky;top:0;z-index:1;background:var(--surface);padding:10px 12px 6px;font:600 13px var(--f-disp);color:var(--ink-3);letter-spacing:.5px}
+.month .mdd-m{width:100%;height:48px;display:flex;align-items:center;gap:10px;padding:0 12px;border-radius:10px;font-size:17px;color:var(--ink);text-align:left}
+.month .mdd-m:active{background:var(--surface-2)}
+.month .mdd-m span{flex:1}
+.month .mdd-m svg{width:20px;height:20px;color:var(--pos);stroke-width:2.2}
+.month .mdd-m.sel{background:var(--surface-3);font-weight:600}
 </style>
 </head>
 <body>
@@ -740,12 +742,9 @@ var ICON={
   layers:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" /> <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" /> <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" /></svg>'
 };
 function monthBar(){
-  var hoje=curMonth===curYM();
-  var t=today(), dataHoje=pad(t.getDate())+' de '+MESES[t.getMonth()]+' de '+t.getFullYear();
-  var p=curMonth.split('-'), rotulo=hoje?dataHoje:MESES[+p[1]-1]+' de '+p[0];
-  return '<div class="month"><button data-m="-1" aria-label="Mês anterior">'+ICON.prev+'</button>'+
-    '<div class="m-mid">'+(hoje?'':'<button class="m-today" data-today>'+ICON.cal+'Hoje, '+pad(t.getDate())+'/'+pad(t.getMonth()+1)+'</button>')+'<b data-pick>'+(hoje?ICON.cal:'')+'<span>'+rotulo+'</span></b></div>'+
-    '<button data-m="1" aria-label="Próximo mês">'+ICON.next+'</button>'+monthDD()+'</div>';
+  var hoje=curMonth===curYM(), t=today(), p=curMonth.split('-');
+  var rotulo=hoje?pad(t.getDate())+' de '+MESES[t.getMonth()]+' de '+t.getFullYear():MESES[+p[1]-1].replace(/^./,function(c){return c.toUpperCase()})+' de '+p[0];
+  return '<div class="month'+(ddOpen?' open':'')+'"><button class="m-btn" data-pick>'+ICON.cal+'<span>'+rotulo+'</span><i class="chev"></i></button>'+monthDD()+'</div>';
 }
 function bindMonth(el){
   $$('[data-m]',el).forEach(function(b){b.onclick=function(){ddOpen=false;curMonth=ymAdd(curMonth,+b.dataset.m);renderAll()}});
@@ -753,7 +752,7 @@ function bindMonth(el){
   var pk=$('[data-pick]',el);if(pk)pk.onclick=function(){ddOpen=!ddOpen;ddYear=+curMonth.slice(0,4);renderAll()};
   $$('[data-dy]',el).forEach(function(b){b.onclick=function(e){e.stopPropagation();ddYear=(ddYear||+curMonth.slice(0,4))+(+b.dataset.dy);renderAll()}});
   $$('.mdd [data-ym]',el).forEach(function(b){b.onclick=function(e){e.stopPropagation();curMonth=b.dataset.ym;selDay=null;ddOpen=false;haptic();renderAll()}});
-  var sel=$('.mdd-m.sel',el);if(sel)sel.scrollIntoView({block:'nearest'});
+  var sel=$('.mdd-m.sel',el),lst=$('.mdd-l',el);if(sel&&lst)lst.scrollTop=sel.offsetTop-lst.clientHeight/2+sel.offsetHeight/2;
 }
 function toast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on')},2600)}
 function setTab(t){
@@ -1010,8 +1009,11 @@ function fimOnboarding(){S.ajustes.onboard=true;closeSheet();commit();if(S.recei
 var ddOpen=false, ddYear=null;
 function monthDD(){
   if(!ddOpen)return '';
-  var y=ddYear||+curMonth.slice(0,4), cur=curYM(), h='<div class="mdd"><div class="mdd-y"><button data-dy="-1">'+ICON.prev+'</button><b>'+y+'</b><button data-dy="1">'+ICON.next+'</button></div><div class="mdd-l">';
-  for(var i=0;i<12;i++){var k=y+'-'+pad(i+1);h+='<button class="mdd-m'+(k===curMonth?' sel':'')+'" data-ym="'+k+'"><span>'+MESES[i].replace(/^./,function(c){return c.toUpperCase()})+'</span>'+(k===cur?'<i>hoje</i>':'')+(k===curMonth?ICON.check:'')+'</button>'}
+  var cur=curYM(), ini=ymAdd(cur,-12), fim=ymAdd(cur,24), h='<div class="mdd"><div class="mdd-l">', ano='';
+  for(var k=ini;k<=fim;k=ymAdd(k,1)){
+    var y=k.slice(0,4);if(y!==ano){ano=y;h+='<div class="mdd-y">'+y+'</div>'}
+    h+='<button class="mdd-m'+(k===curMonth?' sel':'')+'" data-ym="'+k+'"><span>'+MESES[+k.slice(5)-1].replace(/^./,function(c){return c.toUpperCase()})+'</span>'+(k===curMonth?ICON.check:'')+'</button>';
+  }
   return h+'</div></div>';
 }
 function closeDD(){if(ddOpen){ddOpen=false;renderAll()}}
