@@ -58,8 +58,9 @@ svg{display:block;flex-shrink:0}
 .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:14px var(--pad) 12px;background:var(--bg);border-bottom:1px solid transparent}
 .top.scrolled{border-bottom-color:var(--border)}
 .brand{display:flex;align-items:center;gap:10px;flex:0 1 auto;min-width:0;padding:6px 10px 6px 6px;border:1px solid var(--border);background:var(--surface);border-radius:12px;max-width:260px}
-.logo{width:30px;height:30px;border-radius:9px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;flex:0 0 30px}
+.logo{width:30px;height:30px;border-radius:9px;background:#141416;border:1px solid var(--border);display:grid;place-items:center;flex:0 0 30px}
 .logo svg{width:17px;height:17px;stroke-width:2}
+.logo svg.qmark{width:30px;height:30px}
 .brand h1{margin:0;font:600 15px/1.15 var(--f-disp);letter-spacing:-.1px;white-space:nowrap}
 .brand small{display:block;font:400 12px/1.2 var(--f-text);color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand>div{min-width:0}
@@ -366,7 +367,7 @@ nav.bottom button span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .cal-wd,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
 .cal-wd span{text-align:center;font-size:11px;color:var(--ink-3);font-weight:500;padding-bottom:4px}
 .cal-e{aspect-ratio:1/1}
-.cal-d{position:relative;width:100%;max-width:46px;margin:0 auto;aspect-ratio:1/1;border-radius:50%;display:grid;place-items:center;color:var(--ink-3);font-size:13.5px;line-height:1}
+.cal-d{position:relative;width:100%;max-width:46px;margin:0 auto;aspect-ratio:1/1;border-radius:10px;display:grid;place-items:center;color:var(--ink-3);font-size:13.5px;line-height:1}
 .cal-d b{font-weight:500;line-height:1}
 .cal-d.has{color:var(--ink);background:var(--surface-2)}
 .cal-d.today{box-shadow:inset 0 0 0 1.5px var(--ink-3);color:var(--ink)}
@@ -467,6 +468,7 @@ body.locked main,body.locked nav.bottom,body.locked .top,body.locked .fab{visibi
 .lk{width:100%;max-width:340px;text-align:center}
 .lk-logo{width:52px;height:52px;border-radius:15px;margin:0 auto 18px}
 .lk-logo svg{width:26px;height:26px}
+.lk-logo svg.qmark{width:52px;height:52px}
 .lk h2{font:600 20px var(--f-disp);margin:0 0 4px}
 .lk-msg{min-height:20px;margin:0 0 18px;font-size:13px;color:var(--neg)}
 .lk-dots{display:flex;justify-content:center;gap:16px;margin-bottom:34px}
@@ -568,7 +570,7 @@ body.locked main,body.locked nav.bottom,body.locked .top,body.locked .fab{visibi
 </head>
 <body>
 <header class="top" id="top">
-  <div class="brand"><div class="logo"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" /> <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" /> <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" /></svg></div><div><h1>Quita</h1><small id="topSub">Controle financeiro</small></div></div>
+  <div class="brand"><div class="logo"><svg class="qmark" viewBox="0 -4 106 106"><path d="M56.38 75.25 L40.50 75.25 A19.25 19.25 0 0 1 21.25 56.00 L21.25 42.00 A19.25 19.25 0 0 1 40.50 22.75 L54.50 22.75 A19.25 19.25 0 0 1 73.59 39.54 L65.25 47.88 L65.25 42.00 A10.75 10.75 0 0 0 54.50 31.25 L40.50 31.25 A10.75 10.75 0 0 0 29.75 42.00 L29.75 56.00 A10.75 10.75 0 0 0 40.50 66.75 L47.88 66.75 Z" fill="#F4F4F5"/><path d="M51.50 58.00 L59.50 66.00 L80.50 45.00" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1>Quita</h1><small id="topSub">Controle financeiro</small></div></div>
   <span class="sp"></span>
   <button class="icon-btn" id="btnEye" aria-label="Ocultar valores"></button>
   <button class="icon-btn sync-dot" id="btnSync" aria-label="Sincronizar planilha"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" /> <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" /></svg><i id="syncDot"></i></button>
@@ -689,7 +691,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.8.1';
+var VERSION = '1.8.2';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -869,6 +871,7 @@ function pctTxt(p){return isFinite(p)?Math.round(p*100)+'%':'—'}
 
 /* ---------------- UI base ---------------- */
 var curTab='painel', curMonth=curYM(), debtFilter='abertas';
+var QMARK='<svg class="qmark" viewBox="0 -4 106 106"><path d="M56.38 75.25 L40.50 75.25 A19.25 19.25 0 0 1 21.25 56.00 L21.25 42.00 A19.25 19.25 0 0 1 40.50 22.75 L54.50 22.75 A19.25 19.25 0 0 1 73.59 39.54 L65.25 47.88 L65.25 42.00 A10.75 10.75 0 0 0 54.50 31.25 L40.50 31.25 A10.75 10.75 0 0 0 29.75 42.00 L29.75 56.00 A10.75 10.75 0 0 0 40.50 66.75 L47.88 66.75 Z" fill="#F4F4F5"/><path d="M51.50 58.00 L59.50 66.00 L80.50 45.00" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var ICON={
   back:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z" /> <path d="m12 9 6 6" /> <path d="m18 9-6 6" /></svg>',
   finger:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" /> <path d="M14 13.12c0 2.38 0 6.38-1 8.88" /> <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02" /> <path d="M2 12a10 10 0 0 1 18-6" /> <path d="M2 16h.01" /> <path d="M21.8 16c.2-2 .131-5.354 0-6" /> <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2" /> <path d="M8.65 22c.21-.66.45-1.32.57-2" /> <path d="M9 6.8a6 6 0 0 1 9 5.2v2" /></svg>',
@@ -1291,7 +1294,7 @@ function lockTitle(){return lockState.mode==='unlock'?'Digite seu PIN':lockState
 function drawLock(msg){
   var el=$('#lock'),dots='';for(var i=0;i<4;i++)dots+='<i class="'+(i<lockState.buf.length?'on':'')+'"></i>';
   var keys=['1','2','3','4','5','6','7','8','9',(lockState.mode==='unlock'&&lockCfg().bio&&bioDisponivel())?'bio':(lockState.mode!=='unlock'?'cancel':''),'0','del'];
-  el.innerHTML='<div class="lk"><div class="logo lk-logo">'+ICON.layers+'</div><h2>'+lockTitle()+'</h2><p class="lk-msg">'+(msg||'&nbsp;')+'</p><div class="lk-dots">'+dots+'</div>'+
+  el.innerHTML='<div class="lk"><div class="logo lk-logo">'+QMARK+'</div><h2>'+lockTitle()+'</h2><p class="lk-msg">'+(msg||'&nbsp;')+'</p><div class="lk-dots">'+dots+'</div>'+
     '<div class="lk-keys">'+keys.map(function(k){
       if(!k)return '<span></span>';
       if(k==='del')return '<button data-k="del" aria-label="Apagar">'+ICON.back+'</button>';

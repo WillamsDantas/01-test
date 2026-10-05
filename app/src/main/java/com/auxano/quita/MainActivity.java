@@ -680,7 +680,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.8.1";
+            return "1.8.2";
         }
     }
 }
