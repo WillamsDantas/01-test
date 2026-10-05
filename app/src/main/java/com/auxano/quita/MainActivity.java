@@ -836,7 +836,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.9.2";
+            return "1.9.3";
         }
     }
 }

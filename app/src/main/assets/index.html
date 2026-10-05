@@ -578,6 +578,8 @@ body.locked main,body.locked nav.bottom,body.locked .top,body.locked .fab{visibi
 .g-card .grow{flex:1;min-width:0}
 .g-card .grow b{display:block;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .g-card .grow span{display:block;font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.4}
+.g-card .grow .g-copia{display:flex;align-items:center;gap:5px;color:var(--pos);margin-top:4px}
+.g-copia svg{width:13px;height:13px;flex:0 0 13px}
 details.adv{margin-top:14px;border-top:1px solid var(--border);padding-top:10px}
 details.adv summary{font-size:13px;color:var(--ink-3);cursor:pointer;padding:4px 0;list-style:none}
 details.adv summary::-webkit-details-marker{display:none}
@@ -712,7 +714,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.9.2';
+var VERSION = '1.9.3';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -797,6 +799,7 @@ function persist(){
   try{ if(HAS_NATIVE){Android.save(json)} else {localStorage.setItem('quita',json)} }catch(e){}
 }
 function commit(){
+  S.atualizadoEm=new Date().toISOString();
   if(temPlanilha()){S.ajustes.pendente=true}
   persist(); renderAll(); syncAlerts();
   if(temPlanilha()&&S.ajustes.auto){scheduleSync()}
@@ -1568,10 +1571,11 @@ function openBackups(){
 
 
 /* ---------------- v1.9: login com Google + planilha automática ---------------- */
-var gSyncManual=false;
+var gSyncManual=false,gUltimaCopia='';
+function quando(isoStr){if(!isoStr)return '';var d=new Date(isoStr),h=pad(d.getHours())+':'+pad(d.getMinutes()),dia=iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()));return (dia===todayISO()?'hoje':br(dia))+' às '+h}
 function googleOn(){var g=S.ajustes.google;return !!(HAS_NATIVE&&Android.gSync&&g&&g.email)}
 function temPlanilha(){return !!(S.ajustes.url||googleOn())}
-function gPayload(){var p=buildPayload();var g=S.ajustes.google,em=(g&&g.email)||'';p.title='Quita – '+(em?em.split('@')[0]:'minhas finanças');p.backup=JSON.stringify(S);p.backupEm=new Date().toISOString();return p}
+function gPayload(){var p=buildPayload();var g=S.ajustes.google,em=(g&&g.email)||'';p.title='Quita – '+(em?em.split('@')[0]:'minhas finanças');p.backup=JSON.stringify(S);p.backupEm=new Date().toISOString();gUltimaCopia=p.backupEm;return p}
 function entrarGoogle(){
   if(!(HAS_NATIVE&&Android.gLogin)){toast('O login com Google funciona no app instalado');return}
   toast('Abrindo as contas do Google…');
@@ -1584,33 +1588,32 @@ window.quitaGoogle=function(r){
   if(!r.ok){toast(r.msg||'Não foi possível entrar');return}
   var g={email:r.email,id:r.id||'',url:r.url||''},aviso='',restaurou=false;
   if(r.existente){
-    if(appVazio()&&r.backup){
-      var o=null;try{o=JSON.parse(r.backup)}catch(e){o=null}
-      if(o&&Array.isArray(o.dividas)){
-        o.ajustes=o.ajustes||{};o.ajustes.google=g;o.ajustes.googlePulou=true;o.ajustes.auto=true;o.ajustes.onboard=true;
-        restaurar(o,true);restaurou=true;
-        aviso='Seus dados foram restaurados'+(r.backupEm?' (cópia de '+br(r.backupEm.slice(0,10))+')':'');
-      }
+    var o=null;if(r.backup){try{o=JSON.parse(r.backup)}catch(e){o=null}}
+    var valida=!!(o&&Array.isArray(o.dividas));
+    /* fica com a cópia mais nova: a da planilha ganha se o celular está vazio ou se ela é mais recente */
+    if(valida&&(appVazio()||String(o.atualizadoEm||'')>String(S.atualizadoEm||''))){
+      o.ajustes=o.ajustes||{};o.ajustes.google=g;o.ajustes.googlePulou=true;o.ajustes.auto=true;o.ajustes.onboard=true;o.ajustes.copiaEm=r.backupEm||'';
+      restaurar(o,true);restaurou=true;
+      aviso='Seus dados foram restaurados'+(r.backupEm?' (cópia de '+quando(r.backupEm)+')':'');
     }
-    if(!restaurou&&appVazio()){g.id='NEW';g.url=''}   /* planilha antiga sem cópia: não apaga, cria outra */
   }
   if(!restaurou){
     a.google=g;a.googlePulou=true;a.auto=true;
-    if(r.id&&!r.existente){a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString()}else{a.pendente=true}
+    if(r.id&&!r.existente){a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString();a.copiaEm=a.ultimoSync}else{a.pendente=!appVazio()}
     persist();
   }
   updSyncDot();haptic();
   if(sheetOpen&&gIntroAberto){closeSheet();gIntroAberto=false;depoisDoGoogle()}
   else if(sheetOpen)openSettings();
   renderAll();
-  if(r.existente)scheduleSync();
-  snack(aviso||(g.id==='NEW'?'Planilha criada no seu Google Drive':r.existente?'Conta conectada à sua planilha do Quita':(r.id?'Planilha criada no seu Google Drive':(r.msg||'Conta conectada'))));
+  if(r.existente&&(restaurou||!appVazio()))scheduleSync();
+  snack(aviso||(r.existente?'Conta conectada à sua planilha do Quita':(r.id?'Planilha criada no seu Google Drive':(r.msg||'Conta conectada'))));
 };
 window.quitaGSync=function(r){
   var a=S.ajustes;syncing=false;
   if(r.ok){
     if(a.google){if(r.id)a.google.id=r.id;if(r.url)a.google.url=r.url}
-    a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString();
+    a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString();if(gUltimaCopia)a.copiaEm=gUltimaCopia;
     if(gSyncManual)toast(r.criada?'Planilha recriada no seu Drive ✓':'Planilha atualizada ✓');
   } else {a.pendente=true;a.erro=r.msg||'erro';if(gSyncManual)toast('Falhou: '+a.erro)}
   gSyncManual=false;persist();updSyncDot();if(curTab==='relatorio')renderRelatorio();
@@ -1627,7 +1630,7 @@ function btnGoogle(id){return '<button class="btn g-btn" id="'+id+'">'+G_LOGO+'<
 function googleBoxHTML(){
   var a=S.ajustes,g=a.google;
   if(!googleOn())return '<div id="gBox"><p class="muted" style="margin:0 0 12px">Entre com sua conta Google e o Quita cria uma planilha no seu Drive, atualizada sozinha a cada alteração.</p>'+btnGoogle('gIn')+'</div>';
-  return '<div id="gBox"><div class="g-card"><span class="c-ic">'+ICON.sheet+'</span><span class="grow"><b>'+esc(g.email)+'</b><span>'+esc(syncText())+'</span></span></div>'+
+  return '<div id="gBox"><div class="g-card"><span class="c-ic">'+ICON.sheet+'</span><span class="grow"><b>'+esc(g.email)+'</b><span>'+esc(syncText())+'</span><span class="g-copia">'+ICON.check+(a.copiaEm?'Cópia de segurança: '+quando(a.copiaEm):'Cópia de segurança: ainda não feita')+'</span></span></div>'+
     '<div class="btn-row" style="margin-top:10px">'+(g.url?'<button class="btn ghost" id="gOpen">'+ICON.sheet+'Abrir planilha</button>':'')+'<button class="btn ghost" id="gNow">'+ICON.sync+'Sincronizar</button></div>'+
     '<button class="more" id="gOut" style="margin-top:6px">Desconectar conta Google</button></div>';
 }

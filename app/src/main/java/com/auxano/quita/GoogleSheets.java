@@ -171,6 +171,20 @@ public class GoogleSheets {
             }
         }
 
+        // 1º a cópia completa (se algo falhar depois, a cópia já está nova; se ela falhar, a sincronização inteira acusa erro)
+        String backup = payload.optString("backup", "");
+        if (backup.length() > 0) {
+            JSONArray rows = new JSONArray().put(new JSONArray().put(payload.optString("backupEm", "")));
+            for (int i = 0; i < backup.length(); i += 40000) rows.put(new JSONArray().put(backup.substring(i, Math.min(backup.length(), i + 40000))));
+            if (existing.containsKey(BKP)) {
+                try {
+                    http("POST", API + "/" + sheetId + ":batchUpdate", token, new JSONObject().put("requests", new JSONArray().put(gridReq0(existing.get(BKP), rows.length() + 1, 1))));
+                } catch (Exception ignored) { }
+            }
+            http("POST", API + "/" + sheetId + "/values:batchClear", token, new JSONObject().put("ranges", new JSONArray().put(q(BKP))));
+            http("PUT", API + "/" + sheetId + "/values/" + enc(q(BKP) + "!A1") + "?valueInputOption=RAW", token, new JSONObject().put("values", rows));
+        }
+
         // grade do tamanho exato dos dados (sem 26 colunas vazias)
         JSONArray grid = new JSONArray();
         Map<String, int[]> dims = new HashMap<String, int[]>();
@@ -207,20 +221,6 @@ public class GoogleSheets {
         if (values.length() > 0) {
             http("POST", API + "/" + sheetId + "/values:batchUpdate", token,
                     new JSONObject().put("valueInputOption", "RAW").put("data", values));
-        }
-
-        // cópia completa dos dados, para restaurar num celular novo
-        String backup = payload.optString("backup", "");
-        if (backup.length() > 0) {
-            JSONArray rows = new JSONArray().put(new JSONArray().put(payload.optString("backupEm", "")));
-            for (int i = 0; i < backup.length(); i += 40000) rows.put(new JSONArray().put(backup.substring(i, Math.min(backup.length(), i + 40000))));
-            if (existing.containsKey(BKP)) {
-                try {
-                    http("POST", API + "/" + sheetId + ":batchUpdate", token, new JSONObject().put("requests", new JSONArray().put(gridReq0(existing.get(BKP), rows.length() + 1, 1))));
-                } catch (Exception ignored) { }
-            }
-            http("POST", API + "/" + sheetId + "/values:batchClear", token, new JSONObject().put("ranges", new JSONArray().put(q(BKP))));
-            http("PUT", API + "/" + sheetId + "/values/" + enc(q(BKP) + "!A1") + "?valueInputOption=RAW", token, new JSONObject().put("values", rows));
         }
 
         // histórico: uma linha por dia
@@ -298,8 +298,19 @@ public class GoogleSheets {
         JSONObject r = http("GET", DRIVE + "?q=" + enc(qs) + "&orderBy=" + enc("modifiedTime desc") + "&pageSize=10&fields=" + enc("files(id,name,webViewLink)"), token, null);
         JSONArray files = r.optJSONArray("files");
         if (files == null || files.length() == 0) return null;
-        JSONObject f = files.getJSONObject(0);
-        return new JSONObject().put("id", f.getString("id")).put("url", f.optString("webViewLink", "https://docs.google.com/spreadsheets/d/" + f.getString("id")));
+        JSONObject best = null;
+        String bestEm = "";
+        for (int i = 0; i < files.length(); i++) {
+            JSONObject f = files.getJSONObject(i);
+            String em = "";
+            try {
+                JSONObject v = http("GET", API + "/" + f.getString("id") + "/values/" + enc(q(BKP) + "!A1"), token, null);
+                JSONArray vals = v.optJSONArray("values");
+                if (vals != null && vals.length() > 0 && vals.getJSONArray(0).length() > 0) em = vals.getJSONArray(0).getString(0);
+            } catch (Exception ignored) { }
+            if (best == null || em.compareTo(bestEm) > 0) { best = f; bestEm = em; }
+        }
+        return new JSONObject().put("id", best.getString("id")).put("url", best.optString("webViewLink", "https://docs.google.com/spreadsheets/d/" + best.getString("id")));
     }
 
     /** Lê a cópia completa guardada na aba _backup. Devolve {em, dados} ou null. */
