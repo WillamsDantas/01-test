@@ -578,13 +578,47 @@ body.locked main,body.locked nav.bottom,body.locked .top,body.locked .fab{visibi
 .g-card .grow{flex:1;min-width:0}
 .g-card .grow b{display:block;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .g-card .grow span{display:block;font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.4}
-.g-card .grow .g-copia{display:flex;align-items:center;gap:5px;color:var(--pos);margin-top:4px}
+.g-card .grow .g-copia{color:var(--pos);margin-top:3px}
+.g-card .grow .g-copia.bad{color:var(--warn)}
+.g-card .c-ic.ok{color:var(--pos);background:var(--pos-soft);border-color:transparent}
 .g-copia svg{width:13px;height:13px;flex:0 0 13px}
 details.adv{margin-top:14px;border-top:1px solid var(--border);padding-top:10px}
 details.adv summary{font-size:13px;color:var(--ink-3);cursor:pointer;padding:4px 0;list-style:none}
 details.adv summary::-webkit-details-marker{display:none}
 details.adv summary::after{content:" ›"}
 details.adv[open] summary{margin-bottom:10px}
+
+
+/* ---------- tela de entrada (conta Google) ---------- */
+#gate{position:fixed;inset:0;z-index:45;background:var(--bg);display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#gate.on{display:block;animation:gtIn .28s ease}
+@keyframes gtIn{from{opacity:0}to{opacity:1}}
+body.gated main,body.gated nav.bottom,body.gated .top{visibility:hidden}
+.gt-wrap{min-height:100%;display:flex;flex-direction:column;padding:calc(36px + env(safe-area-inset-top)) clamp(18px,5.5vw,24px) calc(22px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto}
+.gt-top{text-align:center;padding-top:clamp(12px,5vh,40px)}
+.gt-logo{width:76px;height:76px;border-radius:22px;background:#141416;border:1px solid var(--border);display:grid;place-items:center;margin:0 auto 12px;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden}
+.gt-logo svg.qmark{width:76px;height:76px}
+.gt-brand{font:600 15px var(--f-disp);color:var(--ink-2);margin-bottom:clamp(16px,3.5vh,26px)}
+.gt-top h1{font:600 clamp(23px,7vw,27px)/1.18 var(--f-disp);letter-spacing:-.6px;margin:0 4px 12px;text-wrap:balance}
+.gt-lead{font-size:15px;line-height:1.5;color:var(--ink-2);max-width:270px;margin:0 auto;text-wrap:balance}
+.gt-peek{display:flex;align-items:center;gap:12px;margin:clamp(18px,3.5vh,26px) 0 0;padding:12px 14px;border:1px solid var(--border);background:var(--surface);border-radius:14px}
+.gt-pk{width:38px;height:38px;border-radius:10px;background:var(--pos-soft);color:var(--pos);display:grid;place-items:center;flex:0 0 38px}
+.gt-pk svg{width:19px;height:19px}
+.gt-pt{min-width:0}
+.gt-pt b{display:block;font-size:14px;font-weight:600}
+.gt-pt span{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--pos);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gt-pt span svg{width:13px;height:13px;flex:0 0 13px}
+.gt-list{margin:clamp(16px,3vh,22px) 0 24px;display:flex;flex-direction:column;gap:16px;padding:0 2px}
+.gt-list>div{display:flex;gap:13px;align-items:flex-start}
+.gt-li{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center;flex:0 0 34px;color:var(--ink)}
+.gt-li svg{width:17px;height:17px}
+.gt-list b{display:block;font-size:14.5px;font-weight:600}
+.gt-list em{display:block;font-style:normal;font-size:13px;color:var(--ink-3);margin-top:2px;line-height:1.4}
+.gt-bottom{margin-top:auto;display:flex;flex-direction:column;gap:6px}
+.gt-bottom .g-btn{height:54px;border-radius:14px;font-size:16px}
+[data-theme=light] .gt-bottom .g-btn{background:#111214;color:#fff;border-color:#111214}
+[data-theme=light] .gt-bottom .g-btn svg{background:#fff;border-radius:50%;padding:3px;width:26px;height:26px}
+.gt-skip{height:44px;color:var(--ink-2);font-size:14.5px;font-weight:500}
 
 /* troca de tema: dissolve da tela inteira */
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.45s;animation-timing-function:cubic-bezier(.4,0,.2,1)}
@@ -714,7 +748,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.9.3';
+var VERSION = '1.9.4';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -897,6 +931,9 @@ function pctTxt(p){return isFinite(p)?Math.round(p*100)+'%':'—'}
 var curTab='painel', curMonth=curYM(), debtFilter='abertas';
 var QMARK='<svg class="qmark" viewBox="1 1 106 106"><path d="M57.38 80.25 L41.50 80.25 A19.25 19.25 0 0 1 22.25 61.00 L22.25 47.00 A19.25 19.25 0 0 1 41.50 27.75 L55.50 27.75 A19.25 19.25 0 0 1 74.59 44.54 L66.25 52.88 L66.25 47.00 A10.75 10.75 0 0 0 55.50 36.25 L41.50 36.25 A10.75 10.75 0 0 0 30.75 47.00 L30.75 61.00 A10.75 10.75 0 0 0 41.50 71.75 L48.88 71.75 Z" fill="#F4F4F5"/><path d="M52.50 63.00 L60.50 71.00 L81.50 50.00" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var ICON={
+  shieldOk:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></svg>',
+  cloud:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></svg>',
+  phone:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2" /> <path d="M12 18h.01" /></svg>',
   back:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z" /> <path d="m12 9 6 6" /> <path d="m18 9-6 6" /></svg>',
   finger:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" /> <path d="M14 13.12c0 2.38 0 6.38-1 8.88" /> <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02" /> <path d="M2 12a10 10 0 0 1 18-6" /> <path d="M2 16h.01" /> <path d="M21.8 16c.2-2 .131-5.354 0-6" /> <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2" /> <path d="M8.65 22c.21-.66.45-1.32.57-2" /> <path d="M9 6.8a6 6 0 0 1 9 5.2v2" /></svg>',
   ff:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6a2 2 0 0 1 3.414-1.414l6 6a2 2 0 0 1 0 2.828l-6 6A2 2 0 0 1 12 18z" /> <path d="M2 6a2 2 0 0 1 3.414-1.414l6 6a2 2 0 0 1 0 2.828l-6 6A2 2 0 0 1 2 18z" /></svg>',
@@ -1603,36 +1640,45 @@ window.quitaGoogle=function(r){
     persist();
   }
   updSyncDot();haptic();
-  if(sheetOpen&&gIntroAberto){closeSheet();gIntroAberto=false;depoisDoGoogle()}
+  if(gIntroAberto){fecharGate();depoisDoGoogle()}
   else if(sheetOpen)openSettings();
   renderAll();
   if(r.existente&&(restaurou||!appVazio()))scheduleSync();
-  snack(aviso||(r.existente?'Conta conectada à sua planilha do Quita':(r.id?'Planilha criada no seu Google Drive':(r.msg||'Conta conectada'))));
+  snack(aviso||(r.id||r.existente?'Pronto! Seus dados estão protegidos':(r.msg||'Conta Google conectada')));
 };
 window.quitaGSync=function(r){
   var a=S.ajustes;syncing=false;
   if(r.ok){
     if(a.google){if(r.id)a.google.id=r.id;if(r.url)a.google.url=r.url}
     a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString();if(gUltimaCopia)a.copiaEm=gUltimaCopia;
-    if(gSyncManual)toast(r.criada?'Planilha recriada no seu Drive ✓':'Planilha atualizada ✓');
+    if(gSyncManual)toast('Cópia de segurança feita ✓');
   } else {a.pendente=true;a.erro=r.msg||'erro';if(gSyncManual)toast('Falhou: '+a.erro)}
   gSyncManual=false;persist();updSyncDot();if(curTab==='relatorio')renderRelatorio();
   if(sheetOpen&&$('#gBox'))$('#gBox').outerHTML=googleBoxHTML(),bindGoogleBox($('#sheetBody'));
 };
 function sairGoogle(){
-  confirmBox('Desconectar a conta Google? A planilha continua no seu Drive, só para de ser atualizada.','Desconectar',function(){
+  confirmBox('Desconectar a conta Google? Seus dados continuam no celular, mas deixam de ter cópia na sua conta.','Desconectar',function(){
     try{Android.gLogout()}catch(e){}
     S.ajustes.google=null;S.ajustes.pendente=false;S.ajustes.erro='';persist();updSyncDot();openSettings();snack('Conta Google desconectada');
   });
 }
 var G_LOGO='<svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
 function btnGoogle(id){return '<button class="btn g-btn" id="'+id+'">'+G_LOGO+'<span>Entrar com Google</span></button>'}
+function copiaTxt(){
+  var a=S.ajustes;
+  if(syncing)return 'Fazendo a cópia…';
+  if(a.erro)return 'A última cópia falhou. Toque em Fazer cópia agora';
+  if(a.pendente)return 'Alterações aguardando a cópia';
+  return a.copiaEm?'Cópia de segurança: '+quando(a.copiaEm):'Cópia de segurança: ainda não feita';
+}
 function googleBoxHTML(){
   var a=S.ajustes,g=a.google;
-  if(!googleOn())return '<div id="gBox"><p class="muted" style="margin:0 0 12px">Entre com sua conta Google e o Quita cria uma planilha no seu Drive, atualizada sozinha a cada alteração.</p>'+btnGoogle('gIn')+'</div>';
-  return '<div id="gBox"><div class="g-card"><span class="c-ic">'+ICON.sheet+'</span><span class="grow"><b>'+esc(g.email)+'</b><span>'+esc(syncText())+'</span><span class="g-copia">'+ICON.check+(a.copiaEm?'Cópia de segurança: '+quando(a.copiaEm):'Cópia de segurança: ainda não feita')+'</span></span></div>'+
-    '<div class="btn-row" style="margin-top:10px">'+(g.url?'<button class="btn ghost" id="gOpen">'+ICON.sheet+'Abrir planilha</button>':'')+'<button class="btn ghost" id="gNow">'+ICON.sync+'Sincronizar</button></div>'+
-    '<button class="more" id="gOut" style="margin-top:6px">Desconectar conta Google</button></div>';
+  if(!googleOn())return '<div id="gBox"><p class="muted" style="margin:0 0 12px">Entre com sua conta Google e seus dados ficam protegidos. Trocou de celular? É só entrar com a mesma conta e tudo volta.</p>'+btnGoogle('gIn')+'</div>';
+  var bad=a.erro||a.pendente;
+  return '<div id="gBox"><div class="g-card"><span class="c-ic'+(bad?'':' ok')+'">'+(bad?ICON.alert:ICON.shieldOk)+'</span><span class="grow"><b>'+esc(g.email)+'</b><span class="g-copia'+(bad?' bad':'')+'">'+esc(copiaTxt())+'</span></span></div>'+
+    '<button class="btn ghost" id="gNow" style="margin-top:10px">'+ICON.sync+'Fazer cópia agora</button>'+
+    (g.url?'<button class="more" id="gOpen" style="margin-top:6px">'+ICON.sheet+'Ver meus dados no Google Planilhas</button>':'')+
+    '<button class="more" id="gOut">Desconectar conta Google</button></div>';
 }
 function bindGoogleBox(el){
   var i=$('#gIn',el);if(i)i.onclick=entrarGoogle;
@@ -1645,17 +1691,20 @@ function precisaOnboard(){return !S.ajustes.onboard&&!S.dividas.length&&!S.recei
 function depoisDoGoogle(){if(precisaOnboard())setTimeout(function(){openOnboarding(0)},300)}
 function openGoogleIntro(){
   gIntroAberto=true;
-  var h='<div class="g-intro"><div class="logo lk-logo">'+QMARK+'</div>'+
-    '<h2 class="ob-h">Suas finanças numa planilha só sua</h2>'+
-    '<p class="ob-p">Entre com sua conta Google e o Quita cria uma planilha no seu Google Drive com receitas, despesas, dívidas e metas, atualizada sozinha.</p>'+
-    '<div class="g-list"><div>'+ICON.check+'<span>A planilha é criada na hora, no seu Drive</span></div><div>'+ICON.check+'<span>O Quita só mexe nessa planilha, nunca no resto do Drive</span></div><div>'+ICON.check+'<span>Seus dados continuam também no celular</span></div></div>'+
-    btnGoogle('giIn')+'<button class="btn ghost" id="giSkip" style="margin-top:8px">Agora não</button>'+
-    '<p class="muted" style="text-align:center;margin:12px 0 0;font-size:12px">Dá para conectar depois em Ajustes.</p></div>';
-  openSheet(h,function(el){
-    $('#giIn',el).onclick=entrarGoogle;
-    $('#giSkip',el).onclick=function(){S.ajustes.googlePulou=true;persist();gIntroAberto=false;closeSheet();depoisDoGoogle()};
-  });
+  var g=document.getElementById('gate');if(!g){g=document.createElement('div');g.id='gate';document.body.appendChild(g)}
+  g.innerHTML='<div class="gt-wrap"><div class="gt-top"><div class="gt-logo">'+QMARK+'</div><div class="gt-brand">Quita</div>'+
+    '<h1>Seus dados protegidos na sua conta Google</h1><p class="gt-lead">Trocou de celular? Entre com a mesma conta e tudo&nbsp;volta.</p></div>'+
+    '<div class="gt-peek"><span class="gt-pk">'+ICON.shieldOk+'</span><span class="gt-pt"><b>Cópia automática</b><span>'+ICON.check+'Feita sozinha a cada alteração</span></span></div>'+
+    '<div class="gt-list">'+
+      '<div><span class="gt-li">'+ICON.cloud+'</span><span><b>Nada se perde</b><em>Tudo guardado na sua conta Google</em></span></div>'+
+      '<div><span class="gt-li">'+ICON.phone+'</span><span><b>Em qualquer celular</b><em>Continue de onde parou</em></span></div>'+
+      '<div><span class="gt-li">'+ICON.lock+'</span><span><b>Só você vê</b><em>Mais ninguém tem acesso aos seus dados</em></span></div>'+
+    '</div><div class="gt-bottom">'+btnGoogle('giIn')+'<button class="gt-skip" id="giSkip">Continuar sem conta</button></div></div>';
+  g.classList.add('on');document.body.classList.add('gated');
+  $('#giIn',g).onclick=entrarGoogle;
+  $('#giSkip',g).onclick=function(){S.ajustes.googlePulou=true;persist();fecharGate();depoisDoGoogle()};
 }
+function fecharGate(){gIntroAberto=false;var g=document.getElementById('gate');if(g){g.classList.remove('on');document.body.classList.remove('gated')}}
 
 /* ---------------- Painel ---------------- */
 function renderPainel(){
@@ -2117,7 +2166,7 @@ function openSettings(){
     '<div class="sec-title" style="margin-top:0">Aparência</div>'+
     '<div class="seg" id="sTema"><button data-tm="dark">'+'Escuro</button><button data-tm="light">Claro</button><button data-tm="auto">Automático</button></div>'+
     segurancaHTML()+
-    '<div class="sec-title">Planilha Google</div>'+
+    '<div class="sec-title">Conta Google</div>'+
     googleBoxHTML()+
     '<details class="adv"><summary>Avançado: usar link do Apps Script</summary>'+
     '<div class="note"><b>Como ligar a planilha (uma vez só):</b><ol>'+
@@ -2401,7 +2450,7 @@ function updSyncDot(state){
   var on=temPlanilha();
   i.className=!on?'':state==='run'?'pend':a.erro?'err':a.pendente?'pend':'ok';
   $('#btnSync').hidden=!on;
-  $('#topSub').textContent=!on?'Controle financeiro':state==='run'?'Sincronizando…':a.erro?'Planilha: erro na sincronização':a.pendente?'Planilha: alterações pendentes':'Planilha sincronizada';
+  $('#topSub').textContent=!on?'Controle financeiro':googleOn()?(state==='run'?'Salvando cópia…':a.erro?'Erro na cópia de segurança':a.pendente?'Cópia pendente':'Dados protegidos'):state==='run'?'Sincronizando…':a.erro?'Planilha: erro na sincronização':a.pendente?'Planilha: alterações pendentes':'Planilha sincronizada';
 }
 
 /* ---------------- tema ---------------- */
