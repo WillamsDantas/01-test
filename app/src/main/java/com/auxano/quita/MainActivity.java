@@ -503,7 +503,7 @@ public class MainActivity extends Activity {
                 int from = w.getStatusBarColor();
                 if (from != c) {
                     android.animation.ValueAnimator va = android.animation.ValueAnimator.ofArgb(from, c);
-                    va.setDuration(350);
+                    va.setDuration(450);
                     va.addUpdateListener(new android.animation.ValueAnimator.AnimatorUpdateListener() {
                         @Override public void onAnimationUpdate(android.animation.ValueAnimator a) {
                             int v = (Integer) a.getAnimatedValue();
@@ -569,7 +569,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.7.1";
+            return "1.7.2";
         }
     }
 }

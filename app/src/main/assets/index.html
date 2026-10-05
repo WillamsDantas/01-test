@@ -479,8 +479,9 @@ body.locked main,body.locked nav.bottom,body.locked .top,body.locked .fab{visibi
 .lk-keys button.lk-txt{font:500 13px var(--f-text);background:none;border:0;color:var(--ink-2)}
 .lk-keys button[data-k=del],.lk-keys button[data-k=bio]{background:none;border:0}
 
-/* troca de tema suave */
-html.theming,html.theming *,html.theming *::before,html.theming *::after{transition:background-color .4s ease,color .4s ease,border-color .4s ease,fill .4s ease,stroke .4s ease,box-shadow .4s ease!important}
+/* troca de tema: dissolve da tela inteira */
+::view-transition-old(root),::view-transition-new(root){animation-duration:.45s;animation-timing-function:cubic-bezier(.4,0,.2,1)}
+#tfade{position:fixed;inset:0;z-index:300;pointer-events:none;opacity:0;transition:opacity .22s ease}
 </style>
 </head>
 <body>
@@ -605,7 +606,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.7.1';
+var VERSION = '1.7.2';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1984,13 +1985,22 @@ function updSyncDot(state){
 /* ---------------- tema ---------------- */
 var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
 var themeReady=false;
+/* dissolve a tela inteira de um tema para o outro (sem cada parte mudar num ritmo) */
+function trocaSuave(fn,novo){
+  if(document.startViewTransition){try{document.startViewTransition(fn);return}catch(e){}}
+  var f=document.getElementById('tfade');
+  if(!f){f=document.createElement('div');f.id='tfade';document.body.appendChild(f)}
+  f.style.background=novo==='dark'?'#111113':'#F3F4F6';
+  requestAnimationFrame(function(){f.style.opacity='1';setTimeout(function(){fn();requestAnimationFrame(function(){f.style.opacity='0'})},230)});
+}
 function applyTheme(){
   var t=(S&&S.ajustes&&S.ajustes.tema)||'dark';
   var sys=(HAS_NATIVE&&Android.systemDark)?Android.systemDark():(mq?mq.matches:true);
   var dark=t==='auto'?sys:t==='dark';
   var root=document.documentElement,novo=dark?'dark':'light',antes=root.getAttribute('data-theme');
-  if(themeReady&&antes&&antes!==novo){root.classList.add('theming');clearTimeout(applyTheme._t);applyTheme._t=setTimeout(function(){root.classList.remove('theming')},500)}
-  root.setAttribute('data-theme',novo);themeReady=true;
+  var troca=function(){root.setAttribute('data-theme',novo)};
+  if(themeReady&&antes&&antes!==novo)trocaSuave(troca,novo);else troca();
+  themeReady=true;
   if(HAS_NATIVE&&Android.setBars)try{Android.setBars(dark)}catch(e){}
 }
 if(mq&&mq.addEventListener)mq.addEventListener('change',function(){if(S&&S.ajustes.tema==='auto')applyTheme()});
