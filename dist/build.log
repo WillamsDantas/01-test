@@ -1,4 +1,29 @@
 build-tools: /usr/local/lib/android/sdk/build-tools/37.0.0
 platform: /usr/local/lib/android/sdk/platforms/android-34
-app/src/main/res/values/styles.xml:0: error: xml parser error: no element found.
-app/src/main/res/values/styles.xml: error: file failed to compile.
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+V3.0 Signer: certificate DN: CN=Auxano, O=Auxano, C=BR
+V3.0 Signer: certificate SHA-256 digest: 3864b282b2ddb7b01c8f069fa0d8af53a5b65beeae0e0de3b46cf4504ed97677
+V3.0 Signer: certificate SHA-1 digest: df513c20c643c5fe1e7cb8d665b349e8c3e6bdfa
+total 1340
+drwxr-xr-x 2 runner runner   4096 Oct  5 13:04 .
+drwxr-xr-x 9 runner runner   4096 Oct  5 13:04 ..
+-rw-r--r-- 1 runner runner  58385 Oct  5 13:04 Quita-v1.0.0.apk
+-rw-r--r-- 1 runner runner   5538 Oct  5 13:04 Quita-v1.0.0.apk.idsig
+-rw-r--r-- 1 runner runner  58385 Oct  5 13:04 Quita-v1.1.0.apk
+-rw-r--r-- 1 runner runner   5538 Oct  5 13:04 Quita-v1.1.0.apk.idsig
+-rw-r--r-- 1 runner runner  62481 Oct  5 13:04 Quita-v1.2.0.apk
+-rw-r--r-- 1 runner runner   5538 Oct  5 13:04 Quita-v1.2.0.apk.idsig
+-rw-r--r-- 1 runner runner  70744 Oct  5 13:04 Quita-v1.3.0.apk
+-rw-r--r-- 1 runner runner   5538 Oct  5 13:04 Quita-v1.3.0.apk.idsig
+-rw-r--r-- 1 runner runner  70744 Oct  5 13:04 Quita-v1.3.1.apk
+-rw-r--r-- 1 runner runner   5538 Oct  5 13:04 Quita-v1.3.1.apk.idsig
+-rw-r--r-- 1 runner runner  74840 Oct  5 13:04 Quita-v1.4.0.apk
+-rw-r--r-- 1 runner runner   5538 Oct  5 13:04 Quita-v1.4.0.apk.idsig
+-rw-r--r-- 1 runner runner 288469 Oct  5 13:04 Quita-v1.5.0.apk
+-rw-r--r-- 1 runner runner   5538 Oct  5 13:04 Quita-v1.5.0.apk.idsig
+-rw-r--r-- 1 runner runner 288469 Oct  5 13:04 Quita-v1.5.1.apk
+-rw-r--r-- 1 runner runner   5538 Oct  5 13:04 Quita-v1.5.1.apk.idsig
+-rw-r--r-- 1 runner runner 288469 Oct  5 13:04 Quita-v1.5.2.apk
+-rw-r--r-- 1 runner runner   5538 Oct  5 13:04 Quita-v1.5.2.apk.idsig
+-rw-r--r-- 1 runner runner    468 Oct  5 13:04 build.log
