@@ -64,6 +64,7 @@ public class MainActivity extends Activity {
         s.setDomStorageEnabled(true);
         s.setAllowFileAccess(true);
         s.setTextZoom(100);
+        s.setCacheMode(WebSettings.LOAD_NO_CACHE);
         s.setMediaPlaybackRequiresUserGesture(true);
 
         web.setWebViewClient(new WebViewClient() {
@@ -96,7 +97,15 @@ public class MainActivity extends Activity {
         });
 
         web.addJavascriptInterface(new Bridge(), "Android");
-        web.loadUrl("file:///android_asset/index.html");
+        // limpa a tela guardada em memória quando o app é atualizado
+        int vc = 0;
+        try { vc = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode; } catch (Exception ignored) { }
+        android.content.SharedPreferences sp = getSharedPreferences("quita_app", MODE_PRIVATE);
+        if (sp.getInt("vc", -1) != vc) {
+            web.clearCache(true);
+            sp.edit().putInt("vc", vc).apply();
+        }
+        web.loadUrl("file:///android_asset/index.html?v=" + vc);
     }
 
     @Override
@@ -417,7 +426,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.6.3";
+            return "1.6.4";
         }
     }
 }
