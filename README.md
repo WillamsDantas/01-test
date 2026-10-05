@@ -11,3 +11,5 @@ ver o painel de comprometimento da renda, gerar relatório e espelhar tudo numa 
 
 Obs.: `keystore/quita.jks` é a chave de assinatura (senha quita123). Mantenha-a para que as
 próximas versões instalem por cima da atual sem apagar os dados.
+
+<!-- build v1.8.1 -->
