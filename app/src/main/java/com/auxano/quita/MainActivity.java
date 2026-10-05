@@ -1,5 +1,9 @@
 package com.auxano.quita;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -52,6 +56,9 @@ public class MainActivity extends Activity {
     private WebView web;
     private WebView printView;
     private static final int REQ_NOTIF = 7;
+    private static final int REQ_ACCOUNT = 4242;
+    private static final int REQ_ACC_PERM = 4243;
+    private String gPendingPayload = null;
     private ValueCallback<Uri[]> fileCallback;
 
     private boolean themeDark = true;
@@ -151,11 +158,23 @@ public class MainActivity extends Activity {
             fileCallback = null;
             return;
         }
+        if (requestCode == REQ_ACCOUNT) {
+            if (resultCode == RESULT_OK && data != null) {
+                String name = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                if (name != null) { gAuthorize(new Account(name, "com.google")); return; }
+            }
+            gResult(false, "Login cancelado", null, null);
+            return;
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQ_ACC_PERM) {
+            gChooseAccount();
+            return;
+        }
         if (requestCode == REQ_NOTIF) {
             boolean ok = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
             web.evaluateJavascript("window.quitaNotifPerm && window.quitaNotifPerm(" + ok + ")", null);
@@ -278,6 +297,82 @@ public class MainActivity extends Activity {
                 web.evaluateJavascript("window.quitaBio && window.quitaBio(true)", null);
             }
         });
+    }
+
+
+    /* ---------- Login com Google + planilha ---------- */
+    private android.content.SharedPreferences gPrefs() { return getSharedPreferences("quita_app", MODE_PRIVATE); }
+
+    private void gEmit(final String fn, final JSONObject o) {
+        final String js = "window." + fn + " && window." + fn + "(" + o.toString() + ")";
+        runOnUiThread(new Runnable() { @Override public void run() { web.evaluateJavascript(js, null); } });
+    }
+
+    private void gResult(boolean ok, String msg, String email, JSONObject sheet) {
+        try {
+            JSONObject o = new JSONObject().put("ok", ok).put("msg", msg == null ? "" : msg);
+            if (email != null) o.put("email", email);
+            if (sheet != null) { o.put("id", sheet.optString("id")); o.put("url", sheet.optString("url")); o.put("criada", sheet.optBoolean("criada")); }
+            gEmit("quitaGoogle", o);
+        } catch (Exception ignored) { }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void gChooseAccount() {
+        try {
+            Intent it = AccountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, false, null, null, null, null);
+            startActivityForResult(it, REQ_ACCOUNT);
+        } catch (Exception e) {
+            gResult(false, "Não foi possível abrir as contas do Google deste celular", null, null);
+        }
+    }
+
+    private void gAuthorize(final Account acc) {
+        AccountManager.get(this).getAuthToken(acc, GoogleSheets.SCOPE, null, this, new AccountManagerCallback<Bundle>() {
+            @Override public void run(final AccountManagerFuture<Bundle> future) {
+                new Thread(new Runnable() { @Override public void run() {
+                    try {
+                        Bundle b = future.getResult();
+                        String token = b.getString(AccountManager.KEY_AUTHTOKEN);
+                        if (token == null) { gResult(false, "O Google não liberou o acesso", null, null); return; }
+                        gPrefs().edit().putString("g_account", acc.name).apply();
+                        JSONObject sheet = null;
+                        String msg = "";
+                        if (gPendingPayload != null) {
+                            try {
+                                JSONObject pl = new JSONObject(gPendingPayload);
+                                pl.put("title", "Quita – " + acc.name.split("@")[0]);
+                                sheet = gSyncWithRetry(acc, token, gPrefs().getString("g_sheet", ""), pl);
+                            } catch (Exception se) {
+                                msg = "Login feito, mas a planilha não foi criada: " + se.getMessage();
+                            }
+                        }
+                        gPendingPayload = null;
+                        gResult(true, msg, acc.name, sheet);
+                    } catch (android.accounts.OperationCanceledException ce) {
+                        gResult(false, "Login cancelado", null, null);
+                    } catch (Exception e) {
+                        gResult(false, "Falha no login do Google: " + e.getMessage(), null, null);
+                    }
+                } }).start();
+            }
+        }, null);
+    }
+
+    private JSONObject gSyncWithRetry(Account acc, String token, String sheetId, JSONObject payload) throws Exception {
+        JSONObject r;
+        try {
+            r = GoogleSheets.sync(token, sheetId, payload);
+        } catch (GoogleSheets.HttpError e) {
+            if (e.code != 401) throw e;
+            AccountManager am = AccountManager.get(this);
+            am.invalidateAuthToken("com.google", token);
+            String t2 = am.blockingGetAuthToken(acc, GoogleSheets.SCOPE, true);
+            if (t2 == null) throw new Exception("Entre de novo com o Google em Ajustes");
+            r = GoogleSheets.sync(t2, sheetId, payload);
+        }
+        gPrefs().edit().putString("g_sheet", r.optString("id")).apply();
+        return r;
     }
 
     private void callback(final String cbId, final boolean ok, final String msg) {
@@ -509,6 +604,49 @@ public class MainActivity extends Activity {
             }
         }
 
+        /* ---------- Google ---------- */
+        @JavascriptInterface
+        public void gLogin(final String payloadJson) {
+            gPendingPayload = payloadJson;
+            runOnUiThread(new Runnable() { @Override public void run() {
+                if (Build.VERSION.SDK_INT < 26 && checkSelfPermission("android.permission.GET_ACCOUNTS") != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{"android.permission.GET_ACCOUNTS"}, REQ_ACC_PERM);
+                } else {
+                    gChooseAccount();
+                }
+            } });
+        }
+
+        @JavascriptInterface
+        public void gSync(final String payloadJson, final String sheetId) {
+            new Thread(new Runnable() { @Override public void run() {
+                JSONObject o = new JSONObject();
+                try {
+                    String name = gPrefs().getString("g_account", "");
+                    if (name.length() == 0) throw new Exception("Entre com o Google em Ajustes");
+                    Account acc = new Account(name, "com.google");
+                    String token = AccountManager.get(MainActivity.this).blockingGetAuthToken(acc, GoogleSheets.SCOPE, true);
+                    if (token == null) throw new Exception("O Google pediu para confirmar o acesso. Toque em Entrar com Google em Ajustes");
+                    String sid = sheetId != null && sheetId.length() > 0 ? sheetId : gPrefs().getString("g_sheet", "");
+                    JSONObject r = gSyncWithRetry(acc, token, sid, new JSONObject(payloadJson));
+                    o.put("ok", true).put("id", r.optString("id")).put("url", r.optString("url")).put("criada", r.optBoolean("criada"));
+                } catch (Exception e) {
+                    try { o.put("ok", false).put("msg", e.getMessage() == null ? "erro" : e.getMessage()); } catch (Exception ignored) { }
+                }
+                gEmit("quitaGSync", o);
+            } }).start();
+        }
+
+        @JavascriptInterface
+        public void gLogout() {
+            gPrefs().edit().remove("g_account").remove("g_sheet").apply();
+        }
+
+        @JavascriptInterface
+        public String gAccount() {
+            return gPrefs().getString("g_account", "");
+        }
+
         @JavascriptInterface
         public String exportFile(String name, String mime, String content) {
             try {
@@ -680,7 +818,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.8.3";
+            return "1.9.0";
         }
     }
 }

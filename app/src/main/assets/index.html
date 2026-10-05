@@ -564,6 +564,26 @@ body.locked main,body.locked nav.bottom,body.locked .top,body.locked .fab{visibi
 .list-row.bk{width:100%;text-align:left}
 .list-row.bk>svg{width:18px;height:18px;color:var(--ink-3);flex:0 0 18px}
 
+.g-btn{background:#fff;color:#1F1F1F;border:1px solid #DADCE0;font-weight:600}
+[data-theme=dark] .g-btn{background:#fff;color:#1F1F1F;border-color:#fff}
+.g-btn svg{width:20px;height:20px;stroke:none}
+.g-intro{text-align:center;padding:4px 2px 0}
+.g-intro .lk-logo{margin:6px auto 16px}
+.g-intro .ob-p{margin-bottom:16px}
+.g-list{text-align:left;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:6px 14px;margin:0 0 18px}
+.g-list div{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13.5px;color:var(--ink-2)}
+.g-list div+div{border-top:1px solid var(--border)}
+.g-list svg{width:16px;height:16px;color:var(--pos);flex:0 0 16px}
+.g-card{display:flex;align-items:center;gap:12px;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px}
+.g-card .grow{flex:1;min-width:0}
+.g-card .grow b{display:block;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-card .grow span{display:block;font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.4}
+details.adv{margin-top:14px;border-top:1px solid var(--border);padding-top:10px}
+details.adv summary{font-size:13px;color:var(--ink-3);cursor:pointer;padding:4px 0;list-style:none}
+details.adv summary::-webkit-details-marker{display:none}
+details.adv summary::after{content:" ›"}
+details.adv[open] summary{margin-bottom:10px}
+
 /* troca de tema: dissolve da tela inteira */
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.45s;animation-timing-function:cubic-bezier(.4,0,.2,1)}
 #tfade{position:fixed;inset:0;z-index:300;pointer-events:none;opacity:0;transition:opacity .22s ease}
@@ -692,7 +712,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.8.3';
+var VERSION = '1.9.0';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -777,9 +797,9 @@ function persist(){
   try{ if(HAS_NATIVE){Android.save(json)} else {localStorage.setItem('quita',json)} }catch(e){}
 }
 function commit(){
-  if(S.ajustes.url){S.ajustes.pendente=true}
+  if(temPlanilha()){S.ajustes.pendente=true}
   persist(); renderAll(); syncAlerts();
-  if(S.ajustes.url&&S.ajustes.auto){scheduleSync()}
+  if(temPlanilha()&&S.ajustes.auto){scheduleSync()}
 }
 function debtById(id){return S.dividas.filter(function(x){return x.id===id})[0]}
 
@@ -1546,6 +1566,80 @@ function openBackups(){
   });
 }
 
+
+/* ---------------- v1.9: login com Google + planilha automática ---------------- */
+var gSyncManual=false;
+function googleOn(){var g=S.ajustes.google;return !!(HAS_NATIVE&&Android.gSync&&g&&g.email)}
+function temPlanilha(){return !!(S.ajustes.url||googleOn())}
+function gPayload(){var p=buildPayload();var g=S.ajustes.google,em=(g&&g.email)||'';p.title='Quita – '+(em?em.split('@')[0]:'minhas finanças');return p}
+function entrarGoogle(){
+  if(!(HAS_NATIVE&&Android.gLogin)){toast('O login com Google funciona no app instalado');return}
+  toast('Abrindo as contas do Google…');
+  var p=buildPayload();p.title='Quita';
+  Android.gLogin(JSON.stringify(p));
+}
+window.quitaGoogle=function(r){
+  var a=S.ajustes;
+  if(r.ok){
+    a.google={email:r.email,id:r.id||'',url:r.url||''};a.googlePulou=true;a.auto=true;
+    if(r.id){a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString()}else{a.pendente=true}
+    persist();updSyncDot();haptic();
+    if(sheetOpen&&gIntroAberto){closeSheet();gIntroAberto=false;depoisDoGoogle()}
+    else if(sheetOpen)openSettings();
+    renderAll();
+    snack(r.id?'Planilha criada no seu Google Drive':(r.msg||'Conta conectada'));
+  } else {
+    toast(r.msg||'Não foi possível entrar');
+  }
+};
+window.quitaGSync=function(r){
+  var a=S.ajustes;syncing=false;
+  if(r.ok){
+    if(a.google){if(r.id)a.google.id=r.id;if(r.url)a.google.url=r.url}
+    a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString();
+    if(gSyncManual)toast(r.criada?'Planilha recriada no seu Drive ✓':'Planilha atualizada ✓');
+  } else {a.pendente=true;a.erro=r.msg||'erro';if(gSyncManual)toast('Falhou: '+a.erro)}
+  gSyncManual=false;persist();updSyncDot();if(curTab==='relatorio')renderRelatorio();
+  if(sheetOpen&&$('#gBox'))$('#gBox').outerHTML=googleBoxHTML(),bindGoogleBox($('#sheetBody'));
+};
+function sairGoogle(){
+  confirmBox('Desconectar a conta Google? A planilha continua no seu Drive, só para de ser atualizada.','Desconectar',function(){
+    try{Android.gLogout()}catch(e){}
+    S.ajustes.google=null;S.ajustes.pendente=false;S.ajustes.erro='';persist();updSyncDot();openSettings();snack('Conta Google desconectada');
+  });
+}
+var G_LOGO='<svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+function btnGoogle(id){return '<button class="btn g-btn" id="'+id+'">'+G_LOGO+'<span>Entrar com Google</span></button>'}
+function googleBoxHTML(){
+  var a=S.ajustes,g=a.google;
+  if(!googleOn())return '<div id="gBox"><p class="muted" style="margin:0 0 12px">Entre com sua conta Google e o Quita cria uma planilha no seu Drive, atualizada sozinha a cada alteração.</p>'+btnGoogle('gIn')+'</div>';
+  return '<div id="gBox"><div class="g-card"><span class="c-ic">'+ICON.sheet+'</span><span class="grow"><b>'+esc(g.email)+'</b><span>'+esc(syncText())+'</span></span></div>'+
+    '<div class="btn-row" style="margin-top:10px">'+(g.url?'<button class="btn ghost" id="gOpen">'+ICON.sheet+'Abrir planilha</button>':'')+'<button class="btn ghost" id="gNow">'+ICON.sync+'Sincronizar</button></div>'+
+    '<button class="more" id="gOut" style="margin-top:6px">Desconectar conta Google</button></div>';
+}
+function bindGoogleBox(el){
+  var i=$('#gIn',el);if(i)i.onclick=entrarGoogle;
+  var o=$('#gOpen',el);if(o)o.onclick=function(){var u=S.ajustes.google.url;if(HAS_NATIVE)Android.openUrl(u);else window.open(u)};
+  var n=$('#gNow',el);if(n)n.onclick=function(){syncNow(true)};
+  var x=$('#gOut',el);if(x)x.onclick=sairGoogle;
+}
+var gIntroAberto=false;
+function precisaOnboard(){return !S.ajustes.onboard&&!S.dividas.length&&!S.receitas.length&&!S.despesas.length}
+function depoisDoGoogle(){if(precisaOnboard())setTimeout(function(){openOnboarding(0)},300)}
+function openGoogleIntro(){
+  gIntroAberto=true;
+  var h='<div class="g-intro"><div class="logo lk-logo">'+QMARK+'</div>'+
+    '<h2 class="ob-h">Suas finanças numa planilha só sua</h2>'+
+    '<p class="ob-p">Entre com sua conta Google e o Quita cria uma planilha no seu Google Drive com receitas, despesas, dívidas e metas, atualizada sozinha.</p>'+
+    '<div class="g-list"><div>'+ICON.check+'<span>A planilha é criada na hora, no seu Drive</span></div><div>'+ICON.check+'<span>O Quita só mexe nessa planilha, nunca no resto do Drive</span></div><div>'+ICON.check+'<span>Seus dados continuam também no celular</span></div></div>'+
+    btnGoogle('giIn')+'<button class="btn ghost" id="giSkip" style="margin-top:8px">Agora não</button>'+
+    '<p class="muted" style="text-align:center;margin:12px 0 0;font-size:12px">Dá para conectar depois em Ajustes.</p></div>';
+  openSheet(h,function(el){
+    $('#giIn',el).onclick=entrarGoogle;
+    $('#giSkip',el).onclick=function(){S.ajustes.googlePulou=true;persist();gIntroAberto=false;closeSheet();depoisDoGoogle()};
+  });
+}
+
 /* ---------------- Painel ---------------- */
 function renderPainel(){
   var el=$('#tab-painel');
@@ -2006,7 +2100,9 @@ function openSettings(){
     '<div class="sec-title" style="margin-top:0">Aparência</div>'+
     '<div class="seg" id="sTema"><button data-tm="dark">'+'Escuro</button><button data-tm="light">Claro</button><button data-tm="auto">Automático</button></div>'+
     segurancaHTML()+
-    '<div class="sec-title">Planilha online</div>'+
+    '<div class="sec-title">Planilha Google</div>'+
+    googleBoxHTML()+
+    '<details class="adv"><summary>Avançado: usar link do Apps Script</summary>'+
     '<div class="note"><b>Como ligar a planilha (uma vez só):</b><ol>'+
     '<li>Toque em <b>Copiar script</b> abaixo.</li>'+
     '<li>No computador, crie uma planilha em branco no Google Sheets.</li>'+
@@ -2018,6 +2114,7 @@ function openSettings(){
     '<div class="btn-row" style="margin-bottom:6px"><button class="btn ghost" id="sTest">Testar</button><button class="btn pri" id="sSaveUrl">Salvar link</button></div>'+
     '<label class="switch"><span class="s-tx"><b>Sincronizar automaticamente</b><span>Envia a cada alteração</span></span><input type="checkbox" id="sAuto"'+(a.auto?' checked':'')+'></label>'+
     '<p class="muted" style="margin:0">'+syncText()+'</p>'+
+    '</details>'+
     alertasHTML()+
     '<div class="sec-title">Estratégia de quitação</div>'+
     '<div class="seg" id="sEst"><button data-e="avalanche">Avalanche</button><button data-e="bola">Bola de neve</button></div>'+
@@ -2027,7 +2124,7 @@ function openSettings(){
     '<button class="btn danger" id="sWipe">'+ICON.trash+'Apagar todos os dados</button>'+
     '<p class="muted" style="text-align:center;margin-top:16px">Quita v'+(HAS_NATIVE?Android.version():VERSION)+' · Auxano</p>';
   openSheet(h,function(el){
-    bindAlertas(el);bindSeguranca(el);bindBackup(el);
+    bindAlertas(el);bindSeguranca(el);bindBackup(el);bindGoogleBox(el);
     function setTm(t){$$('#sTema button',el).forEach(function(b){b.classList.toggle('on',b.dataset.tm===t)})}
     setTm(a.tema||'dark');
     $$('#sTema button',el).forEach(function(b){b.onclick=function(){a.tema=b.dataset.tm;setTm(a.tema);persist();applyTheme()}});
@@ -2258,9 +2355,10 @@ function buildPayload(){
 function scheduleSync(){clearTimeout(syncTimer);syncTimer=setTimeout(function(){syncNow(false)},1500)}
 function syncNow(manual){
   var a=S.ajustes;
-  if(!a.url){if(manual){toast('Configure a planilha em Ajustes');openSettings()}return}
+  if(!temPlanilha()){if(manual){toast('Configure a planilha em Ajustes');openSettings()}return}
   if(syncing){scheduleSync();return}
   syncing=true;updSyncDot('run');if(manual)toast('Sincronizando…');
+  if(googleOn()){gSyncManual=manual;Android.gSync(JSON.stringify(gPayload()),a.google.id||'');return}
   request(a.url,buildPayload(),function(ok,msg){
     syncing=false;
     if(ok){a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString();if(manual)toast('Planilha atualizada ✓')}
@@ -2270,7 +2368,7 @@ function syncNow(manual){
 }
 function syncText(){
   var a=S.ajustes;
-  if(!a.url)return 'Planilha online não configurada.';
+  if(!temPlanilha())return 'Planilha online não configurada.';
   var t=a.ultimoSync?'Última sincronização: '+br(a.ultimoSync.slice(0,10))+' às '+new Date(a.ultimoSync).toTimeString().slice(0,5):'Ainda não sincronizado.';
   if(a.pendente)t+=' Há alterações pendentes.';
   if(a.erro)t+=' Último erro: '+a.erro;
@@ -2278,9 +2376,10 @@ function syncText(){
 }
 function updSyncDot(state){
   var i=$('#syncDot'),a=S.ajustes;
-  i.className=!a.url?'':state==='run'?'pend':a.erro?'err':a.pendente?'pend':'ok';
-  $('#btnSync').hidden=!a.url;
-  $('#topSub').textContent=!a.url?'Controle financeiro':state==='run'?'Sincronizando…':a.erro?'Planilha: erro na sincronização':a.pendente?'Planilha: alterações pendentes':'Planilha sincronizada';
+  var on=temPlanilha();
+  i.className=!on?'':state==='run'?'pend':a.erro?'err':a.pendente?'pend':'ok';
+  $('#btnSync').hidden=!on;
+  $('#topSub').textContent=!on?'Controle financeiro':state==='run'?'Sincronizando…':a.erro?'Planilha: erro na sincronização':a.pendente?'Planilha: alterações pendentes':'Planilha sincronizada';
 }
 
 /* ---------------- tema ---------------- */
@@ -2326,16 +2425,17 @@ $('#btnEye').onclick=toggleOcultar;
 pdfHTML=semMascara(pdfHTML);exportCSV=semMascara(exportCSV);reportText=semMascara(reportText);
 $('#btnSync').onclick=function(){syncNow(true)};
 window.quitaBack=function(){if(sheetOpen){closeSheet();return true}if(curTab!=='painel'){setTab('painel');return true}return false};
-window.quitaResume=function(away){var lc=lockCfg();if(lc.on&&lc.pin&&away>30000&&!$('#lock').classList.contains('on'))showLock('unlock');if(S&&S.ajustes.tema==='auto')applyTheme();renderAll();if(S.ajustes.url&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync();autoBackup()};
+window.quitaResume=function(away){var lc=lockCfg();if(lc.on&&lc.pin&&away>30000&&!$('#lock').classList.contains('on'))showLock('unlock');if(S&&S.ajustes.tema==='auto')applyTheme();renderAll();if(temPlanilha()&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync();autoBackup()};
 
 load();
 applyTheme();
 updEye();
 if(lockCfg().on&&lockCfg().pin){var _nl=/[?&]nolock=1/.test(location.search),_aw=0;try{_aw=HAS_NATIVE&&Android.awayMs?Android.awayMs():0}catch(e){}if(!_nl||_aw>30000)showLock('unlock')}
 setTab('painel');
-if(!S.ajustes.onboard&&!S.dividas.length&&!S.receitas.length&&!S.despesas.length)setTimeout(function(){openOnboarding(0)},350);
+if(HAS_NATIVE&&Android.gLogin&&!googleOn()&&!S.ajustes.googlePulou)setTimeout(openGoogleIntro,350);
+else if(precisaOnboard())setTimeout(function(){openOnboarding(0)},350);
 syncAlerts();
-if(S.ajustes.url&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync();
+if(temPlanilha()&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync();
 setTimeout(function(){autoBackup()},2500);
 })();
 </script>
