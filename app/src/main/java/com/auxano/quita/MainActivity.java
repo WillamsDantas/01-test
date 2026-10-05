@@ -203,10 +203,50 @@ public class MainActivity extends Activity {
         super.onBackPressed();
     }
 
+    private long pausedAt = 0;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pausedAt = System.currentTimeMillis();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        if (web != null) web.evaluateJavascript("window.quitaResume && window.quitaResume()", null);
+        long away = pausedAt == 0 ? 0 : System.currentTimeMillis() - pausedAt;
+        if (web != null) web.evaluateJavascript("window.quitaResume && window.quitaResume(" + away + ")", null);
+    }
+
+    private boolean bioAvailableNative() {
+        if (Build.VERSION.SDK_INT < 28) return false;
+        try {
+            if (Build.VERSION.SDK_INT >= 29) {
+                android.hardware.biometrics.BiometricManager bm = (android.hardware.biometrics.BiometricManager) getSystemService(Context.BIOMETRIC_SERVICE);
+                return bm != null && bm.canAuthenticate() == android.hardware.biometrics.BiometricManager.BIOMETRIC_SUCCESS;
+            }
+            return getPackageManager().hasSystemFeature(PackageManager.FEATURE_FINGERPRINT);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void showBioPrompt() {
+        if (Build.VERSION.SDK_INT < 28) return;
+        final java.util.concurrent.Executor ex = getMainExecutor();
+        android.hardware.biometrics.BiometricPrompt bp = new android.hardware.biometrics.BiometricPrompt.Builder(this)
+                .setTitle("Desbloquear o Quita")
+                .setSubtitle("Use sua digital ou rosto")
+                .setNegativeButton("Usar PIN", ex, new android.content.DialogInterface.OnClickListener() {
+                    @Override public void onClick(android.content.DialogInterface d, int w) { }
+                })
+                .build();
+        bp.authenticate(new android.os.CancellationSignal(), ex, new android.hardware.biometrics.BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationSucceeded(android.hardware.biometrics.BiometricPrompt.AuthenticationResult result) {
+                web.evaluateJavascript("window.quitaBio && window.quitaBio(true)", null);
+            }
+        });
     }
 
     private void callback(final String cbId, final boolean ok, final String msg) {
@@ -388,6 +428,29 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public String hash(String s) {
+            try {
+                java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+                byte[] h = md.digest(s.getBytes(StandardCharsets.UTF_8));
+                StringBuilder sb = new StringBuilder();
+                for (byte b : h) sb.append(String.format("%02x", b));
+                return sb.toString();
+            } catch (Exception e) {
+                return s;
+            }
+        }
+
+        @JavascriptInterface
+        public boolean bioAvailable() {
+            return bioAvailableNative();
+        }
+
+        @JavascriptInterface
+        public void bioPrompt() {
+            runOnUiThread(new Runnable() { @Override public void run() { try { showBioPrompt(); } catch (Exception ignored) { } } });
+        }
+
+        @JavascriptInterface
         public boolean systemDark() {
             return MainActivity.this.systemDark();
         }
@@ -464,7 +527,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.6.8";
+            return "1.7.0";
         }
     }
 }
