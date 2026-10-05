@@ -16,6 +16,7 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.HapticFeedbackConstants;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
@@ -346,6 +347,14 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public void haptic() {
+            runOnUiThread(new Runnable() { @Override public void run() {
+                int c = Build.VERSION.SDK_INT >= 30 ? HapticFeedbackConstants.CONFIRM : HapticFeedbackConstants.VIRTUAL_KEY;
+                web.performHapticFeedback(c, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+            }});
+        }
+
+        @JavascriptInterface
         public void setBars(final boolean dark) {
             runOnUiThread(new Runnable() { @Override public void run() {
                 int c = dark ? 0xFF111113 : 0xFFF3F4F6;
@@ -408,7 +417,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.5.3";
+            return "1.6.0";
         }
     }
 }
