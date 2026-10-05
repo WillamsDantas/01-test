@@ -336,13 +336,31 @@ public class MainActivity extends Activity {
                         String token = b.getString(AccountManager.KEY_AUTHTOKEN);
                         if (token == null) { gResult(false, "O Google não liberou o acesso", null, null); return; }
                         gPrefs().edit().putString("g_account", acc.name).apply();
+                        // 1) já existe planilha do Quita nesse Google? traz a cópia para o app decidir
+                        try {
+                            String sid = gPrefs().getString("g_sheet", "");
+                            JSONObject found = null;
+                            if (sid.length() > 0) found = new JSONObject().put("id", sid).put("url", "https://docs.google.com/spreadsheets/d/" + sid);
+                            else found = GoogleSheets.findSheet(token);
+                            if (found != null) {
+                                JSONObject bk = null;
+                                try { bk = GoogleSheets.readBackup(token, found.getString("id")); } catch (Exception ignored) { }
+                                JSONObject o = new JSONObject().put("ok", true).put("msg", "").put("email", acc.name)
+                                        .put("id", found.getString("id")).put("url", found.optString("url")).put("existente", true);
+                                if (bk != null) { o.put("backup", bk.optString("dados")); o.put("backupEm", bk.optString("em")); }
+                                gPendingPayload = null;
+                                gEmit("quitaGoogle", o);
+                                return;
+                            }
+                        } catch (Exception ignored) { }
+                        // 2) não existe: cria agora
                         JSONObject sheet = null;
                         String msg = "";
                         if (gPendingPayload != null) {
                             try {
                                 JSONObject pl = new JSONObject(gPendingPayload);
                                 pl.put("title", "Quita – " + acc.name.split("@")[0]);
-                                sheet = gSyncWithRetry(acc, token, gPrefs().getString("g_sheet", ""), pl);
+                                sheet = gSyncWithRetry(acc, token, "", pl);
                             } catch (Exception se) {
                                 msg = "Login feito, mas a planilha não foi criada: " + se.getMessage();
                             }
@@ -627,7 +645,7 @@ public class MainActivity extends Activity {
                     Account acc = new Account(name, "com.google");
                     String token = AccountManager.get(MainActivity.this).blockingGetAuthToken(acc, GoogleSheets.SCOPE, true);
                     if (token == null) throw new Exception("O Google pediu para confirmar o acesso. Toque em Entrar com Google em Ajustes");
-                    String sid = sheetId != null && sheetId.length() > 0 ? sheetId : gPrefs().getString("g_sheet", "");
+                    String sid = "NEW".equals(sheetId) ? "" : (sheetId != null && sheetId.length() > 0 ? sheetId : gPrefs().getString("g_sheet", ""));
                     JSONObject r = gSyncWithRetry(acc, token, sid, new JSONObject(payloadJson));
                     o.put("ok", true).put("id", r.optString("id")).put("url", r.optString("url")).put("criada", r.optBoolean("criada"));
                 } catch (Exception e) {
@@ -818,7 +836,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.9.1";
+            return "1.9.2";
         }
     }
 }

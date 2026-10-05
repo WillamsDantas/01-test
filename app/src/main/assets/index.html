@@ -712,7 +712,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.9.1';
+var VERSION = '1.9.2';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1548,9 +1548,9 @@ function bindBackup(el){
   var n=$('#bNow',el);if(n)n.onclick=function(){if(autoBackup(true)){toast('Backup salvo');openSettings()}else toast('Não foi possível fazer o backup')};
   var l=$('#bList',el);if(l)l.onclick=openBackups;
 }
-function restaurar(o){
-  var keep=S.ajustes;S=o;S.pagamentos=S.pagamentos||[];S.receitas=S.receitas||[];S.despesas=S.despesas||[];S.metas=S.metas||[];
-  S.ajustes=Object.assign({},DEFAULT.ajustes,o.ajustes||{},{lock:keep.lock,tema:keep.tema,alertas:keep.alertas,url:keep.url||((o.ajustes||{}).url)||''});
+function restaurar(o,daNuvem){
+  var keep=S.ajustes,oa=o.ajustes||{};S=o;S.pagamentos=S.pagamentos||[];S.receitas=S.receitas||[];S.despesas=S.despesas||[];S.metas=S.metas||[];
+  S.ajustes=Object.assign({},DEFAULT.ajustes,oa,{lock:keep.lock,tema:daNuvem?(oa.tema||keep.tema):keep.tema,alertas:daNuvem?(oa.alertas||keep.alertas):keep.alertas,url:keep.url||oa.url||''});
   migrate();applyTheme();updEye();commit();
 }
 function openBackups(){
@@ -1571,26 +1571,40 @@ function openBackups(){
 var gSyncManual=false;
 function googleOn(){var g=S.ajustes.google;return !!(HAS_NATIVE&&Android.gSync&&g&&g.email)}
 function temPlanilha(){return !!(S.ajustes.url||googleOn())}
-function gPayload(){var p=buildPayload();var g=S.ajustes.google,em=(g&&g.email)||'';p.title='Quita – '+(em?em.split('@')[0]:'minhas finanças');return p}
+function gPayload(){var p=buildPayload();var g=S.ajustes.google,em=(g&&g.email)||'';p.title='Quita – '+(em?em.split('@')[0]:'minhas finanças');p.backup=JSON.stringify(S);p.backupEm=new Date().toISOString();return p}
 function entrarGoogle(){
   if(!(HAS_NATIVE&&Android.gLogin)){toast('O login com Google funciona no app instalado');return}
   toast('Abrindo as contas do Google…');
-  var p=buildPayload();p.title='Quita';
+  var p=buildPayload();p.title='Quita';p.backup=JSON.stringify(S);p.backupEm=new Date().toISOString();
   Android.gLogin(JSON.stringify(p));
 }
+function appVazio(){return !S.dividas.length&&!S.receitas.length&&!S.despesas.length&&!(S.metas||[]).length}
 window.quitaGoogle=function(r){
   var a=S.ajustes;
-  if(r.ok){
-    a.google={email:r.email,id:r.id||'',url:r.url||''};a.googlePulou=true;a.auto=true;
-    if(r.id){a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString()}else{a.pendente=true}
-    persist();updSyncDot();haptic();
-    if(sheetOpen&&gIntroAberto){closeSheet();gIntroAberto=false;depoisDoGoogle()}
-    else if(sheetOpen)openSettings();
-    renderAll();
-    snack(r.id?'Planilha criada no seu Google Drive':(r.msg||'Conta conectada'));
-  } else {
-    toast(r.msg||'Não foi possível entrar');
+  if(!r.ok){toast(r.msg||'Não foi possível entrar');return}
+  var g={email:r.email,id:r.id||'',url:r.url||''},aviso='',restaurou=false;
+  if(r.existente){
+    if(appVazio()&&r.backup){
+      var o=null;try{o=JSON.parse(r.backup)}catch(e){o=null}
+      if(o&&Array.isArray(o.dividas)){
+        o.ajustes=o.ajustes||{};o.ajustes.google=g;o.ajustes.googlePulou=true;o.ajustes.auto=true;o.ajustes.onboard=true;
+        restaurar(o,true);restaurou=true;
+        aviso='Seus dados foram restaurados'+(r.backupEm?' (cópia de '+br(r.backupEm.slice(0,10))+')':'');
+      }
+    }
+    if(!restaurou&&appVazio()){g.id='NEW';g.url=''}   /* planilha antiga sem cópia: não apaga, cria outra */
   }
+  if(!restaurou){
+    a.google=g;a.googlePulou=true;a.auto=true;
+    if(r.id&&!r.existente){a.pendente=false;a.erro='';a.ultimoSync=new Date().toISOString()}else{a.pendente=true}
+    persist();
+  }
+  updSyncDot();haptic();
+  if(sheetOpen&&gIntroAberto){closeSheet();gIntroAberto=false;depoisDoGoogle()}
+  else if(sheetOpen)openSettings();
+  renderAll();
+  if(r.existente)scheduleSync();
+  snack(aviso||(g.id==='NEW'?'Planilha criada no seu Google Drive':r.existente?'Conta conectada à sua planilha do Quita':(r.id?'Planilha criada no seu Google Drive':(r.msg||'Conta conectada'))));
 };
 window.quitaGSync=function(r){
   var a=S.ajustes;syncing=false;

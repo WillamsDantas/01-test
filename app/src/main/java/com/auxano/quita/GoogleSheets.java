@@ -22,6 +22,8 @@ public class GoogleSheets {
     public static final String SCOPE = "oauth2:https://www.googleapis.com/auth/drive.file";
     private static final String API = "https://sheets.googleapis.com/v4/spreadsheets";
     private static final String HIST = "Histórico";
+    private static final String BKP = "_backup";
+    private static final String DRIVE = "https://www.googleapis.com/drive/v3/files";
 
     public static class HttpError extends Exception {
         public final int code;
@@ -95,11 +97,15 @@ public class GoogleSheets {
         JSONArray sheets = new JSONArray();
         for (int i = 0; i < order.length(); i++) sheets.put(new JSONObject().put("properties", sheetProps(order.getString(i))));
         sheets.put(new JSONObject().put("properties", sheetProps(HIST)));
+        sheets.put(new JSONObject().put("properties", new JSONObject().put("title", BKP).put("hidden", true)));
         JSONObject props = new JSONObject().put("title", title).put("locale", "pt_BR").put("timeZone", "America/Sao_Paulo");
         JSONObject r = http("POST", API, token, new JSONObject().put("properties", props).put("sheets", sheets));
         JSONArray reqs = new JSONArray();
         JSONArray made = r.optJSONArray("sheets");
-        if (made != null) for (int i = 0; i < made.length(); i++) reqs.put(headerFormat(made.getJSONObject(i).getJSONObject("properties").getInt("sheetId")));
+        if (made != null) for (int i = 0; i < made.length(); i++) {
+            JSONObject mp = made.getJSONObject(i).getJSONObject("properties");
+            if (!BKP.equals(mp.optString("title"))) reqs.put(headerFormat(mp.getInt("sheetId")));
+        }
         if (reqs.length() > 0) {
             try { http("POST", API + "/" + r.getString("spreadsheetId") + ":batchUpdate", token, new JSONObject().put("requests", reqs)); } catch (Exception ignored) { }
         }
@@ -147,6 +153,7 @@ public class GoogleSheets {
             if (!existing.containsKey(t)) add.put(new JSONObject().put("addSheet", new JSONObject().put("properties", sheetProps(t))));
         }
         if (!existing.containsKey(HIST)) add.put(new JSONObject().put("addSheet", new JSONObject().put("properties", sheetProps(HIST))));
+        if (!existing.containsKey(BKP)) add.put(new JSONObject().put("addSheet", new JSONObject().put("properties", new JSONObject().put("title", BKP).put("hidden", true))));
         if (add.length() > 0) {
             JSONObject r = http("POST", API + "/" + sheetId + ":batchUpdate", token, new JSONObject().put("requests", add));
             JSONArray replies = r.optJSONArray("replies");
@@ -156,7 +163,7 @@ public class GoogleSheets {
                 if (as != null) {
                     JSONObject ap = as.getJSONObject("properties");
                     existing.put(ap.getString("title"), ap.getInt("sheetId"));
-                    fmt.put(headerFormat(ap.getInt("sheetId")));
+                    if (!BKP.equals(ap.optString("title"))) fmt.put(headerFormat(ap.getInt("sheetId")));
                 }
             }
             if (fmt.length() > 0) {
@@ -200,6 +207,20 @@ public class GoogleSheets {
         if (values.length() > 0) {
             http("POST", API + "/" + sheetId + "/values:batchUpdate", token,
                     new JSONObject().put("valueInputOption", "RAW").put("data", values));
+        }
+
+        // cópia completa dos dados, para restaurar num celular novo
+        String backup = payload.optString("backup", "");
+        if (backup.length() > 0) {
+            JSONArray rows = new JSONArray().put(new JSONArray().put(payload.optString("backupEm", "")));
+            for (int i = 0; i < backup.length(); i += 40000) rows.put(new JSONArray().put(backup.substring(i, Math.min(backup.length(), i + 40000))));
+            if (existing.containsKey(BKP)) {
+                try {
+                    http("POST", API + "/" + sheetId + ":batchUpdate", token, new JSONObject().put("requests", new JSONArray().put(gridReq0(existing.get(BKP), rows.length() + 1, 1))));
+                } catch (Exception ignored) { }
+            }
+            http("POST", API + "/" + sheetId + "/values:batchClear", token, new JSONObject().put("ranges", new JSONArray().put(q(BKP))));
+            http("PUT", API + "/" + sheetId + "/values/" + enc(q(BKP) + "!A1") + "?valueInputOption=RAW", token, new JSONObject().put("values", rows));
         }
 
         // histórico: uma linha por dia
@@ -263,6 +284,40 @@ public class GoogleSheets {
 
     private static final String BRL_FMT = "\"R$\" #,##0.00";
     private static final String PCT_FMT = "0.0\"%\"";
+
+    private static JSONObject gridReq0(int sid, int rows, int cols) throws Exception {
+        return new JSONObject().put("updateSheetProperties", new JSONObject()
+                .put("properties", new JSONObject().put("sheetId", sid)
+                        .put("gridProperties", new JSONObject().put("rowCount", rows).put("columnCount", cols)))
+                .put("fields", "gridProperties(rowCount,columnCount)"));
+    }
+
+    /** Procura a planilha mais recente criada pelo Quita no Drive do usuário (escopo drive.file só enxerga as do app). */
+    public static JSONObject findSheet(String token) throws Exception {
+        String qs = "mimeType='application/vnd.google-apps.spreadsheet' and trashed=false";
+        JSONObject r = http("GET", DRIVE + "?q=" + enc(qs) + "&orderBy=" + enc("modifiedTime desc") + "&pageSize=10&fields=" + enc("files(id,name,webViewLink)"), token, null);
+        JSONArray files = r.optJSONArray("files");
+        if (files == null || files.length() == 0) return null;
+        JSONObject f = files.getJSONObject(0);
+        return new JSONObject().put("id", f.getString("id")).put("url", f.optString("webViewLink", "https://docs.google.com/spreadsheets/d/" + f.getString("id")));
+    }
+
+    /** Lê a cópia completa guardada na aba _backup. Devolve {em, dados} ou null. */
+    public static JSONObject readBackup(String token, String sheetId) throws Exception {
+        JSONObject r;
+        try {
+            r = http("GET", API + "/" + sheetId + "/values/" + enc(q(BKP) + "!A:A"), token, null);
+        } catch (HttpError e) {
+            if (e.code == 400 || e.code == 404) return null;
+            throw e;
+        }
+        JSONArray v = r.optJSONArray("values");
+        if (v == null || v.length() < 2) return null;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < v.length(); i++) { JSONArray row = v.optJSONArray(i); if (row != null && row.length() > 0) sb.append(row.getString(0)); }
+        JSONArray first = v.optJSONArray(0);
+        return new JSONObject().put("em", first != null && first.length() > 0 ? first.getString(0) : "").put("dados", sb.toString());
+    }
 
     private static JSONObject gridReq(int sid, int rows, int cols) throws Exception {
         return new JSONObject().put("updateSheetProperties", new JSONObject()
