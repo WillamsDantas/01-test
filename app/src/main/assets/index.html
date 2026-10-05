@@ -427,6 +427,16 @@ nav.bottom button span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .month .mdd-m span{flex:1}
 .month .mdd-m svg{width:20px;height:20px;color:var(--pos);stroke-width:2.2}
 .month .mdd-m.sel{background:var(--surface-3);font-weight:600}
+
+/* campos: setas e ícones com respiro */
+.two{gap:12px}
+.field select{-webkit-appearance:none;appearance:none;padding-right:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B9099' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px 18px}
+.field input[type=date],.field input[type=time],.field input[type=month]{-webkit-appearance:none;appearance:none;position:relative;padding-right:44px;text-align:left;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B9099' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 2v4M16 2v4'/%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M3 10h18'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px 18px}
+.field input[type=time]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B9099' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E")}
+.field input::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:auto;height:auto;opacity:0;cursor:pointer}
+.field input::-webkit-inner-spin-button,.field input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.field input[type=number]{-moz-appearance:textfield}
+.field input::-webkit-date-and-time-value{text-align:left}
 </style>
 </head>
 <body>
@@ -550,7 +560,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.6.4';
+var VERSION = '1.6.5';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -580,7 +590,17 @@ function parseMoney(s){
   if(s.indexOf(',')>=0){s=s.replace(/\./g,'').replace(',','.')}
   var v=parseFloat(s);return isFinite(v)?v:0;
 }
-function moneyInput(v){return v?String(r2(v)).replace('.',','):''}
+var NUM2=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+function moneyInput(v){return v?NUM2.format(r2(v)):''}
+/* máscara de real: digita só números e o valor se formata (centavos à direita) */
+document.addEventListener('input',function(e){
+  var el=e.target;if(!el.matches||!el.matches('.prefix input'))return;
+  var d=el.value.replace(/\D/g,'').replace(/^0+/,'');
+  if(!d){el.value='';return}
+  if(d.length>11)d=d.slice(0,11);
+  el.value=NUM2.format(parseInt(d,10)/100);
+  try{el.setSelectionRange(el.value.length,el.value.length)}catch(x){}
+},true);
 function moneyBig(v){var t=money(v),i=t.lastIndexOf(',');return i<0?t:t.slice(0,i)+'<small>'+t.slice(i)+'</small>'}
 function plural(n,s,p){return n+' '+(Math.abs(n)===1?s:p)}
 function curYM(){return ym(todayISO())}
@@ -956,7 +976,7 @@ function openOnboarding(step){
     var rs=S.receitas.filter(function(r){return r.tipo==='fixa'});
     h+='<div class="ob-ic in">'+ICON.receitas+'</div><h2 class="ob-h">Quanto você recebe por mês?</h2><p class="ob-p">Cadastre sua renda fixa: salário, contratos, pró-labore. Ela entra sozinha em todos os meses.</p>'+
       '<div class="field"><label>Descrição</label><input id="obD" value="'+(rs.length?'':'Salário')+'" placeholder="Ex.: Salário, Cliente X"></div>'+
-      '<div class="field"><label>Valor por mês</label><div class="prefix"><input id="obV" inputmode="decimal" placeholder="0,00"></div></div>'+
+      '<div class="field"><label>Valor por mês</label><div class="prefix"><input id="obV" inputmode="numeric" placeholder="0,00"></div></div>'+
       '<button class="btn sec" id="obAdd">'+ICON.plus+'Adicionar receita</button>'+
       obList(rs.map(function(r){return [r.descricao,valorAtual(r)]}));
   } else if(st===1){
@@ -964,13 +984,13 @@ function openOnboarding(step){
     h+='<div class="ob-ic out">'+ICON.despesas+'</div><h2 class="ob-h">Quais são suas contas fixas?</h2><p class="ob-p">Toque numa sugestão ou escreva. Informe o valor e o dia do vencimento.</p>'+
       '<div class="ob-sug">'+SUG_DESP.map(function(s,i){return '<button class="chip" data-sug="'+i+'">'+s[0]+'</button>'}).join('')+'</div>'+
       '<div class="field"><label>Descrição</label><input id="obD" placeholder="Ex.: Aluguel"></div>'+
-      '<div class="two"><div class="field"><label>Valor</label><div class="prefix"><input id="obV" inputmode="decimal" placeholder="0,00"></div></div><div class="field"><label>Vence dia</label><input id="obDia" type="number" min="1" max="31" inputmode="numeric" placeholder="10"></div></div>'+
+      '<div class="two"><div class="field"><label>Valor</label><div class="prefix"><input id="obV" inputmode="numeric" placeholder="0,00"></div></div><div class="field"><label>Vence dia</label><input id="obDia" type="number" min="1" max="31" inputmode="numeric" placeholder="10"></div></div>'+
       '<button class="btn sec" id="obAdd">'+ICON.plus+'Adicionar conta</button>'+
       obList(ds.map(function(r){return [r.descricao+' · dia '+diaVencDesp(r),valorAtual(r)]}));
   } else {
     h+='<div class="ob-ic">'+ICON.dividas+'</div><h2 class="ob-h">Você tem dívidas parceladas?</h2><p class="ob-p">Cartão, empréstimo, compras a prazo. Se não tiver, toque em Concluir.</p>'+
       '<div class="field"><label>Nome da dívida</label><input id="obD" placeholder="Ex.: Cartão Nubank"></div>'+
-      '<div class="two"><div class="field"><label>Valor da parcela</label><div class="prefix"><input id="obV" inputmode="decimal" placeholder="0,00"></div></div><div class="field"><label>Nº de parcelas</label><input id="obT" type="number" min="1" inputmode="numeric" placeholder="12"></div></div>'+
+      '<div class="two"><div class="field"><label>Valor da parcela</label><div class="prefix"><input id="obV" inputmode="numeric" placeholder="0,00"></div></div><div class="field"><label>Nº de parcelas</label><input id="obT" type="number" min="1" inputmode="numeric" placeholder="12"></div></div>'+
       '<div class="two"><div class="field"><label>Já pagas</label><input id="obP" type="number" min="0" inputmode="numeric" value="0"></div><div class="field"><label>Vence dia</label><input id="obDia" type="number" min="1" max="31" inputmode="numeric" placeholder="10"></div></div>'+
       '<button class="btn sec" id="obAdd">'+ICON.plus+'Adicionar dívida</button>'+
       obList(S.dividas.map(function(d){var c=calc(d);return [d.nome+' · '+c.rest+' de '+c.total+' restantes',d.parcela]}));
@@ -1296,7 +1316,7 @@ function openDebtForm(id){
   '<div class="field"><label>Nome da dívida *</label><input id="fNome" placeholder="Ex.: Cartão Nubank, Geladeira" value="'+esc(d?d.nome:'')+'"></div>'+
   '<div class="two"><div class="field"><label>Credor / loja</label><input id="fCredor" placeholder="Opcional" value="'+esc(d?d.credor:'')+'"></div>'+
   '<div class="field"><label>Data da compra</label><input id="fCompra" type="date" value="'+(d&&d.dataCompra?d.dataCompra:'')+'"><div class="hint">Opcional</div></div></div>'+
-  '<div class="two"><div class="field"><label>Valor da parcela *</label><div class="prefix"><input id="fParcela" inputmode="decimal" placeholder="0,00" value="'+(d?moneyInput(d.parcela):'')+'"></div></div>'+
+  '<div class="two"><div class="field"><label>Valor da parcela *</label><div class="prefix"><input id="fParcela" inputmode="numeric" placeholder="0,00" value="'+(d?moneyInput(d.parcela):'')+'"></div></div>'+
   '<div class="field"><label>Nº de parcelas *</label><input id="fTotal" type="number" min="1" max="600" inputmode="numeric" placeholder="Ex.: 12" value="'+(d?d.totalParcelas:'')+'"></div></div>'+
   '<div class="two"><div class="field"><label>Já pagas</label><input id="fPagas" type="number" min="0" inputmode="numeric" value="'+pagasAgora+'"><div class="hint">Quantas já quitou</div></div>'+
   '<div class="field"><label>Dia do vencimento *</label><input id="fDia" type="number" min="1" max="31" inputmode="numeric" value="'+(d?d.diaVenc:10)+'"></div></div>'+
@@ -1404,7 +1424,7 @@ function openLancForm(kind,id){
   var h=head((r?'Editar ':'Nova ')+K.um)+
     '<div class="field"><div class="seg" id="iTipo"><button data-t="fixa">'+recLbl+'</button><button data-t="avulsa">Avulsa</button></div></div>'+
     '<div class="field"><label>Descrição *</label><input id="iDesc" placeholder="'+(kind==='receita'?'Ex.: Salário, Cliente X':'Ex.: Aluguel, Luz, Internet')+'" value="'+esc(r?r.descricao:'')+'"></div>'+
-    '<div class="field"><label id="iValL">Valor *</label><div class="prefix"><input id="iVal" inputmode="decimal" placeholder="0,00" value="'+(r?moneyInput(vMes):'')+'"></div></div>'+
+    '<div class="field"><label id="iValL">Valor *</label><div class="prefix"><input id="iVal" inputmode="numeric" placeholder="0,00" value="'+(r?moneyInput(vMes):'')+'"></div></div>'+
     '<div class="field" id="iModoW" style="display:none"><label>Aplicar o novo valor</label><div class="seg seg3" id="iModo">'+
       '<button data-md="diante">Em diante</button><button data-md="mes">Só este mês</button><button data-md="todos">Todos</button></div>'+
       '<div class="hint" id="iModoH"></div></div>'+
