@@ -16,7 +16,7 @@ rm -rf "$OUT"; mkdir -p "$OUT/gen" "$OUT/classes" "$OUT/dex" dist
 "$BT/aapt2" link -o "$OUT/base.apk" -I "$JAR" \
   --manifest "$APP/AndroidManifest.xml" -A "$APP/assets" \
   --java "$OUT/gen" --min-sdk-version 24 --target-sdk-version 34 \
-  --version-code 25 --version-name 1.8.2 "$OUT/res.zip"
+  --version-code 26 --version-name 1.8.3 "$OUT/res.zip"
 
 javac -encoding UTF-8 -source 1.8 -target 1.8 -nowarn -Xlint:-options \
   -bootclasspath "$JAR" -d "$OUT/classes" \
@@ -30,6 +30,6 @@ cp "$OUT/base.apk" "$OUT/unsigned.apk"
 "$BT/zipalign" -f -p 4 "$OUT/unsigned.apk" "$OUT/aligned.apk"
 "$BT/apksigner" sign --ks keystore/quita.jks --ks-key-alias quita \
   --ks-pass pass:quita123 --key-pass pass:quita123 \
-  --out dist/Quita-v1.8.2.apk "$OUT/aligned.apk"
-"$BT/apksigner" verify --print-certs dist/Quita-v1.8.2.apk | head -3
+  --out dist/Quita-v1.8.3.apk "$OUT/aligned.apk"
+"$BT/apksigner" verify --print-certs dist/Quita-v1.8.3.apk | head -3
 ls -la dist

@@ -67,6 +67,7 @@ svg{display:block;flex-shrink:0}
 .top .sp{flex:1}
 .icon-btn{width:40px;height:40px;border-radius:11px;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);display:grid;place-items:center;position:relative;flex:0 0 40px}
 .icon-btn:active{background:var(--surface-3)}
+.icon-btn[hidden]{display:none}
 .icon-btn svg{width:18px;height:18px;stroke-width:1.75}
 .sync-dot i{position:absolute;right:7px;top:7px;width:7px;height:7px;border-radius:50%;background:transparent}
 .sync-dot i.ok{background:var(--pos)}.sync-dot i.pend{background:var(--warn)}.sync-dot i.err{background:var(--neg)}
@@ -691,7 +692,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.8.2';
+var VERSION = '1.8.3';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -2278,6 +2279,7 @@ function syncText(){
 function updSyncDot(state){
   var i=$('#syncDot'),a=S.ajustes;
   i.className=!a.url?'':state==='run'?'pend':a.erro?'err':a.pendente?'pend':'ok';
+  $('#btnSync').hidden=!a.url;
   $('#topSub').textContent=!a.url?'Controle financeiro':state==='run'?'Sincronizando…':a.erro?'Planilha: erro na sincronização':a.pendente?'Planilha: alterações pendentes':'Planilha sincronizada';
 }
 
