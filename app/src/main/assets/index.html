@@ -333,6 +333,14 @@ nav.bottom button span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .pill.warn{color:var(--warn);background:var(--warn-soft);border-color:transparent}
 .pill.bad{background:var(--neg-soft);border-color:transparent}
 .badge-day{background:var(--surface-2)}
+
+.month .m-mid{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px}
+.month .m-mid b{display:flex;align-items:center;justify-content:center;gap:7px;max-width:100%;text-transform:none}
+.month .m-mid b span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.month .m-mid b svg{width:15px;height:15px;color:var(--ink-3);stroke-width:1.75}
+.month .m-mid b span::first-letter{text-transform:uppercase}
+.month .m-today{width:auto!important;height:auto!important;display:flex!important;align-items:center;gap:4px;font-size:11px;font-weight:500;color:var(--ink-3);padding:0 6px!important;border-radius:6px}
+.month .m-today svg{width:11px!important;height:11px!important}
 </style>
 </head>
 <body>
@@ -455,7 +463,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.5.2';
+var VERSION = '1.5.3';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -648,7 +656,11 @@ var ICON={
 };
 function monthBar(){
   var hoje=curMonth===curYM();
-  return '<div class="month"><button data-m="-1" aria-label="Mês anterior">'+ICON.prev+'</button><b>'+ymLabel(curMonth)+(hoje?'':' <small class="today-link" data-today>voltar a hoje</small>')+'</b><button data-m="1" aria-label="Próximo mês">'+ICON.next+'</button></div>';
+  var t=today(), dataHoje=pad(t.getDate())+' de '+MESES[t.getMonth()]+' de '+t.getFullYear();
+  var p=curMonth.split('-'), rotulo=hoje?dataHoje:MESES[+p[1]-1]+' de '+p[0];
+  return '<div class="month"><button data-m="-1" aria-label="Mês anterior">'+ICON.prev+'</button>'+
+    '<div class="m-mid">'+(hoje?'':'<button class="m-today" data-today>'+ICON.cal+'Hoje, '+pad(t.getDate())+'/'+pad(t.getMonth()+1)+'</button>')+'<b>'+(hoje?ICON.cal:'')+'<span>'+rotulo+'</span></b></div>'+
+    '<button data-m="1" aria-label="Próximo mês">'+ICON.next+'</button></div>';
 }
 function bindMonth(el){
   $$('[data-m]',el).forEach(function(b){b.onclick=function(){curMonth=ymAdd(curMonth,+b.dataset.m);renderAll()}});
