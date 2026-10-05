@@ -51,13 +51,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window w = getWindow();
-        w.setStatusBarColor(0xFFECECEC);
-        w.setNavigationBarColor(0xFFECECEC);
-        w.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                | (Build.VERSION.SDK_INT >= 26 ? View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0));
+        w.setStatusBarColor(0xFF0B0B0C);
+        w.setNavigationBarColor(0xFF0B0B0C);
 
         web = new WebView(this);
-        web.setBackgroundColor(0xFFECECEC);
+        web.setBackgroundColor(0xFF0B0B0C);
         setContentView(web);
 
         WebSettings s = web.getSettings();
@@ -348,6 +346,23 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public void setBars(final boolean dark) {
+            runOnUiThread(new Runnable() { @Override public void run() {
+                int c = dark ? 0xFF0B0B0C : 0xFFF3F4F6;
+                Window w = getWindow();
+                w.setStatusBarColor(c);
+                w.setNavigationBarColor(c);
+                int flags = 0;
+                if (!dark) {
+                    flags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                    if (Build.VERSION.SDK_INT >= 26) flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                }
+                w.getDecorView().setSystemUiVisibility(flags);
+                web.setBackgroundColor(c);
+            }});
+        }
+
+        @JavascriptInterface
         public void printPdf(final String html, final String name) {
             runOnUiThread(new Runnable() { @Override public void run() { printHtml(html, name); } });
         }
@@ -393,7 +408,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.4.0";
+            return "1.5.0";
         }
     }
 }
