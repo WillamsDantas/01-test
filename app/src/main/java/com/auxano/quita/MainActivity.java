@@ -51,11 +51,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window w = getWindow();
-        w.setStatusBarColor(0xFF0B0B0C);
-        w.setNavigationBarColor(0xFF0B0B0C);
+        w.setStatusBarColor(0xFF111113);
+        w.setNavigationBarColor(0xFF111113);
 
         web = new WebView(this);
-        web.setBackgroundColor(0xFF0B0B0C);
+        web.setBackgroundColor(0xFF111113);
         setContentView(web);
 
         WebSettings s = web.getSettings();
@@ -348,7 +348,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void setBars(final boolean dark) {
             runOnUiThread(new Runnable() { @Override public void run() {
-                int c = dark ? 0xFF0B0B0C : 0xFFF3F4F6;
+                int c = dark ? 0xFF111113 : 0xFFF3F4F6;
                 Window w = getWindow();
                 w.setStatusBarColor(c);
                 w.setNavigationBarColor(c);
@@ -408,7 +408,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.5.1";
+            return "1.5.2";
         }
     }
 }
