@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
@@ -26,6 +27,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -37,6 +39,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -398,6 +404,111 @@ public class MainActivity extends Activity {
         }
 
         /** Saves a file into Downloads/Quita. Returns a short message. */
+        /* ---------- v1.8: backup automático ---------- */
+        private File backupDir() {
+            File d = new File(getFilesDir(), "backups");
+            if (!d.exists()) d.mkdirs();
+            return d;
+        }
+
+        @JavascriptInterface
+        public String autoBackup(String date, String json) {
+            String nome = "quita-" + date.replaceAll("[^0-9-]", "") + ".json";
+            byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
+            try {
+                File f = new File(backupDir(), nome);
+                FileOutputStream fo = new FileOutputStream(f);
+                fo.write(bytes);
+                fo.close();
+                File[] all = backupDir().listFiles();
+                if (all != null && all.length > 8) {
+                    String[] ns = new String[all.length];
+                    for (int i = 0; i < all.length; i++) ns[i] = all[i].getName();
+                    Arrays.sort(ns);
+                    for (int i = 0; i < ns.length - 8; i++) new File(backupDir(), ns[i]).delete();
+                }
+            } catch (Exception e) {
+                return "ERRO: " + e.getMessage();
+            }
+            String ext = "interno";
+            if (Build.VERSION.SDK_INT >= 29) {
+                try {
+                    String disp = "Quita-backup-auto-" + date.replaceAll("[^0-9-]", "") + ".json";
+                    String rel = Environment.DIRECTORY_DOWNLOADS + "/Quita/";
+                    Uri col = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+                    List<String[]> mine = new ArrayList<String[]>();
+                    Cursor c = getContentResolver().query(col,
+                            new String[]{MediaStore.Downloads._ID, MediaStore.Downloads.DISPLAY_NAME},
+                            MediaStore.Downloads.DISPLAY_NAME + " LIKE ?",
+                            new String[]{"Quita-backup-auto-%"}, null);
+                    if (c != null) {
+                        while (c.moveToNext()) mine.add(new String[]{c.getString(1), String.valueOf(c.getLong(0))});
+                        c.close();
+                    }
+                    for (String[] m : mine) {
+                        if (m[0].equals(disp)) getContentResolver().delete(Uri.withAppendedPath(col, m[1]), null, null);
+                    }
+                    ContentValues v = new ContentValues();
+                    v.put(MediaStore.Downloads.DISPLAY_NAME, disp);
+                    v.put(MediaStore.Downloads.MIME_TYPE, "application/json");
+                    v.put(MediaStore.Downloads.RELATIVE_PATH, rel);
+                    Uri uri = getContentResolver().insert(col, v);
+                    if (uri != null) {
+                        OutputStream os = getContentResolver().openOutputStream(uri);
+                        os.write(bytes);
+                        os.close();
+                        ext = "downloads";
+                    }
+                    List<String> nomes = new ArrayList<String>();
+                    for (String[] m : mine) if (!m[0].equals(disp)) nomes.add(m[0] + "|" + m[1]);
+                    nomes.add(disp + "|");
+                    Collections.sort(nomes);
+                    for (int i = 0; i < nomes.size() - 4; i++) {
+                        String id = nomes.get(i).substring(nomes.get(i).indexOf('|') + 1);
+                        if (id.length() > 0) getContentResolver().delete(Uri.withAppendedPath(col, id), null, null);
+                    }
+                } catch (Exception ignored) { }
+            }
+            return "OK " + ext;
+        }
+
+        @JavascriptInterface
+        public String listBackups() {
+            JSONArray a = new JSONArray();
+            try {
+                File[] all = backupDir().listFiles();
+                if (all != null) {
+                    String[] ns = new String[all.length];
+                    for (int i = 0; i < all.length; i++) ns[i] = all[i].getName();
+                    Arrays.sort(ns);
+                    for (int i = ns.length - 1; i >= 0; i--) {
+                        JSONObject o = new JSONObject();
+                        o.put("nome", ns[i]);
+                        o.put("tam", new File(backupDir(), ns[i]).length());
+                        a.put(o);
+                    }
+                }
+            } catch (Exception ignored) { }
+            return a.toString();
+        }
+
+        @JavascriptInterface
+        public String readBackup(String nome) {
+            try {
+                if (nome.contains("/") || nome.contains("..")) return "";
+                File f = new File(backupDir(), nome);
+                FileInputStream in = new FileInputStream(f);
+                ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                byte[] buf = new byte[8192];
+                int n;
+                while ((n = in.read(buf)) > 0) bo.write(buf, 0, n);
+                in.close();
+                return new String(bo.toByteArray(), StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                return "";
+            }
+        }
+
         @JavascriptInterface
         public String exportFile(String name, String mime, String content) {
             try {
@@ -569,7 +680,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.7.2";
+            return "1.8.0";
         }
     }
 }
