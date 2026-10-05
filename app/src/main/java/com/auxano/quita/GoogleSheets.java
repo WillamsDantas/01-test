@@ -153,11 +153,37 @@ public class GoogleSheets {
             JSONArray fmt = new JSONArray();
             if (replies != null) for (int i = 0; i < replies.length(); i++) {
                 JSONObject as = replies.getJSONObject(i).optJSONObject("addSheet");
-                if (as != null) fmt.put(headerFormat(as.getJSONObject("properties").getInt("sheetId")));
+                if (as != null) {
+                    JSONObject ap = as.getJSONObject("properties");
+                    existing.put(ap.getString("title"), ap.getInt("sheetId"));
+                    fmt.put(headerFormat(ap.getInt("sheetId")));
+                }
             }
             if (fmt.length() > 0) {
                 try { http("POST", API + "/" + sheetId + ":batchUpdate", token, new JSONObject().put("requests", fmt)); } catch (Exception ignored) { }
             }
+        }
+
+        // grade do tamanho exato dos dados (sem 26 colunas vazias)
+        JSONArray grid = new JSONArray();
+        Map<String, int[]> dims = new HashMap<String, int[]>();
+        for (int i = 0; i < order.length(); i++) {
+            String t = order.getString(i);
+            if (!existing.containsKey(t)) continue;
+            JSONArray rows = data.optJSONArray(t);
+            int nr = rows == null ? 0 : rows.length(), nc = 1;
+            for (int r = 0; r < nr; r++) { JSONArray row = rows.optJSONArray(r); if (row != null && row.length() > nc) nc = row.length(); }
+            dims.put(t, new int[]{nr, nc});
+            grid.put(gridReq(existing.get(t), Math.max(nr, 2), nc));
+        }
+        if (existing.containsKey(HIST)) {
+            grid.put(new JSONObject().put("updateSheetProperties", new JSONObject()
+                    .put("properties", new JSONObject().put("sheetId", existing.get(HIST))
+                            .put("gridProperties", new JSONObject().put("columnCount", 8).put("frozenRowCount", 1)))
+                    .put("fields", "gridProperties(columnCount,frozenRowCount)")));
+        }
+        if (grid.length() > 0) {
+            try { http("POST", API + "/" + sheetId + ":batchUpdate", token, new JSONObject().put("requests", grid)); } catch (Exception ignored) { }
         }
 
         // limpa e escreve as abas de dados
@@ -203,6 +229,66 @@ public class GoogleSheets {
             }
         }
 
+        // acabamento: cabeçalho, R$ e %, largura das colunas
+        try {
+            JSONObject fmts = payload.optJSONObject("fmt");
+            JSONArray reqs = new JSONArray();
+            for (Map.Entry<String, int[]> e : dims.entrySet()) {
+                int sid = existing.get(e.getKey()), nr = e.getValue()[0], nc = e.getValue()[1];
+                reqs.put(headerFormatCols(sid, nc));
+                JSONObject f = fmts == null ? null : fmts.optJSONObject(e.getKey());
+                if (f != null && nr > 1) {
+                    JSONArray brl = f.optJSONArray("brl"), pct = f.optJSONArray("pct");
+                    if (brl != null) for (int i = 0; i < brl.length(); i++) reqs.put(numFmt(sid, 1, nr, brl.getInt(i), BRL_FMT));
+                    if (pct != null) for (int i = 0; i < pct.length(); i++) reqs.put(numFmt(sid, 1, nr, pct.getInt(i), PCT_FMT));
+                    JSONArray br = f.optJSONArray("brlRows"), pr = f.optJSONArray("pctRows");
+                    if (br != null) for (int i = 0; i < br.length(); i++) reqs.put(numFmt(sid, br.getInt(i), br.getInt(i) + 1, 1, BRL_FMT));
+                    if (pr != null) for (int i = 0; i < pr.length(); i++) reqs.put(numFmt(sid, pr.getInt(i), pr.getInt(i) + 1, 1, PCT_FMT));
+                }
+                reqs.put(autoResize(sid, nc));
+            }
+            if (existing.containsKey(HIST)) {
+                int hs = existing.get(HIST);
+                for (int c = 1; c <= 4; c++) reqs.put(numFmt(hs, 1, -1, c, BRL_FMT));
+                reqs.put(numFmt(hs, 1, -1, 5, PCT_FMT));
+                reqs.put(numFmt(hs, 1, -1, 6, BRL_FMT));
+                reqs.put(headerFormatCols(hs, 8));
+                reqs.put(autoResize(hs, 8));
+            }
+            if (reqs.length() > 0) http("POST", API + "/" + sheetId + ":batchUpdate", token, new JSONObject().put("requests", reqs));
+        } catch (Exception ignored) { }
+
         return new JSONObject().put("id", sheetId).put("url", url).put("criada", criada);
+    }
+
+    private static final String BRL_FMT = "\"R$\" #,##0.00";
+    private static final String PCT_FMT = "0.0\"%\"";
+
+    private static JSONObject gridReq(int sid, int rows, int cols) throws Exception {
+        return new JSONObject().put("updateSheetProperties", new JSONObject()
+                .put("properties", new JSONObject().put("sheetId", sid)
+                        .put("gridProperties", new JSONObject().put("rowCount", rows).put("columnCount", cols).put("frozenRowCount", 1)))
+                .put("fields", "gridProperties(rowCount,columnCount,frozenRowCount)"));
+    }
+
+    private static JSONObject numFmt(int sid, int r0, int r1, int col, String pattern) throws Exception {
+        JSONObject range = new JSONObject().put("sheetId", sid).put("startRowIndex", r0)
+                .put("startColumnIndex", col).put("endColumnIndex", col + 1);
+        if (r1 > 0) range.put("endRowIndex", r1);
+        JSONObject nf = new JSONObject().put("type", "NUMBER").put("pattern", pattern);
+        return new JSONObject().put("repeatCell", new JSONObject().put("range", range)
+                .put("cell", new JSONObject().put("userEnteredFormat", new JSONObject().put("numberFormat", nf)))
+                .put("fields", "userEnteredFormat.numberFormat"));
+    }
+
+    private static JSONObject headerFormatCols(int sid, int cols) throws Exception {
+        JSONObject h = headerFormat(sid);
+        h.getJSONObject("repeatCell").getJSONObject("range").put("startColumnIndex", 0).put("endColumnIndex", cols);
+        return h;
+    }
+
+    private static JSONObject autoResize(int sid, int cols) throws Exception {
+        return new JSONObject().put("autoResizeDimensions", new JSONObject().put("dimensions", new JSONObject()
+                .put("sheetId", sid).put("dimension", "COLUMNS").put("startIndex", 0).put("endIndex", cols)));
     }
 }

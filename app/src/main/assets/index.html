@@ -712,7 +712,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.9.0';
+var VERSION = '1.9.1';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1351,7 +1351,7 @@ function segurancaHTML(){
   var c=lockCfg(),bio=bioDisponivel();
   return '<div class="sec-title">Segurança</div>'+
     '<label class="switch"><span class="s-tx"><b>Bloquear com PIN</b><span>Pede o PIN ao abrir o app</span></span><input type="checkbox" id="lkOn"'+(c.on?' checked':'')+'></label>'+
-    (bio?'<label class="switch"><span class="s-tx"><b>Usar digital ou rosto</b><span>Desbloqueia sem digitar o PIN</span></span><input type="checkbox" id="lkBio"'+(c.bio?' checked':'')+(c.on?'':' disabled')+'></label>':'')+
+    (bio&&c.on?'<label class="switch"><span class="s-tx"><b>Usar digital ou rosto</b><span>Desbloqueia sem digitar o PIN</span></span><input type="checkbox" id="lkBio"'+(c.bio?' checked':'')+'></label>':'')+
     (c.on?'<button class="btn ghost" id="lkTroca">Trocar PIN</button>':'');
 }
 function bindSeguranca(el){
@@ -2340,7 +2340,7 @@ function buildPayload(){
     ['Mês de referência',ymLabel(k)],
     ['Receitas do mês',r2(rec)],['Despesas do mês',r2(desp)],['Despesas pagas',r2(despPagoMes(k))],['Parcelas do mês',r2(parc)],['Sobra do mês',r2(rec-desp-parc)],
     ['% da receita em saídas',isFinite(pct)?r2(pct*100):''],['% da receita em dívidas',isFinite(pctDividas(k))?r2(pctDividas(k)*100):''],['Situação',faixa(pct)[0]],
-    ['Pago no mês',r2(pagoMes(k))],['Parcelas atrasadas',atr.n],['Valor em atraso',r2(atr.valor)],
+    ['Parcelas pagas no mês',r2(pagoMes(k))],['Parcelas atrasadas',atr.n],['Valor em atraso',r2(atr.valor)],
     ['Total devido',r2(totalDevido())],['Dívidas em aberto',ord.length],
     ['Livre das dívidas em',fimDeTudo()?ymLabel(fimDeTudo()):'—'],
     ['Estratégia',S.ajustes.estrategia==='bola'?'Bola de neve':'Avalanche'],
@@ -2348,7 +2348,12 @@ function buildPayload(){
   ord.forEach(function(x,i){rs.push([(i+1)+'º '+x.d.nome,x.c.saldo])});
   var mt=[['Meta','Tipo','Objetivo','Guardado','Falta','% atingido','Prazo','Por mês até o prazo']];
   S.metas.forEach(function(m){var i=metaInfo(m);mt.push([m.nome,metaTipo(m.tipo)[1],r2(m.alvo),i.g,i.falta,r2(i.pct*100),m.prazo?br(m.prazo):'',m.prazo&&!i.ok?i.porMes:''])});
-  return {action:'sync',order:['Resumo','Por mês','Receitas','Despesas','Dívidas','Parcelas','Metas'],
+  var BRL_ROWS=['Receitas do mês','Despesas do mês','Despesas pagas','Parcelas do mês','Sobra do mês','Parcelas pagas no mês','Valor em atraso','Total devido'];
+  var rb=[],rp=[],ord0=-1;
+  rs.forEach(function(r,i){var l=String(r[0]||'');if(BRL_ROWS.indexOf(l)>=0)rb.push(i);if(l.charAt(0)==='%')rp.push(i);if(l==='Ordem sugerida')ord0=i;if(ord0>=0&&i>ord0)rb.push(i)});
+  var fmt={'Resumo':{brlRows:rb,pctRows:rp},'Por mês':{brl:[1,2,3,4],pct:[5]},'Receitas':{brl:[1]},'Despesas':{brl:[1]},
+    'Dívidas':{brl:[3,7,8],pct:[9,10]},'Parcelas':{brl:[3]},'Metas':{brl:[2,3,4,7],pct:[5]}};
+  return {action:'sync',fmt:fmt,order:['Resumo','Por mês','Receitas','Despesas','Dívidas','Parcelas','Metas'],
     sheets:{'Resumo':rs,'Dívidas':dv,'Parcelas':pc,'Por mês':pm,'Receitas':rc,'Despesas':dsp,'Metas':mt},
     historico:{data:br(todayISO()),totalDevido:r2(totalDevido()),receitaMes:r2(rec),despesasMes:r2(desp),parcelasMes:r2(parc),comprometido:isFinite(pct)?r2(pct*100):'',pagoMes:r2(pagoMes(k)),abertas:ord.length}};
 }
