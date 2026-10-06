@@ -701,6 +701,18 @@ body.gated main,body.gated nav.bottom,body.gated .top{visibility:hidden}
 [data-theme=light] .gt-bottom .g-btn{background:#111214;color:#fff;border-color:#111214}
 [data-theme=light] .gt-bottom .g-btn svg{background:#fff;border-radius:50%;padding:3px;width:26px;height:26px}
 .g-btn svg.wa-ic,[data-theme=light] .gt-bottom .g-btn svg.wa-ic{stroke:#25D366;stroke-width:2;fill:none;background:none;padding:0;width:21px;height:21px;border-radius:0}
+.ac-center{justify-content:center;max-width:460px}
+.ac-center .gt-top{padding-top:0}
+.ac-center .gt-bottom{margin-top:26px}
+.ac-center .ac-card{flex-direction:column;text-align:center;gap:10px;padding:18px 16px}
+.ac-center .ac-tx b{white-space:normal;overflow-wrap:anywhere}
+.ac-center .ac-tip{justify-content:center;text-align:center;flex-direction:column;align-items:center;gap:6px}
+.ac-center .ac-spin{margin-top:22px}
+.ac-help{display:flex;align-items:center;gap:12px;width:100%;margin-top:4px;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--ink);text-align:left;font:inherit}
+.ac-hi{width:38px;height:38px;border-radius:var(--r-sm);background:rgba(37,211,102,.12);display:grid;place-items:center;flex:none}
+.ac-hi .ic{width:19px;height:19px}
+.ac-ht{flex:1;min-width:0}.ac-ht b{display:block;font-size:14.5px;font-weight:600}.ac-ht span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:1px}
+.ac-help .ab-chev{color:var(--ink-3)}
 .ac-card{display:flex;align-items:center;gap:12px;margin:clamp(20px,4vh,30px) 0 0;padding:14px;border:1px solid var(--border);background:var(--surface);border-radius:var(--r)}
 .ac-av{width:42px;height:42px;border-radius:var(--r-sm);background:var(--surface-3);display:grid;place-items:center;font:600 17px var(--f-disp);flex:none;text-transform:uppercase}
 .ac-tx{flex:1;min-width:0}.ac-tx b{display:block;font-size:14.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -2509,13 +2521,13 @@ function openAcesso(modo,r){
     var pill=enviado?'<span class="ac-pill ok">Pedido enviado · '+esc((quando(ped.em)||'').replace(/^hoje às /,'hoje · '))+'</span>':encerrado?'<span class="ac-pill er">Acesso bloqueado</span>':'<span class="ac-pill">Aguardando liberação</span>';
     top=logo+'<h1>'+tit+'</h1><p class="gt-lead">'+lead+'</p>';
     meio='<div class="ac-card"><span class="ac-av">'+esc(em.charAt(0)||'?')+'</span><span class="ac-tx"><b>'+esc(em)+'</b>'+pill+'</span></div>'+
-      (encerrado?'':'<div class="ac-tip">'+IC_INFO+'<span>Já comprou? Confira se entrou com o <b>mesmo e-mail da compra</b>. Seus dados continuam guardados na sua conta.</span></div>');
+      (encerrado?'':'<div class="ac-tip">'+IC_INFO+'<span>Já comprou? Confira se entrou com o <b style="white-space:nowrap">mesmo e-mail da compra</b>. Seus dados continuam guardados na sua conta.</span></div>');
     bot=(enviado?'<button class="btn g-btn" id="acRetry"><span>Verificar se já fui '+(encerrado?'desbloqueado':'liberado')+'</span></button>'
                :'<button class="btn g-btn" id="acPedir"><span>'+(encerrado?'Solicitar desbloqueio':'Solicitar acesso')+'</span></button>')+
-      '<button class="btn ghost" id="acWa">'+IC_AB.wa.replace('class="ic"','class="ic wa-ic"')+'Falar com o suporte</button>'+
-      '<p class="gt-note">'+(enviado?'':'<button class="gt-help" id="acRetry2">'+(encerrado?'Já fui desbloqueado':'Já fui liberado')+' · verificar</button><br>')+'<button class="gt-help" id="acOutra">Entrar com outra conta</button></p>';
+      '<button class="ac-help" id="acWa"><span class="ac-hi">'+IC_AB.wa.replace('class="ic"','class="ic wa-ic"')+'</span><span class="ac-ht"><b>Precisa de ajuda?</b><span>Fale com o suporte no WhatsApp</span></span>'+IC_CHEV+'</button>'+
+      '<p class="gt-note"><button class="gt-help" id="acOutra">Usar outra conta</button></p>';
   }
-  g.innerHTML='<div class="gt-wrap"><div class="gt-top">'+top+'</div>'+meio+'<div class="gt-bottom">'+bot+'</div></div>';
+  g.innerHTML='<div class="gt-wrap ac-center"><div class="gt-top">'+top+'</div>'+meio+'<div class="gt-bottom">'+bot+'</div></div>';
   g.classList.add('on');document.body.classList.add('gated');
   var b;
   if(b=$('#acRetry',g))b.onclick=function(){openAcesso('verificando');Android.acCheck(ACESSO_URL)};
