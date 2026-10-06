@@ -379,6 +379,18 @@ public class MainActivity extends Activity {
         }, null);
     }
 
+    private JSONObject acGet(String url, String token) throws Exception {
+        HttpURLConnection c = (HttpURLConnection) new URL(url + (url.contains("?") ? "&" : "?") + "t=" + java.net.URLEncoder.encode(token, "UTF-8")).openConnection();
+        c.setConnectTimeout(15000); c.setReadTimeout(20000);
+        c.setInstanceFollowRedirects(true);
+        int code = c.getResponseCode();
+        InputStream in = code >= 400 ? c.getErrorStream() : c.getInputStream();
+        String body = in == null ? "" : readAll(in);
+        c.disconnect();
+        if (code >= 400) throw new Exception("HTTP " + code);
+        return new JSONObject(body);
+    }
+
     private JSONObject gSyncWithRetry(Account acc, String token, String sheetId, JSONObject payload) throws Exception {
         JSONObject r;
         try {
@@ -657,6 +669,33 @@ public class MainActivity extends Activity {
             } }).start();
         }
 
+        /** Confere na planilha "Acessos" se o e-mail da conta Google está liberado. Responde em window.quitaAcesso. */
+        @JavascriptInterface
+        public void acCheck(final String url) {
+            new Thread(new Runnable() { @Override public void run() {
+                JSONObject o;
+                try {
+                    String name = gPrefs().getString("g_account", "");
+                    if (name.length() == 0) throw new Exception("sem conta");
+                    Account acc = new Account(name, "com.google");
+                    AccountManager am = AccountManager.get(MainActivity.this);
+                    String token = am.blockingGetAuthToken(acc, GoogleSheets.SCOPE, true);
+                    if (token == null) throw new Exception("O Google pediu para confirmar o acesso");
+                    o = acGet(url, token);
+                    if (!o.optBoolean("ok") && "login".equals(o.optString("erro"))) {
+                        am.invalidateAuthToken("com.google", token);
+                        String t2 = am.blockingGetAuthToken(acc, GoogleSheets.SCOPE, true);
+                        if (t2 != null) o = acGet(url, t2);
+                    }
+                    o.put("rede", true);
+                } catch (Exception e) {
+                    o = new JSONObject();
+                    try { o.put("ok", false).put("rede", false).put("msg", e.getMessage() == null ? "erro" : e.getMessage()); } catch (Exception ignored) { }
+                }
+                gEmit("quitaAcesso", o);
+            } }).start();
+        }
+
         @JavascriptInterface
         public void gLogout() {
             gPrefs().edit().remove("g_account").remove("g_sheet").apply();
@@ -838,7 +877,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "2.0.4";
+            return "2.0.5";
         }
 
         /* ---------- atualização dentro do app ---------- */
