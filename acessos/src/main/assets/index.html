@@ -177,7 +177,7 @@ function desenhar(){
   if(LISTA===null)h+='<div class="empty">Carregando…</div>';
   else if(!itens.length)h+='<div class="empty"><div class="e-ic">'+IC.inbox+'</div>'+(b?'Nada encontrado para essa busca.':ABA==='pendente'?'Nenhum pedido pendente.<br>Quando alguém pedir acesso, aparece aqui<br>e você recebe um e-mail na hora.':ABA==='ativo'?'Ninguém ativo ainda.':'Ninguém bloqueado.')+'</div>';
   else itens.forEach(function(x){h+=cartao(x)});
-  h+='<div class="foot">Quita Acessos v'+(NATIVE?Android.version():'1.0.0')+'</div>';
+  h+='<div class="foot">Quita Acessos v'+(NATIVE?Android.version():'1.0.1')+'</div>';
   var foco=document.activeElement&&document.activeElement.id==='busca',pos=foco?document.activeElement.selectionStart:0;
   el.innerHTML=h;
   $('#bRef').onclick=carregar;$('#bAdd').onclick=abrirAdd;$('#bBrand').onclick=abrirConfig;

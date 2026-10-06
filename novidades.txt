@@ -1,4 +1,3 @@
 # Novidades da versão (uma por linha). Aparecem no aviso de nova versão do app.
-Acesso liberado por e-mail (controle de assinantes)
-Textos do topo sem cortes
-Avisos e download de atualização mais caprichados
+Cada conta Google vê só os próprios dados, mesmo trocando de conta no mesmo aparelho
+Melhorias de segurança no login

@@ -61,6 +61,7 @@ public class MainActivity extends Activity {
     private static final int REQ_ACCOUNT = 4242;
     private static final int REQ_ACC_PERM = 4243;
     private String gPendingPayload = null;
+    private String gDono = "";
     private ValueCallback<Uri[]> fileCallback;
 
     private boolean themeDark = true;
@@ -358,7 +359,9 @@ public class MainActivity extends Activity {
                         // 2) não existe: cria agora
                         JSONObject sheet = null;
                         String msg = "";
-                        if (gPendingPayload != null) {
+                        // os dados deste aparelho são de outra conta: não leva para a planilha nova
+                        boolean outraConta = gDono.length() > 0 && !gDono.equalsIgnoreCase(acc.name);
+                        if (gPendingPayload != null && !outraConta) {
                             try {
                                 JSONObject pl = new JSONObject(gPendingPayload);
                                 pl.put("title", "Quita – " + acc.name.split("@")[0]);
@@ -638,8 +641,9 @@ public class MainActivity extends Activity {
 
         /* ---------- Google ---------- */
         @JavascriptInterface
-        public void gLogin(final String payloadJson) {
+        public void gLogin(final String payloadJson, final String dono) {
             gPendingPayload = payloadJson;
+            gDono = dono == null ? "" : dono.trim().toLowerCase();
             runOnUiThread(new Runnable() { @Override public void run() {
                 if (Build.VERSION.SDK_INT < 26 && checkSelfPermission("android.permission.GET_ACCOUNTS") != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{"android.permission.GET_ACCOUNTS"}, REQ_ACC_PERM);
@@ -877,7 +881,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "2.0.5";
+            return "2.0.6";
         }
 
         /* ---------- atualização dentro do app ---------- */

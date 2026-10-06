@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
         public void set(String k, String v) { prefs().edit().putString(k, v).apply(); }
 
         @JavascriptInterface
-        public String version() { return "1.0.0"; }
+        public String version() { return "1.0.1"; }
 
         @JavascriptInterface
         public void haptic() {

@@ -10,8 +10,8 @@ PLAT="$SDK/platforms/android-34"
 JAR="$PLAT/android.jar"
 APP=acessos/src/main
 OUT=build-acessos
-VERSION=1.0.0
-CODE=1
+VERSION=1.0.1
+CODE=2
 rm -rf "$OUT"; mkdir -p "$OUT/gen" "$OUT/classes" "$OUT/dex" "$OUT/assets/fonts" dist
 cp "$APP/assets/index.html" "$OUT/assets/"
 cp app/src/main/assets/fonts/Inter-Regular.woff2 app/src/main/assets/fonts/Inter-Medium.woff2 app/src/main/assets/fonts/Inter-SemiBold.woff2 app/src/main/assets/fonts/InterDisplay-SemiBold.woff2 "$OUT/assets/fonts/"

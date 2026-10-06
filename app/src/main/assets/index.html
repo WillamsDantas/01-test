@@ -838,7 +838,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '2.0.5';
+var VERSION = '2.0.6';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1758,10 +1758,13 @@ function entrarGoogle(){
   if(!(HAS_NATIVE&&Android.gLogin)){toast('O login com Google funciona no app instalado');return}
   toast('Abrindo as contas do Google…');
   var p=buildPayload();p.title='Quita';p.backup=JSON.stringify(S);p.backupEm=new Date().toISOString();
-  Android.gLogin(JSON.stringify(p));
+  Android.gLogin(JSON.stringify(p),S.ajustes.dono||'');
 }
 function appVazio(){return !S.dividas.length&&!S.receitas.length&&!S.despesas.length&&!(S.metas||[]).length}
+/* os dados do aparelho pertencem a uma conta: ao entrar com outra, começa do zero (os dados da outra continuam na planilha dela) */
+function limparLocal(){var tema=S.ajustes.tema;S=JSON.parse(JSON.stringify(DEFAULT));S.ajustes.tema=tema;persist()}
 window.quitaGoogle=function(r){
+  if(r&&r.ok&&r.email){var em=String(r.email).toLowerCase(),dono=String(S.ajustes.dono||'').toLowerCase();if(dono&&dono!==em)limparLocal();S.ajustes.dono=em}
   var a=S.ajustes;
   if(!r.ok){toast(r.msg||'Não foi possível entrar');return}
   var g={email:r.email,id:r.id||'',url:r.url||''},aviso='',avisoSub='',restaurou=false;
@@ -1771,7 +1774,7 @@ window.quitaGoogle=function(r){
     /* fica com a cópia mais nova: a da planilha ganha se o celular está vazio ou se ela é mais recente */
     if(valida&&(appVazio()||String(o.atualizadoEm||'')>String(S.atualizadoEm||''))){
       o.ajustes=o.ajustes||{};o.ajustes.google=g;o.ajustes.googlePulou=true;o.ajustes.auto=true;o.ajustes.onboard=true;o.ajustes.copiaEm=r.backupEm||'';
-      restaurar(o,true);restaurou=true;
+      restaurar(o,true);S.ajustes.dono=String(r.email).toLowerCase();persist();restaurou=true;
       aviso='Dados carregados';avisoSub=(quando(r.backupEm)||'').replace(/^hoje às /,'');
     }
   }
@@ -2807,7 +2810,7 @@ if(lockCfg().on&&lockCfg().pin){var _nl=/[?&]nolock=1/.test(location.search),_aw
 setTab('painel');
 if(HAS_NATIVE&&Android.gLogin&&!googleOn())setTimeout(openGoogleIntro,350);
 else if(precisaOnboard())setTimeout(function(){openOnboarding(0)},350);
-if(googleOn())setTimeout(controleAcesso,300);
+if(googleOn()){if(!S.ajustes.dono){S.ajustes.dono=emailConta();persist()}setTimeout(controleAcesso,300)}
 syncAlerts();
 if(temPlanilha()&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync();
 setTimeout(function(){autoBackup()},2500);
