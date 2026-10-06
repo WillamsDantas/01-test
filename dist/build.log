@@ -5,110 +5,111 @@ Note: Recompile with -Xlint:deprecation for details.
 V3.0 Signer: certificate DN: CN=Willams Dantas, O=Auxano, L=Maceio, ST=AL, C=BR
 V3.0 Signer: certificate SHA-256 digest: 79fc62290a9819179b92a921664ced9cb1ba1fb521cd832d37c206722c0d2771
 V3.0 Signer: certificate SHA-1 digest: 54524b514b4ec563820e47ba144f73e8fd3ae75b
-total 12316
-drwxr-xr-x  2 runner runner   4096 Oct  6 14:01 .
-drwxr-xr-x 11 runner runner   4096 Oct  6 14:01 ..
--rw-r--r--  1 runner runner  58385 Oct  6 14:01 Quita-v1.0.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.0.0.apk.idsig
--rw-r--r--  1 runner runner  58385 Oct  6 14:01 Quita-v1.1.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.1.0.apk.idsig
--rw-r--r--  1 runner runner  62481 Oct  6 14:01 Quita-v1.2.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.2.0.apk.idsig
--rw-r--r--  1 runner runner  70744 Oct  6 14:01 Quita-v1.3.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.3.0.apk.idsig
--rw-r--r--  1 runner runner  70744 Oct  6 14:01 Quita-v1.3.1.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.3.1.apk.idsig
--rw-r--r--  1 runner runner  74840 Oct  6 14:01 Quita-v1.4.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.4.0.apk.idsig
--rw-r--r--  1 runner runner 288469 Oct  6 14:01 Quita-v1.5.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.5.0.apk.idsig
--rw-r--r--  1 runner runner 288469 Oct  6 14:01 Quita-v1.5.1.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.5.1.apk.idsig
--rw-r--r--  1 runner runner 288469 Oct  6 14:01 Quita-v1.5.2.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.5.2.apk.idsig
--rw-r--r--  1 runner runner 288469 Oct  6 14:01 Quita-v1.5.3.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.5.3.apk.idsig
--rw-r--r--  1 runner runner 292565 Oct  6 14:01 Quita-v1.6.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.6.0.apk.idsig
--rw-r--r--  1 runner runner 292565 Oct  6 14:01 Quita-v1.6.1.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.6.1.apk.idsig
--rw-r--r--  1 runner runner 292565 Oct  6 14:01 Quita-v1.6.2.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.6.2.apk.idsig
--rw-r--r--  1 runner runner 292565 Oct  6 14:01 Quita-v1.6.3.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.6.3.apk.idsig
--rw-r--r--  1 runner runner 296661 Oct  6 14:01 Quita-v1.6.4.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.6.4.apk.idsig
--rw-r--r--  1 runner runner 296661 Oct  6 14:01 Quita-v1.6.5.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.6.5.apk.idsig
--rw-r--r--  1 runner runner 296661 Oct  6 14:01 Quita-v1.6.6.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.6.6.apk.idsig
--rw-r--r--  1 runner runner 296661 Oct  6 14:01 Quita-v1.6.7.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.6.7.apk.idsig
--rw-r--r--  1 runner runner 296661 Oct  6 14:01 Quita-v1.6.8.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.6.8.apk.idsig
--rw-r--r--  1 runner runner 300757 Oct  6 14:01 Quita-v1.7.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.7.0.apk.idsig
--rw-r--r--  1 runner runner 304853 Oct  6 14:01 Quita-v1.7.1.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.7.1.apk.idsig
--rw-r--r--  1 runner runner 304853 Oct  6 14:01 Quita-v1.7.2.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.7.2.apk.idsig
--rw-r--r--  1 runner runner 313045 Oct  6 14:01 Quita-v1.8.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.8.0.apk.idsig
--rw-r--r--  1 runner runner 313045 Oct  6 14:01 Quita-v1.8.1.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.8.1.apk.idsig
--rw-r--r--  1 runner runner 300757 Oct  6 14:01 Quita-v1.8.2.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.8.2.apk.idsig
--rw-r--r--  1 runner runner 300757 Oct  6 14:01 Quita-v1.8.3.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.8.3.apk.idsig
--rw-r--r--  1 runner runner 308949 Oct  6 14:01 Quita-v1.9.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.9.0.apk.idsig
--rw-r--r--  1 runner runner 308949 Oct  6 14:01 Quita-v1.9.1.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.9.1.apk.idsig
--rw-r--r--  1 runner runner 313045 Oct  6 14:01 Quita-v1.9.2.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.9.2.apk.idsig
--rw-r--r--  1 runner runner 313045 Oct  6 14:01 Quita-v1.9.3.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.9.3.apk.idsig
--rw-r--r--  1 runner runner 313045 Oct  6 14:01 Quita-v1.9.4.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.9.4.apk.idsig
--rw-r--r--  1 runner runner 313045 Oct  6 14:01 Quita-v1.9.5.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.9.5.apk.idsig
--rw-r--r--  1 runner runner 313045 Oct  6 14:01 Quita-v1.9.6.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v1.9.6.apk.idsig
--rw-r--r--  1 runner runner 313045 Oct  6 14:01 Quita-v2.0.0.apk
--rw-r--r--  1 runner runner   5538 Oct  6 14:01 Quita-v2.0.0.apk.idsig
--rw-r--r--  1 runner runner 317141 Oct  6 14:01 Quita-v2.0.1.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 Quita-v2.0.1.apk.idsig
--rw-r--r--  1 runner runner 321237 Oct  6 14:01 Quita-v2.0.2.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 Quita-v2.0.2.apk.idsig
--rw-r--r--  1 runner runner 325333 Oct  6 14:01 Quita-v2.0.3.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 Quita-v2.0.3.apk.idsig
--rw-r--r--  1 runner runner 325333 Oct  6 14:01 Quita-v2.0.4.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 Quita-v2.0.4.apk.idsig
--rw-r--r--  1 runner runner 329429 Oct  6 14:01 Quita-v2.0.5.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 Quita-v2.0.5.apk.idsig
--rw-r--r--  1 runner runner 329429 Oct  6 14:01 Quita-v2.0.6.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 Quita-v2.0.6.apk.idsig
--rw-r--r--  1 runner runner 333525 Oct  6 14:01 Quita-v2.0.7.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 Quita-v2.0.7.apk.idsig
--rw-r--r--  1 runner runner 333525 Oct  6 14:01 Quita-v2.0.8.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 Quita-v2.0.8.apk.idsig
--rw-r--r--  1 runner runner 337621 Oct  6 14:01 Quita-v2.0.9.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 Quita-v2.0.9.apk.idsig
--rw-r--r--  1 runner runner 161105 Oct  6 14:01 QuitaAcessos-v1.0.0.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 QuitaAcessos-v1.0.0.apk.idsig
--rw-r--r--  1 runner runner 161105 Oct  6 14:01 QuitaAcessos-v1.0.1.apk
--rw-r--r--  1 runner runner   6671 Oct  6 14:01 QuitaAcessos-v1.0.1.apk.idsig
--rw-r--r--  1 runner runner    176 Oct  6 14:01 build-acessos.log
--rw-r--r--  1 runner runner    493 Oct  6 14:01 build.log
--rw-r--r--  1 runner runner    287 Oct  6 14:01 latest.json
+total 12656
+drwxr-xr-x  2 runner runner   4096 Oct  6 23:55 .
+drwxr-xr-x 11 runner runner   4096 Oct  6 23:55 ..
+-rw-r--r--  1 runner runner  58385 Oct  6 23:55 Quita-v1.0.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.0.0.apk.idsig
+-rw-r--r--  1 runner runner  58385 Oct  6 23:55 Quita-v1.1.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.1.0.apk.idsig
+-rw-r--r--  1 runner runner  62481 Oct  6 23:55 Quita-v1.2.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.2.0.apk.idsig
+-rw-r--r--  1 runner runner  70744 Oct  6 23:55 Quita-v1.3.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.3.0.apk.idsig
+-rw-r--r--  1 runner runner  70744 Oct  6 23:55 Quita-v1.3.1.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.3.1.apk.idsig
+-rw-r--r--  1 runner runner  74840 Oct  6 23:55 Quita-v1.4.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.4.0.apk.idsig
+-rw-r--r--  1 runner runner 288469 Oct  6 23:55 Quita-v1.5.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.5.0.apk.idsig
+-rw-r--r--  1 runner runner 288469 Oct  6 23:55 Quita-v1.5.1.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.5.1.apk.idsig
+-rw-r--r--  1 runner runner 288469 Oct  6 23:55 Quita-v1.5.2.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.5.2.apk.idsig
+-rw-r--r--  1 runner runner 288469 Oct  6 23:55 Quita-v1.5.3.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.5.3.apk.idsig
+-rw-r--r--  1 runner runner 292565 Oct  6 23:55 Quita-v1.6.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.6.0.apk.idsig
+-rw-r--r--  1 runner runner 292565 Oct  6 23:55 Quita-v1.6.1.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.6.1.apk.idsig
+-rw-r--r--  1 runner runner 292565 Oct  6 23:55 Quita-v1.6.2.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.6.2.apk.idsig
+-rw-r--r--  1 runner runner 292565 Oct  6 23:55 Quita-v1.6.3.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.6.3.apk.idsig
+-rw-r--r--  1 runner runner 296661 Oct  6 23:55 Quita-v1.6.4.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.6.4.apk.idsig
+-rw-r--r--  1 runner runner 296661 Oct  6 23:55 Quita-v1.6.5.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.6.5.apk.idsig
+-rw-r--r--  1 runner runner 296661 Oct  6 23:55 Quita-v1.6.6.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.6.6.apk.idsig
+-rw-r--r--  1 runner runner 296661 Oct  6 23:55 Quita-v1.6.7.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.6.7.apk.idsig
+-rw-r--r--  1 runner runner 296661 Oct  6 23:55 Quita-v1.6.8.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.6.8.apk.idsig
+-rw-r--r--  1 runner runner 300757 Oct  6 23:55 Quita-v1.7.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.7.0.apk.idsig
+-rw-r--r--  1 runner runner 304853 Oct  6 23:55 Quita-v1.7.1.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.7.1.apk.idsig
+-rw-r--r--  1 runner runner 304853 Oct  6 23:55 Quita-v1.7.2.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.7.2.apk.idsig
+-rw-r--r--  1 runner runner 313045 Oct  6 23:55 Quita-v1.8.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.8.0.apk.idsig
+-rw-r--r--  1 runner runner 313045 Oct  6 23:55 Quita-v1.8.1.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.8.1.apk.idsig
+-rw-r--r--  1 runner runner 300757 Oct  6 23:55 Quita-v1.8.2.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.8.2.apk.idsig
+-rw-r--r--  1 runner runner 300757 Oct  6 23:55 Quita-v1.8.3.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.8.3.apk.idsig
+-rw-r--r--  1 runner runner 308949 Oct  6 23:55 Quita-v1.9.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.9.0.apk.idsig
+-rw-r--r--  1 runner runner 308949 Oct  6 23:55 Quita-v1.9.1.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.9.1.apk.idsig
+-rw-r--r--  1 runner runner 313045 Oct  6 23:55 Quita-v1.9.2.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.9.2.apk.idsig
+-rw-r--r--  1 runner runner 313045 Oct  6 23:55 Quita-v1.9.3.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.9.3.apk.idsig
+-rw-r--r--  1 runner runner 313045 Oct  6 23:55 Quita-v1.9.4.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.9.4.apk.idsig
+-rw-r--r--  1 runner runner 313045 Oct  6 23:55 Quita-v1.9.5.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.9.5.apk.idsig
+-rw-r--r--  1 runner runner 313045 Oct  6 23:55 Quita-v1.9.6.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v1.9.6.apk.idsig
+-rw-r--r--  1 runner runner 313045 Oct  6 23:55 Quita-v2.0.0.apk
+-rw-r--r--  1 runner runner   5538 Oct  6 23:55 Quita-v2.0.0.apk.idsig
+-rw-r--r--  1 runner runner 317141 Oct  6 23:55 Quita-v2.0.1.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.1.apk.idsig
+-rw-r--r--  1 runner runner 337621 Oct  6 23:55 Quita-v2.0.10.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.10.apk.idsig
+-rw-r--r--  1 runner runner 321237 Oct  6 23:55 Quita-v2.0.2.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.2.apk.idsig
+-rw-r--r--  1 runner runner 325333 Oct  6 23:55 Quita-v2.0.3.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.3.apk.idsig
+-rw-r--r--  1 runner runner 325333 Oct  6 23:55 Quita-v2.0.4.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.4.apk.idsig
+-rw-r--r--  1 runner runner 329429 Oct  6 23:55 Quita-v2.0.5.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.5.apk.idsig
+-rw-r--r--  1 runner runner 329429 Oct  6 23:55 Quita-v2.0.6.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.6.apk.idsig
+-rw-r--r--  1 runner runner 333525 Oct  6 23:55 Quita-v2.0.7.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.7.apk.idsig
+-rw-r--r--  1 runner runner 333525 Oct  6 23:55 Quita-v2.0.8.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.8.apk.idsig
+-rw-r--r--  1 runner runner 337621 Oct  6 23:55 Quita-v2.0.9.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 Quita-v2.0.9.apk.idsig
+-rw-r--r--  1 runner runner 161105 Oct  6 23:55 QuitaAcessos-v1.0.0.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 QuitaAcessos-v1.0.0.apk.idsig
+-rw-r--r--  1 runner runner 161105 Oct  6 23:55 QuitaAcessos-v1.0.1.apk
+-rw-r--r--  1 runner runner   6671 Oct  6 23:55 QuitaAcessos-v1.0.1.apk.idsig
+-rw-r--r--  1 runner runner    176 Oct  6 23:55 build-acessos.log
+-rw-r--r--  1 runner runner    493 Oct  6 23:55 build.log
+-rw-r--r--  1 runner runner    451 Oct  6 23:55 latest.json
 {
- "versao": "2.0.9",
- "codigo": 43,
- "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.9.apk",
+ "versao": "2.0.10",
+ "codigo": 44,
+ "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.10.apk",
  "novidades": [
-  "Entrada sem piscar: uma tela de carregamento acompanha cada etapa até a configuração",
-  "Cadastro de dívida completo também na configuração inicial (data da compra e mês da 1ª parcela)",
-  "Botão para solicitar acesso ou desbloqueio direto pelo app",
-  "Avisos maiores e mais fáceis de ler"
+  "Novo seletor de mês e de data no cadastro de dívida, no visual do app",
+  "Mês da 1ª parcela aparece completo (ex.: Out/2026) em qualquer celular",
+  "Data da compra mais clara: toque em \"Escolher\" para preencher"
  ]
 }
