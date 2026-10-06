@@ -5,6 +5,8 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.provider.Settings;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
@@ -836,7 +838,70 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "2.0.2";
+            return "2.0.3";
+        }
+
+        /* ---------- atualização dentro do app ---------- */
+        @JavascriptInterface
+        public String updDownload(String url, String name) {
+            try {
+                File dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+                if (dir != null) {
+                    File[] olds = dir.listFiles();
+                    if (olds != null) for (File f : olds) if (f.getName().endsWith(".apk")) f.delete();
+                }
+                DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                DownloadManager.Request r = new DownloadManager.Request(Uri.parse(url));
+                r.setTitle("Quita · atualização");
+                r.setDescription(name);
+                r.setMimeType("application/vnd.android.package-archive");
+                r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+                r.setDestinationInExternalFilesDir(MainActivity.this, Environment.DIRECTORY_DOWNLOADS, name);
+                return String.valueOf(dm.enqueue(r));
+            } catch (Exception e) {
+                return "ERRO:" + e.getMessage();
+            }
+        }
+
+        @JavascriptInterface
+        public String updStatus(String id) {
+            try {
+                DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                Cursor c = dm.query(new DownloadManager.Query().setFilterById(Long.parseLong(id)));
+                JSONObject o = new JSONObject();
+                if (c == null || !c.moveToFirst()) { o.put("st", "fail"); return o.toString(); }
+                int st = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                long done = c.getLong(c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                long total = c.getLong(c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                c.close();
+                o.put("st", st == DownloadManager.STATUS_SUCCESSFUL ? "ok" : st == DownloadManager.STATUS_FAILED ? "fail" : "run");
+                o.put("done", done); o.put("total", total);
+                return o.toString();
+            } catch (Exception e) {
+                return "{\"st\":\"fail\"}";
+            }
+        }
+
+        /** Abre o instalador do Android. Retorna "ok", "perm" (precisa liberar a instalação) ou "ERRO:...". */
+        @JavascriptInterface
+        public String updInstall(String id) {
+            try {
+                if (Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
+                    Intent s = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName()));
+                    startActivity(s);
+                    return "perm";
+                }
+                DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                Uri u = dm.getUriForDownloadedFile(Long.parseLong(id));
+                if (u == null) return "ERRO:arquivo não encontrado";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setDataAndType(u, "application/vnd.android.package-archive");
+                i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                return "ok";
+            } catch (Exception e) {
+                return "ERRO:" + e.getMessage();
+            }
         }
     }
 }

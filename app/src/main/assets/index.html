@@ -385,6 +385,37 @@ nav.bottom button span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .cal-list{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
 .cal-day-h{font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:2px;white-space:nowrap}
 /* snackbar com desfazer */
+/* ---------- sobre e suporte / atualização ---------- */
+.ab-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:22px 16px 18px}
+.ab-logo{width:64px;height:64px;border-radius:16px;background:#141416;border:1px solid var(--border);display:grid;place-items:center;margin-bottom:12px;overflow:hidden}
+.ab-logo .qmark{width:44px;height:44px}
+.ab-hero b{font-size:20px;font-weight:600}.ab-hero .muted{margin:2px 0 0;font-size:13.5px}
+.ab-pill{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 11px;border-radius:99px;background:var(--pos-soft);color:var(--pos);font-size:12.5px;font-weight:600;border:0;font-family:inherit}
+.ab-pill.nf{background:var(--surface-3);color:var(--ink-2)}
+.ab-pill .ic{width:14px;height:14px}
+.ab-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.ab-it{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-top:1px solid var(--border);background:none;color:var(--ink);text-align:left;font:inherit}
+.ab-it:first-child{border-top:0}
+.ab-ic{width:36px;height:36px;border-radius:var(--r-sm);background:var(--surface-3);display:grid;place-items:center;flex:none;color:var(--ink)}
+.ab-ic.g{background:var(--pos-soft);color:var(--pos)}
+.ab-ic .ic{width:19px;height:19px}
+.ab-tx{flex:1;min-width:0}.ab-tx b{display:block;font-size:14.5px;font-weight:600}.ab-tx span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ab-chev{color:var(--ink-3);width:18px;height:18px}
+.ab-badge{font-size:11.5px;font-weight:600;color:var(--pos);background:var(--pos-soft);padding:4px 9px;border-radius:99px;white-space:nowrap}
+.ab-foot{text-align:center;color:var(--ink-3);font-size:12px;line-height:1.5;margin:18px 0 4px}
+.upd-ban{display:flex;align-items:center;gap:12px;padding:12px 10px 12px 14px;margin-bottom:var(--gap);background:var(--pos-soft);border:1px solid color-mix(in srgb,var(--pos) 35%,transparent);border-radius:var(--r)}
+.upd-ban .ab-ic{background:var(--pos-soft);color:var(--pos)}
+.upd-ban .ab-tx span{white-space:normal}
+.upd-ban .btn{height:36px;width:auto;min-width:0;padding:0 16px;flex:none}
+.upd-x{width:30px;height:30px;border:0;background:none;color:var(--ink-3);display:grid;place-items:center;flex:none}
+.upd-x .ic{width:16px;height:16px}
+.upd-vp{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);margin:2px 0 14px}
+.upd-vp s{text-decoration:none;padding:3px 8px;border-radius:7px;background:var(--surface-3)}.upd-vp em{font-style:normal;padding:3px 8px;border-radius:7px;background:var(--pos-soft);color:var(--pos);font-weight:600}
+.upd-news{list-style:none;margin:0 0 16px;padding:0}
+.upd-news li{display:flex;gap:10px;font-size:14px;line-height:1.4;padding:9px 0;border-top:1px solid var(--border)}
+.upd-news li:first-child{border-top:0}.upd-news li .ic{width:17px;height:17px;color:var(--pos);flex:none;margin-top:1px}
+.upd-prog{height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:8px 0 6px}.upd-prog span{display:block;height:100%;width:0;background:var(--pos);border-radius:99px;transition:width .3s}
+.upd-pl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2)}
 /* ---------- aviso (pílula fosca) ---------- */
 .nt{--c:var(--pos);--s:var(--pos-soft);position:fixed;left:50%;top:50%;z-index:85;display:flex;align-items:center;gap:9px;width:max-content;max-width:calc(100% - 32px);padding:7px 14px 7px 7px;border-radius:var(--r);background:rgba(30,30,34,.90);-webkit-backdrop-filter:blur(24px) saturate(140%);backdrop-filter:blur(24px) saturate(140%);border:1px solid rgba(255,255,255,.10);box-shadow:0 10px 28px rgba(0,0,0,.35);color:var(--ink);overflow:hidden;opacity:0;transform:translate(-50%,calc(-50% + 12px)) scale(.97);pointer-events:none;transition:opacity .25s ease,transform .36s cubic-bezier(.2,.9,.3,1.12)}
 [data-theme="light"] .nt{background:rgba(255,255,255,.90);border-color:rgba(255,255,255,.75);box-shadow:0 10px 28px rgba(15,16,18,.14)}
@@ -795,7 +826,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '2.0.2';
+var VERSION = '2.0.3';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1814,7 +1845,7 @@ function renderPainel(){
   }
   var k=curMonth, mes=MESES[+k.split('-')[1]-1], rec=receitaMes(k), parc=parcelasMes(k), desp=despesaMes(k);
   var sobra=rec-desp-parc, pct=comprometimento(k), f=faixa(pct), atr=totalAtraso();
-  var h=monthBar();
+  var h=updBannerHTML()+monthBar();
   h+='<div class="pn-grid"><div class="pn-col">';
   h+='<div class="kpi-main"><div class="k-top"><span>Sobra de '+mes+'</span><span class="tag '+f[1]+'"><i></i>'+pctTxt(pct)+' comprometido</span></div>'+
      '<div class="big num '+(sobra<0?'neg':'pos')+'">'+moneyBig(sobra)+'</div>'+
@@ -2268,7 +2299,8 @@ var SCRIPT_GS = document.getElementById('gs').textContent.trim();
 function openSettings(){
   var a=S.ajustes;
   var h=head('Ajustes')+
-    '<div class="sec-title" style="margin-top:0">Aparência</div>'+
+    '<div class="ab-list" style="margin-bottom:4px"><button class="ab-it" id="sSobre"><span class="ab-ic">'+ICON.badge+'</span><span class="ab-tx"><b>Sobre e suporte</b><span>Versão, assinatura e ajuda</span></span>'+(UPD?'<span class="ab-badge">Nova versão</span>':'')+'<svg class="ic ab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></div>'+
+    '<div class="sec-title">Aparência</div>'+
     '<div class="seg" id="sTema"><button data-tm="dark">'+'Escuro</button><button data-tm="light">Claro</button><button data-tm="auto">Automático</button></div>'+
     segurancaHTML()+
     '<div class="sec-title">Conta Google</div>'+
@@ -2293,9 +2325,10 @@ function openSettings(){
     backupHTML()+
     '<div class="sec-title">Zona de perigo</div>'+
     '<button class="btn danger" id="sWipe">'+ICON.trash+'Apagar todos os dados</button>'+
-    '<p class="muted" style="text-align:center;margin-top:16px">Quita v'+(HAS_NATIVE?Android.version():VERSION)+' · Auxano</p>';
+    '<p class="muted" style="text-align:center;margin-top:16px">Quita v'+appVer()+' · Willams Dantas</p>';
   openSheet(h,function(el){
     bindAlertas(el);bindSeguranca(el);bindBackup(el);bindGoogleBox(el);
+    $('#sSobre',el).onclick=function(){openSobre()};
     function setTm(t){$$('#sTema button',el).forEach(function(b){b.classList.toggle('on',b.dataset.tm===t)})}
     setTm(a.tema||'dark');
     $$('#sTema button',el).forEach(function(b){b.onclick=function(){a.tema=b.dataset.tm;setTm(a.tema);persist();applyTheme()}});
@@ -2336,6 +2369,108 @@ function openSettings(){
     })};
   });
 }
+
+
+/* ---------------- Sobre e suporte ---------------- */
+var ADMIN_EMAIL='willamsdanttas@gmail.com', SUP_WA='5582998108786', SUP_WA_TX='(82) 99810-8786', SUP_MAIL='willamsdanttas@gmail.com';
+var SITE='https://willamsdantas.github.io/01-test/quita/';
+var IC_CHEV='<svg class="ic ab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+var IC_AB={
+ wa:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>',
+ mail:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+ star:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>',
+ doc:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
+ spark:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>',
+ down:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>',
+ arrow:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+ ok:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+ refresh:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>'
+};
+function appVer(){try{return HAS_NATIVE?Android.version():VERSION}catch(e){return VERSION}}
+function abrirLink(u){if(HAS_NATIVE)Android.openUrl(u);else window.open(u)}
+function abItem(id,ic,g,tit,sub,extra){return '<button class="ab-it" id="'+id+'"><span class="ab-ic'+(g?' g':'')+'">'+ic+'</span><span class="ab-tx"><b>'+tit+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'</span>'+(extra||IC_CHEV)+'</button>'}
+function openSobre(){
+  var g=S.ajustes.google, em=(g&&g.email)||'', adm=em.toLowerCase()===ADMIN_EMAIL;
+  var sel=UPD?'<button class="ab-pill" id="abUpd">'+IC_AB.spark+'Nova versão '+esc(UPD.versao)+' disponível</button>'
+    :'<button class="ab-pill nf" id="abChk">'+IC_AB.refresh+'Verificar atualização</button>';
+  var ass=em?abItem('abAss',IC_AB.star,true,'Quita Premium',em,'<span class="ab-badge">'+(adm?'Admin':'Ativa')+'</span>')
+    :abItem('abAss',IC_AB.star,false,'Entre com sua conta Google','Para ativar e ver sua assinatura');
+  var h=head('Sobre e suporte')+
+    '<div class="card ab-hero"><div class="ab-logo">'+QMARK+'</div><b>Quita</b><p class="muted">Versão '+esc(appVer())+'</p>'+sel+'</div>'+
+    '<div class="sec-title">Sua assinatura</div><div class="ab-list">'+ass+'</div>'+
+    '<div class="sec-title">Precisa de ajuda?</div><div class="ab-list">'+
+      abItem('abWa',IC_AB.wa,true,'Falar no WhatsApp',SUP_WA_TX)+abItem('abMail',IC_AB.mail,false,'Enviar e-mail',SUP_MAIL)+'</div>'+
+    '<div class="sec-title">Documentos</div><div class="ab-list">'+
+      abItem('abPriv',ICON.shield,false,'Política de privacidade','')+abItem('abTerm',IC_AB.doc,false,'Termos de uso','')+'</div>'+
+    '<div class="ab-foot">Desenvolvido por Willams Dantas<br>Seus dados ficam no seu celular e na sua conta Google.</div>';
+  openSheet(h,function(el){
+    $('#abWa',el).onclick=function(){abrirLink('https://wa.me/'+SUP_WA+'?text='+encodeURIComponent('Olá! Preciso de ajuda com o Quita (versão '+appVer()+').'))};
+    $('#abMail',el).onclick=function(){abrirLink('mailto:'+SUP_MAIL+'?subject='+encodeURIComponent('Suporte Quita'))};
+    $('#abPriv',el).onclick=function(){abrirLink(SITE+'privacidade.html')};
+    $('#abTerm',el).onclick=function(){abrirLink(SITE+'termos.html')};
+    $('#abAss',el).onclick=function(){if(!em)entrarGoogle()};
+    var u=$('#abUpd',el);if(u)u.onclick=function(){openUpdate()};
+    var c=$('#abChk',el);if(c)c.onclick=function(){toast('Verificando…');checkUpdate(true)};
+  });
+}
+
+/* ---------------- Nova versão ---------------- */
+var UPD_URL='https://raw.githubusercontent.com/WillamsDantas/01-test/quita-app/dist/latest.json';
+var UPD=null, updTimer=null;
+function cmpVer(a,b){a=String(a).split('.');b=String(b).split('.');for(var i=0;i<Math.max(a.length,b.length);i++){var x=+(a[i]||0),y=+(b[i]||0);if(x!==y)return x>y?1:-1}return 0}
+function checkUpdate(manual){
+  if(!window.fetch)return;
+  fetch(UPD_URL+'?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(o){
+    if(o&&o.versao&&o.apk&&cmpVer(o.versao,appVer())>0){UPD=o;if(!sheetOpen)renderAll();if(manual)openUpdate()}
+    else{UPD=null;if(manual)toast('Você já está na versão mais recente')}
+    if(manual&&sheetOpen&&$('#abChk'))openSobre();
+  }).catch(function(){if(manual)toast('Não foi possível verificar agora')});
+}
+function updBannerHTML(){
+  if(!UPD||S.ajustes.updDispensada===UPD.versao)return '';
+  return '<div class="upd-ban"><span class="ab-ic">'+IC_AB.spark+'</span><span class="ab-tx"><b>Nova versão disponível</b><span>Quita '+esc(UPD.versao)+' · com novidades</span></span><button class="btn pri" data-upd="ver">Ver</button><button class="upd-x" data-upd="x" aria-label="Dispensar">'+ICON.x+'</button></div>';
+}
+document.addEventListener('click',function(e){
+  var b=e.target&&e.target.closest?e.target.closest('[data-upd]'):null;if(!b)return;
+  if(b.dataset.upd==='ver')openUpdate();
+  else{S.ajustes.updDispensada=UPD&&UPD.versao;persist();renderAll()}
+});
+function openUpdate(){
+  if(!UPD)return;
+  var nov=(UPD.novidades||[]).map(function(t){return '<li>'+IC_AB.ok+'<span>'+esc(t)+'</span></li>'}).join('');
+  var h=head('Atualização disponível')+
+    '<div class="upd-vp"><s>'+esc(appVer())+'</s>'+IC_AB.arrow+'<em>'+esc(UPD.versao)+'</em></div>'+
+    (nov?'<ul class="upd-news">'+nov+'</ul>':'')+
+    '<div id="updProg" style="display:none"><b style="font-size:13.5px" id="updSt">Baixando…</b><div class="upd-prog"><span id="updBar"></span></div><div class="upd-pl"><span id="updPct">0%</span><span id="updKb"></span></div></div>'+
+    '<div class="note" style="margin-top:14px">Seus dados continuam no app. A atualização instala por cima, sem apagar nada.</div>'+
+    '<div class="btn-row" style="margin-top:16px"><button class="btn ghost" data-close>Depois</button><button class="btn pri" id="updGo">'+IC_AB.down+'Baixar e instalar</button></div>';
+  openSheet(h,function(el){
+    var dl=null;
+    $('#updGo',el).onclick=function(){
+      var go=this;
+      if(!HAS_NATIVE||!Android.updDownload){abrirLink(UPD.apk);return}
+      if(dl&&dl.ok){instalar(dl.id);return}
+      var id=Android.updDownload(UPD.apk,'Quita-v'+UPD.versao+'.apk');
+      if(String(id).indexOf('ERRO')===0){toast('Não foi possível baixar. Tente pelo navegador.');abrirLink(UPD.apk);return}
+      dl={id:id};go.disabled=true;$('#updProg',el).style.display='';
+      clearInterval(updTimer);
+      updTimer=setInterval(function(){
+        var s={};try{s=JSON.parse(Android.updStatus(id))}catch(e){}
+        var pct=s.total>0?Math.round(s.done*100/s.total):0;
+        $('#updBar',el).style.width=pct+'%';$('#updPct',el).textContent=pct+'%';
+        if(s.total>0)$('#updKb',el).textContent=Math.round(s.done/1024)+' KB de '+Math.round(s.total/1024)+' KB';
+        if(s.st==='ok'){clearInterval(updTimer);dl.ok=true;$('#updSt',el).textContent='Download concluído';go.disabled=false;go.innerHTML=IC_AB.down+'Instalar agora';instalar(id)}
+        else if(s.st==='fail'){clearInterval(updTimer);go.disabled=false;$('#updSt',el).textContent='Falhou. Tente de novo.';dl=null}
+      },500);
+    };
+  });
+}
+function instalar(id){
+  var r=Android.updInstall(id);
+  if(r==='perm')toast('Permita instalar apps do Quita e toque em "Instalar agora"');
+  else if(String(r).indexOf('ERRO')===0)toast('Não foi possível abrir o instalador');
+}
+setTimeout(function(){checkUpdate(false)},2500);
 
 /* ---------------- Alertas de vencimento ---------------- */
 function alertCfg(){var c=S.ajustes.alertas;if(!c||typeof c!=='object'){c=S.ajustes.alertas={}}var d={on:false,antes:1,hora:'09:00',dispensado:false};for(var k in d)if(c[k]===undefined)c[k]=d[k];return c}

@@ -1,0 +1,4 @@
+# Novidades da versão (uma por linha). Aparecem no aviso de nova versão do app.
+Tela "Sobre e suporte" com WhatsApp e e-mail direto
+Aviso de nova versão com download dentro do app
+Avisos no centro da tela
