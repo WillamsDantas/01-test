@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Quita Acessos</title>
+<style>
+@font-face{font-family:Inter;src:url(fonts/Inter-Regular.woff2);font-weight:400}
+@font-face{font-family:Inter;src:url(fonts/Inter-Medium.woff2);font-weight:500}
+@font-face{font-family:Inter;src:url(fonts/Inter-SemiBold.woff2);font-weight:600}
+@font-face{font-family:InterD;src:url(fonts/InterDisplay-SemiBold.woff2);font-weight:600}
+:root{--bg:#111113;--surface:#18181B;--s2:#1F1F23;--s3:#28282D;--border:#2A2A2F;--ink:#F4F4F5;--ink2:#A1A1AA;--ink3:#71717A;
+--pos:#8FD9AE;--pos-soft:rgba(143,217,174,.13);--warn:#E8C98A;--warn-soft:rgba(232,201,138,.13);--neg:#F0A0A0;--neg-soft:rgba(240,160,160,.13);--r:14px;--r-sm:10px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+main{max-width:640px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.top{display:flex;align-items:center;gap:8px;margin:4px 0 16px}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border:1px solid var(--border);background:var(--surface);border-radius:12px;min-width:0}
+.lg{width:34px;height:34px;border-radius:9px;background:#141416;overflow:hidden;flex:none}
+.lg svg{width:100%;height:100%;display:block}
+.brand b{display:block;font-size:14.5px;font-weight:600}.brand span{display:block;font-size:12px;color:var(--ink2)}
+.sp{flex:1}
+.ib{width:40px;height:40px;border-radius:11px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center;flex:none}
+.ib.spin svg{animation:gir .8s linear infinite}
+@keyframes gir{to{transform:rotate(360deg)}}
+.pt{font:600 28px/1.15 InterD;margin:4px 0 14px;letter-spacing:-.4px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px}
+.seg button{display:flex;align-items:center;justify-content:center;gap:6px;height:38px;border:0;border-radius:9px;background:none;font-size:13.5px;font-weight:600;color:var(--ink2)}
+.seg button.on{background:var(--s3);color:var(--ink)}
+.cnt{min-width:20px;height:20px;padding:0 6px;border-radius:99px;font-size:11.5px;display:grid;place-items:center;background:var(--s3);color:var(--ink2)}
+.seg button.on .cnt{background:var(--s2)}
+.cnt.w{background:var(--warn)!important;color:#1a1405!important}
+.srch{display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--ink3);margin-bottom:14px}
+.srch input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:14.5px;color:var(--ink)}
+.srch input::placeholder{color:var(--ink3)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.who{display:flex;align-items:center;gap:12px}
+.av{width:40px;height:40px;border-radius:var(--r-sm);background:var(--s3);display:grid;place-items:center;font:600 16px InterD;flex:none;text-transform:uppercase}
+.tx{flex:1;min-width:0}.tx b{display:block;font-size:14.5px;font-weight:600;overflow-wrap:anywhere}.tx span{display:block;font-size:12.5px;color:var(--ink2);margin-top:1px}
+.pill{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:99px;white-space:nowrap;flex:none}
+.pill.pendente{background:var(--warn-soft);color:var(--warn)}.pill.ativo{background:var(--pos-soft);color:var(--pos)}.pill.inativo{background:var(--neg-soft);color:var(--neg)}
+.meta{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--ink3);margin-top:10px}
+.obs{font-size:12.5px;color:var(--ink2);margin-top:8px;padding:8px 10px;border-radius:9px;background:var(--s2)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.acts.one{grid-template-columns:1fr}
+.btn{height:42px;border-radius:11px;border:1px solid var(--border);background:transparent;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn.ok{background:var(--pos);border-color:var(--pos);color:#0B1A11}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:#0B0B0C}
+.btn.big{height:50px;width:100%;border-radius:12px;font-size:15px}
+.btn:disabled{opacity:.5}
+.btn svg{width:17px;height:17px}
+.empty{text-align:center;color:var(--ink2);padding:46px 10px;font-size:14.5px;line-height:1.5}
+.empty .e-ic{width:52px;height:52px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;margin:0 auto 12px;color:var(--ink2)}
+.err{background:var(--neg-soft);color:var(--neg);border-radius:var(--r);padding:12px 14px;font-size:13.5px;margin-bottom:12px}
+/* sheet */
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:.2s;z-index:50}
+#scrim.on{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;background:var(--surface);border:1px solid var(--border);border-bottom:0;border-radius:20px 20px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.9,.3,1);max-width:640px;margin:0 auto;max-height:92vh;overflow-y:auto}
+#sheet.on{transform:none}
+.grab{width:38px;height:4px;border-radius:9px;background:var(--border);margin:0 auto 16px}
+#sheet h3{font:600 20px InterD;margin:0 0 4px}#sheet p.l{color:var(--ink2);font-size:14px;line-height:1.45;margin:0 0 16px}
+.fld{margin-bottom:12px}.fld label{display:block;font-size:12.5px;color:var(--ink2);margin-bottom:6px}
+.fld input{width:100%;height:46px;border-radius:12px;border:1px solid var(--border);background:var(--s2);padding:0 14px;font-size:15px;outline:none}
+.fld input:focus{border-color:var(--ink3)}
+.row2{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:16px}
+/* gate (primeiro acesso) */
+.gate{min-height:calc(100vh - 60px);display:flex;flex-direction:column;justify-content:center;text-align:center;padding:20px 4px}
+.gate .glg{width:76px;height:76px;border-radius:22px;overflow:hidden;margin:0 auto 14px;border:1px solid var(--border)}
+.gate .glg svg{width:100%;height:100%;display:block}
+.gate h1{font:600 26px/1.2 InterD;margin:0 0 8px}.gate p{color:var(--ink2);font-size:14.5px;line-height:1.5;margin:0 auto 22px;max-width:320px}
+.gate .fld{text-align:left}
+.steps{text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2);line-height:1.55}
+.steps b{color:var(--ink)}
+/* aviso central */
+.nt{position:fixed;left:50%;top:50%;z-index:90;display:flex;align-items:center;gap:9px;max-width:calc(100% - 32px);width:max-content;padding:7px 14px 7px 7px;border-radius:var(--r);background:rgba(30,30,34,.92);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.1);box-shadow:0 10px 28px rgba(0,0,0,.4);opacity:0;transform:translate(-50%,calc(-50% + 12px)) scale(.97);transition:opacity .25s,transform .36s cubic-bezier(.2,.9,.3,1.12);pointer-events:none}
+.nt.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.nt .ic{width:30px;height:30px;border-radius:var(--r-sm);display:grid;place-items:center;flex:none;background:var(--pos-soft);color:var(--pos)}
+.nt.er .ic{background:var(--neg-soft);color:var(--neg)}
+.nt .ic svg{width:16px;height:16px;stroke-width:2.2}
+.nt b{font-size:14px;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+.foot{text-align:center;color:var(--ink3);font-size:12px;margin-top:22px}
+.lnk{border:0;background:none;color:var(--ink2);text-decoration:underline;text-underline-offset:3px;font-size:13px;padding:6px}
+</style></head>
+<body>
+<main id="app"></main>
+<div id="scrim"></div><div id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
+<div class="nt" id="nt"></div>
+<script>
+(function(){
+var URL_API='https://script.google.com/macros/s/AKfycbyZpqYeU3CDX56ClrrLq0XK5SmgkCHdwr36YIkJEFXoZIx0F11gFa6l8R6MjpiFgxhlPQ/exec';
+var NATIVE=typeof Android!=='undefined';
+var $=function(s,el){return (el||document).querySelector(s)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function pget(k){try{return NATIVE?Android.get(k):(localStorage.getItem(k)||'')}catch(e){return ''}}
+function pset(k,v){try{NATIVE?Android.set(k,v):localStorage.setItem(k,v)}catch(e){}}
+function haptic(){try{if(NATIVE)Android.haptic()}catch(e){}}
+var LOGO='<svg viewBox="16 16 76 76"><rect width="108" height="108" fill="#141416"/><g transform="translate(54 54) scale(.7) translate(-54 -54)"><path d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z" fill="#F4F4F5"/><path d="M56.87 63.00 L64.87 71.00 L78.37 57.50" fill="none" stroke="#E8C98A" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></g></svg>';
+var IC={
+ refresh:'<svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>',
+ plus:'<svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg>',
+ search:'<svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+ check:'<svg class="i" viewBox="0 0 24 24" style="stroke-width:2.4"><path d="M20 6 9 17l-5-5"/></svg>',
+ alert:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>',
+ inbox:'<svg class="i" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',
+ key:'<svg class="i" viewBox="0 0 24 24"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>'
+};
+
+/* ---------- API ---------- */
+var cbs={},seq=0;
+window.apiCb=function(id,txt){var f=cbs[id];delete cbs[id];var o;try{o=JSON.parse(txt)}catch(e){o={ok:false,msg:'Resposta inválida'}}if(f)f(o)};
+function api(params,cb){
+  var q=Object.keys(params).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(params[k])}).join('&');
+  var url=URL_API+'?'+q+'&_='+Date.now();
+  if(NATIVE){var id='c'+(++seq);cbs[id]=cb;Android.api(id,url);return}
+  fetch(url).then(function(r){return r.json()}).then(cb).catch(function(){cb({ok:false,msg:'Sem conexão'})});
+}
+
+/* ---------- estado ---------- */
+var KEY=pget('chave'), LISTA=null, ABA='pendente', BUSCA='', CARREGANDO=false, ERRO='';
+try{var c=JSON.parse(pget('cache')||'null');if(c&&c.length)LISTA=c}catch(e){}
+
+function carregar(){
+  if(!KEY||CARREGANDO)return;
+  CARREGANDO=true;ERRO='';desenhar();
+  api({k:KEY,acao:'lista'},function(o){
+    CARREGANDO=false;
+    if(o.ok){LISTA=o.lista||[];pset('cache',JSON.stringify(LISTA))}
+    else if(o.erro==='chave'){KEY='';pset('chave','');aviso('Chave inválida. Cole a chave de novo.',true)}
+    else ERRO=o.msg||'Não foi possível atualizar';
+    desenhar();
+  });
+}
+function mudar(email,status,extra,okMsg){
+  var p={k:KEY,acao:'status',email:email,status:status};
+  if(extra){if(extra.nome)p.nome=extra.nome;if(extra.obs)p.obs=extra.obs}
+  /* mostra na hora, confirma com a planilha */
+  if(LISTA){var achou=false;LISTA.forEach(function(x){if(x.email===email){x.status=status;achou=true}});if(!achou)LISTA.unshift({email:email,status:status,nome:(extra&&extra.nome)||'',obs:(extra&&extra.obs)||'',ultimo:'',pedido:new Date().toISOString()})}
+  desenhar();haptic();
+  api(p,function(o){
+    if(o.ok){LISTA=o.lista||LISTA;pset('cache',JSON.stringify(LISTA));aviso(okMsg)}
+    else{aviso(o.msg||'Não foi possível salvar',true);carregar()}
+    desenhar();
+  });
+}
+
+/* ---------- datas ---------- */
+function pad(n){return (n<10?'0':'')+n}
+function quando(iso){
+  if(!iso)return '';var d=new Date(iso);if(isNaN(d))return '';
+  var h=pad(d.getHours())+':'+pad(d.getMinutes()),hoje=new Date(),ont=new Date(Date.now()-864e5);
+  if(d.toDateString()===hoje.toDateString())return 'hoje · '+h;
+  if(d.toDateString()===ont.toDateString())return 'ontem · '+h;
+  return pad(d.getDate())+'/'+pad(d.getMonth()+1)+' · '+h;
+}
+function ha(iso){
+  if(!iso)return '';var s=(Date.now()-new Date(iso).getTime())/1000;if(isNaN(s))return '';
+  if(s<60)return 'agora';if(s<3600)return 'há '+Math.floor(s/60)+' min';if(s<86400)return 'há '+Math.floor(s/3600)+' h';
+  var d=Math.floor(s/86400);return 'há '+d+(d===1?' dia':' dias');
+}
+
+/* ---------- telas ---------- */
+function desenhar(){
+  var el=$('#app');
+  if(!KEY){el.innerHTML=telaChave();bindChave(el);return}
+  var L=LISTA||[],n={pendente:0,ativo:0,inativo:0};
+  L.forEach(function(x){if(n[x.status]!=null)n[x.status]++});
+  var b=BUSCA.trim().toLowerCase();
+  var itens=L.filter(function(x){return x.status===ABA&&(!b||x.email.indexOf(b)>=0||String(x.nome).toLowerCase().indexOf(b)>=0)});
+  itens.sort(function(a,c){var ka=ABA==='ativo'?a.ultimo:a.pedido,kc=ABA==='ativo'?c.ultimo:c.pedido;return String(kc||'').localeCompare(String(ka||''))});
+  var h='<div class="top"><div class="brand" id="bBrand"><div class="lg">'+LOGO+'</div><div><b>Quita Acessos</b><span>Administrador</span></div></div><div class="sp"></div>'+
+    '<button class="ib'+(CARREGANDO?' spin':'')+'" id="bRef" aria-label="Atualizar">'+IC.refresh+'</button><button class="ib" id="bAdd" aria-label="Liberar alguém">'+IC.plus+'</button></div>'+
+    '<div class="pt">Acessos</div>'+
+    '<div class="seg">'+tab('pendente','Pendentes',n.pendente,true)+tab('ativo','Ativos',n.ativo)+tab('inativo','Inativos',n.inativo)+'</div>'+
+    '<label class="srch">'+IC.search+'<input id="busca" placeholder="Buscar e-mail ou nome" value="'+esc(BUSCA)+'" autocomplete="off"></label>'+
+    (ERRO?'<div class="err">'+esc(ERRO)+' · toque em atualizar para tentar de novo.</div>':'');
+  if(LISTA===null)h+='<div class="empty">Carregando…</div>';
+  else if(!itens.length)h+='<div class="empty"><div class="e-ic">'+IC.inbox+'</div>'+(b?'Nada encontrado para essa busca.':ABA==='pendente'?'Nenhum pedido pendente.<br>Quando alguém pedir acesso, aparece aqui<br>e você recebe um e-mail na hora.':ABA==='ativo'?'Ninguém ativo ainda.':'Ninguém bloqueado.')+'</div>';
+  else itens.forEach(function(x){h+=cartao(x)});
+  h+='<div class="foot">Quita Acessos v'+(NATIVE?Android.version():'1.0.0')+'</div>';
+  var foco=document.activeElement&&document.activeElement.id==='busca',pos=foco?document.activeElement.selectionStart:0;
+  el.innerHTML=h;
+  $('#bRef').onclick=carregar;$('#bAdd').onclick=abrirAdd;$('#bBrand').onclick=abrirConfig;
+  el.querySelectorAll('.seg button').forEach(function(t){t.onclick=function(){ABA=t.dataset.a;desenhar()}});
+  var bi=$('#busca');bi.oninput=function(){BUSCA=bi.value;desenhar()};
+  if(foco){bi.focus();try{bi.setSelectionRange(pos,pos)}catch(e){}}
+  el.querySelectorAll('[data-act]').forEach(function(bt){bt.onclick=function(){acao(bt.dataset.act,bt.dataset.em)}});
+}
+function tab(a,t,c,w){return '<button data-a="'+a+'" class="'+(ABA===a?'on':'')+'">'+t+' <span class="cnt'+(w&&c?' w':'')+'">'+c+'</span></button>'}
+function cartao(x){
+  var nome=x.nome?esc(x.nome):'',sub,meta='',acts;
+  if(x.status==='pendente'){
+    sub=nome||'Sem nome';
+    meta='<div class="meta"><span>Pediu '+(ha(x.pedido)||'—')+'</span><span>'+quando(x.pedido)+'</span></div>';
+    acts='<div class="acts"><button class="btn" data-act="recusar" data-em="'+esc(x.email)+'">Recusar</button><button class="btn ok" data-act="liberar" data-em="'+esc(x.email)+'">'+IC.check+'Liberar</button></div>';
+  } else if(x.status==='ativo'){
+    sub=(nome?nome+' · ':'')+(x.ultimo?'Último acesso: '+quando(x.ultimo):'Ainda não entrou');
+    acts='<div class="acts one"><button class="btn" data-act="bloquear" data-em="'+esc(x.email)+'">Bloquear</button></div>';
+  } else {
+    sub=(nome?nome+' · ':'')+(x.ultimo?'Último acesso: '+quando(x.ultimo):'Bloqueado');
+    acts='<div class="acts one"><button class="btn" data-act="reativar" data-em="'+esc(x.email)+'">Reativar</button></div>';
+  }
+  var adm=x.email==='willamsdanttas@gmail.com';
+  if(adm)acts='';
+  return '<div class="card"><div class="who"><span class="av">'+esc(x.email.charAt(0))+'</span><span class="tx"><b>'+esc(x.email)+'</b><span>'+sub+'</span></span><span class="pill '+x.status+'">'+(adm?'Admin':x.status==='ativo'?'Ativo':x.status==='inativo'?'Inativo':'Pendente')+'</span></div>'+meta+(x.obs?'<div class="obs">'+esc(x.obs)+'</div>':'')+acts+'</div>';
+}
+function acao(a,em){
+  if(a==='liberar')mudar(em,'ativo',null,em+' liberado');
+  else if(a==='reativar')mudar(em,'ativo',null,em+' reativado');
+  else if(a==='recusar')confirmar('Recusar o pedido?','<b>'+esc(em)+'</b> fica bloqueado. Você pode reativar depois na aba Inativos.','Recusar',function(){mudar(em,'inativo',null,'Pedido recusado')});
+  else if(a==='bloquear')confirmar('Bloquear este acesso?','<b>'+esc(em)+'</b> não vai mais conseguir usar o Quita. Os dados da pessoa continuam na conta dela.','Bloquear',function(){mudar(em,'inativo',null,em+' bloqueado')});
+}
+
+/* ---------- primeiro acesso: chave ---------- */
+function telaChave(){
+  return '<div class="gate"><div class="glg">'+LOGO+'</div><h1>Quita Acessos</h1><p>Cole a chave do administrador para ligar o app à sua planilha de acessos.</p>'+
+   '<div class="steps"><b>Onde achar a chave:</b> no Apps Script da planilha "Quita – Acessos", execute a função <b>configurar</b>. A chave aparece no Registo de execução.</div>'+
+   '<div class="fld"><label>Chave do administrador</label><input id="kIn" placeholder="Cole a chave aqui" autocomplete="off" autocapitalize="off" spellcheck="false"></div>'+
+   '<button class="btn pri big" id="kOk">Conectar</button></div>';
+}
+function bindChave(el){
+  $('#kOk',el).onclick=function(){
+    var k=$('#kIn',el).value.trim();if(!k){aviso('Cole a chave primeiro',true);return}
+    var b=this;b.disabled=true;b.textContent='Conectando…';
+    api({k:k,acao:'lista'},function(o){
+      if(o.ok){KEY=k;pset('chave',k);LISTA=o.lista||[];pset('cache',JSON.stringify(LISTA));desenhar();aviso('Conectado à planilha')}
+      else{b.disabled=false;b.textContent='Conectar';aviso(o.erro==='chave'?'Chave incorreta':(o.msg||'Não foi possível conectar'),true)}
+    });
+  };
+}
+
+/* ---------- sheet ---------- */
+var sheetAberto=false;
+function abrirSheet(html,onMount){$('#sheetBody').innerHTML=html;$('#scrim').classList.add('on');$('#sheet').classList.add('on');sheetAberto=true;if(onMount)onMount($('#sheetBody'))}
+function fecharSheet(){$('#scrim').classList.remove('on');$('#sheet').classList.remove('on');sheetAberto=false;if(document.activeElement)document.activeElement.blur()}
+$('#scrim').onclick=fecharSheet;
+function confirmar(t,txt,btn,fn){
+  abrirSheet('<h3>'+t+'</h3><p class="l">'+txt+'</p><div class="row2"><button class="btn" id="cNo">Cancelar</button><button class="btn pri" id="cOk">'+btn+'</button></div>',function(el){
+    $('#cNo',el).onclick=fecharSheet;$('#cOk',el).onclick=function(){fecharSheet();fn()};
+  });
+}
+function abrirAdd(){
+  abrirSheet('<h3>Liberar acesso</h3><p class="l">A pessoa entra no Quita assim que fizer login com este e-mail.</p>'+
+    '<div class="fld"><label>E-mail da conta Google</label><input id="aEm" type="email" placeholder="cliente@gmail.com" autocomplete="off" autocapitalize="off"></div>'+
+    '<div class="fld"><label>Nome (opcional)</label><input id="aNo" placeholder="Ex.: Maria Souza"></div>'+
+    '<div class="fld"><label>Observação (opcional)</label><input id="aOb" placeholder="Ex.: comprou em 06/10, teste"></div>'+
+    '<div class="row2"><button class="btn" id="aNo2">Cancelar</button><button class="btn pri" id="aOk">Liberar acesso</button></div>',function(el){
+    $('#aNo2',el).onclick=fecharSheet;
+    $('#aOk',el).onclick=function(){
+      var em=$('#aEm',el).value.trim().toLowerCase();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){aviso('Confira o e-mail',true);return}
+      fecharSheet();ABA='ativo';mudar(em,'ativo',{nome:$('#aNo',el).value.trim(),obs:$('#aOb',el).value.trim()},em+' liberado');
+    };
+  });
+}
+function abrirConfig(){
+  abrirSheet('<h3>Configuração</h3><p class="l">O app está ligado à planilha "Quita – Acessos". Se você trocar a chave no Apps Script (função trocarChave), cole a nova aqui.</p>'+
+    '<div class="row2"><button class="btn" id="gNo">Fechar</button><button class="btn pri" id="gKey">'+IC.key+'Trocar chave</button></div>',function(el){
+    $('#gNo',el).onclick=fecharSheet;
+    $('#gKey',el).onclick=function(){fecharSheet();KEY='';pset('chave','');desenhar()};
+  });
+}
+
+/* ---------- aviso ---------- */
+var ntT=null;
+function aviso(msg,erro){
+  var n=$('#nt');n.className='nt'+(erro?' er':'');
+  n.innerHTML='<span class="ic">'+(erro?IC.alert:IC.check)+'</span><b>'+esc(msg)+'</b>';
+  void n.offsetWidth;n.classList.add('on');clearTimeout(ntT);ntT=setTimeout(function(){n.classList.remove('on')},2800);
+}
+
+window.voltar=function(){if(sheetAberto){fecharSheet();return true}return false};
+var ultimaVolta=0;
+window.aoVoltar=function(){if(Date.now()-ultimaVolta>3000){ultimaVolta=Date.now();carregar()}};
+desenhar();carregar();
+})();
+</script>
+</body></html>
