@@ -16,7 +16,7 @@ rm -rf "$OUT"; mkdir -p "$OUT/gen" "$OUT/classes" "$OUT/dex" dist
 "$BT/aapt2" link -o "$OUT/base.apk" -I "$JAR" \
   --manifest "$APP/AndroidManifest.xml" -A "$APP/assets" \
   --java "$OUT/gen" --min-sdk-version 24 --target-sdk-version 34 \
-  --version-code 35 --version-name 2.0.1 "$OUT/res.zip"
+  --version-code 36 --version-name 2.0.2 "$OUT/res.zip"
 
 javac -encoding UTF-8 -source 1.8 -target 1.8 -nowarn -Xlint:-options \
   -bootclasspath "$JAR" -d "$OUT/classes" \
@@ -31,6 +31,6 @@ cp "$OUT/base.apk" "$OUT/unsigned.apk"
 if [ -z "$QUITA_KS_PASS" ]; then echo "ERRO: segredo QUITA_KS_PASS não configurado no GitHub"; exit 1; fi
 "$BT/apksigner" sign --ks keystore/quita-release.p12 --ks-type PKCS12 --ks-key-alias quita \
   --ks-pass env:QUITA_KS_PASS --key-pass env:QUITA_KS_PASS \
-  --out dist/Quita-v2.0.1.apk "$OUT/aligned.apk"
-"$BT/apksigner" verify --print-certs dist/Quita-v2.0.1.apk | head -3
+  --out dist/Quita-v2.0.2.apk "$OUT/aligned.apk"
+"$BT/apksigner" verify --print-certs dist/Quita-v2.0.2.apk | head -3
 ls -la dist
