@@ -371,6 +371,51 @@ footer nav a:hover{color:var(--ink)}
  .plans .plan{position:relative;left:auto;top:auto;width:auto;margin-left:0;transform:none!important;opacity:1!important;filter:none!important;pointer-events:auto!important;z-index:auto!important}
  #planos .seg,#planos .p-nav{display:none}
 }
+
+/* v12 cards de e-book */
+#recursos .head{max-width:880px}
+.ebg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:40px;align-items:start}
+.eb{border:1px solid #232328;border-radius:22px;background:linear-gradient(180deg,#141417,#101012);overflow:hidden}
+.eb-img{height:260px;padding-top:26px;display:flex;align-items:flex-start;justify-content:center;background:radial-gradient(60% 60% at 50% 62%,rgba(143,217,174,.13),transparent 70%);border-bottom:1px solid #1d1d21}
+.eb-img img{height:226px;width:auto}
+.eb-b{padding:20px 22px 22px}
+.eb-v{font-size:13px;color:var(--ink-3)}.eb-v .se{color:var(--pos)}.eb-v .an{color:var(--ink-2)}
+.eb h3{font-size:19px;line-height:1.28;margin:6px 0 6px;letter-spacing:-.02em;text-wrap:balance}
+.eb-d{margin:0;color:var(--ink-2);font-size:14.5px;line-height:1.55;text-wrap:pretty}
+.eb-t{margin-top:16px;display:inline-flex;align-items:center;gap:8px;padding:9px 14px 9px 16px;border-radius:999px;border:1px solid #2f2f35;background:#18181b;color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.eb-t svg{width:16px;height:16px;transition:transform .3s ease}
+.eb-t[aria-expanded="true"] svg{transform:rotate(180deg)}
+.eb-x{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+.eb-x>div{overflow:hidden}
+.eb.on .eb-x{grid-template-rows:1fr}
+.eb-x p{margin:16px 0 0;color:var(--ink-2);font-size:14.5px;line-height:1.6;text-wrap:pretty}
+.eb-x ul{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:8px}
+.eb-x li{position:relative;padding-left:18px;font-size:14px;line-height:1.5;color:var(--ink-2);text-wrap:pretty}
+.eb-x li b{color:var(--ink);font-weight:600}
+.eb-x li:before{content:"";position:absolute;left:1px;top:10px;width:8px;height:1.5px;background:#52525B}
+@media (min-width:601px){
+ .ebg{grid-template-columns:1fr;max-width:860px;margin-left:auto;margin-right:auto;gap:22px}
+ .eb{border-radius:26px}
+ .eb-img{height:440px;padding-top:34px;justify-content:center}
+ .eb-img img{height:380px}
+ .eb-b{padding:28px 40px 34px;text-align:center}
+ .eb-v{font-size:14px}
+ .eb h3{font-size:27px;margin:8px auto 8px;max-width:620px}
+ .eb-d{font-size:16.5px;max-width:560px;margin:0 auto}
+ .eb-t{margin-top:22px;font-size:15px;padding:11px 18px 11px 20px}
+ .eb-x>div{max-width:600px;margin:0 auto}
+ .eb-x p{font-size:16px;margin-top:22px}
+ .eb-x ul{display:inline-flex;text-align:left;margin-top:16px;gap:10px}
+ .eb-x li{font-size:15px}
+}
+@media (max-width:600px){.ebg{grid-template-columns:1fr;gap:14px;margin-top:28px}.eb-img{height:250px}.eb-img img{height:214px}}
+
+/* botão WhatsApp */
+.wa{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:61;width:58px;height:58px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 12px 30px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08) inset;opacity:0;transform:translateY(16px) scale(.9);pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1),bottom .35s cubic-bezier(.2,.7,.2,1)}
+.wa svg{width:32px;height:32px}
+.wa.on{opacity:1;transform:none;pointer-events:auto}
+.wa:hover{transform:translateY(-2px)}
+@media (max-width:560px){.wa{right:14px;width:54px;height:54px;bottom:calc(14px + env(safe-area-inset-bottom))}.mbar.on~.wa{bottom:calc(84px + env(safe-area-inset-bottom))}}
 </style>
 </head>
 <body>
@@ -447,7 +492,7 @@ footer nav a:hover{color:var(--ink)}
 
 <section class="band alt" id="recursos">
   <div class="wrap pad">
-    <div class="head rv">
+    <div class="head c rv">
       <h2 class="h2">Cadastre uma vez. O Quita monta todos os meses para você.</h2>
     </div>
     <div class="steps">
@@ -519,7 +564,25 @@ footer nav a:hover{color:var(--ink)}
     </div>
     <p class="bnote rv">No plano Anual você recebe os 6 guias. No Semestral, os guias 1 e 2.</p>
     <figure class="dvmock rv"><img src="img/colecao-devices.webp" alt="Os guias da Coleção Quita no notebook e no celular" width="1400" height="869" loading="lazy"></figure>
-    <ol class="tl" id="tl"><span class="tl-track"><i id="tlFill"></i></span><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa1.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 1 de 6</div><h3>Plano de 6 meses para sair das dívidas</h3><p>Um degrau por mês: parar de afundar, quitar o que custa mais caro e voltar a ter sobra.</p><ul><li>Os 6 passos, um por mês</li><li>Exemplos com contas reais, mês a mês</li><li>Checklists e "Faça no Quita"</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa2.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 2 de 6</div><h3>Guia de renegociação</h3><p>O que pedir, o que comparar e o que nunca aceitar para baixar juros e parcelas.</p><ul><li>Roteiros prontos para falar com o banco</li><li>Seus direitos: rotativo e portabilidade</li><li>Quando quitar à vista compensa</li></ul></div></li><li class="tl-div"><span>+ 4 guias no plano Anual</span></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa3.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 3 de 6</div><h3>Controle de gastos em 21 dias</h3><p>Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real.</p><ul><li>Uma tarefa curta por dia</li><li>Enxergar, cortar e manter</li><li>Checklist diário no app</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa4.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 4 de 6</div><h3>Reserva de emergência do zero</h3><p>Quanto guardar, onde deixar o dinheiro e como juntar sem apertar o mês.</p><ul><li>Quanto guardar: de 3 a 6 meses</li><li>Onde deixar com resgate rápido</li><li>Como juntar sem apertar o mês</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa5.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 5 de 6</div><h3>Primeiros passos em renda extra</h3><p>Ideias reais por perfil para aumentar a renda começando com pouco.</p><ul><li>Ideias reais por perfil</li><li>Como começar com pouco</li><li>Quanto cobrar pelo seu trabalho</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa6.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 6 de 6</div><h3>Dividendos para iniciantes</h3><p>Como funciona a renda passiva, os riscos e por onde começar a estudar.</p><ul><li>O que é renda passiva</li><li>Riscos e diversificação</li><li>Por onde começar a estudar</li></ul></div></li></ol>
+    <div class="ebg"><article class="eb rv"><div class="eb-img"><img src="img/vol1.webp" alt="Capa do guia Plano de 6 meses para sair das dívidas" width="540" height="640" loading="lazy"></div>
+<div class="eb-b"><div class="eb-v">Guia 1 de 6 · <span class="se">Semestral e Anual</span></div><h3>Plano de 6 meses para sair das dívidas</h3><p class="eb-d">Um degrau por mês: parar de afundar, quitar o que custa mais caro e voltar a ter sobra.</p>
+<button class="eb-t" type="button" aria-expanded="false" aria-controls="eb1">Ver o que tem dentro<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+<div class="eb-x" id="eb1"><div><p>Um caminho mês a mês para quem está no vermelho. Cada mês tem uma meta só, um passo a passo curto, um exemplo com contas reais e um checklist para marcar no Quita.</p><ul><li><b>Mês 1 · Encare os números:</b> a lista completa e os juros reais de cada dívida</li><li><b>Mês 2 · Estanque:</b> pare de criar dívida nova e ache folga no mês</li><li><b>Mês 3 · Escolha a ordem:</b> qual dívida atacar primeiro</li><li><b>Mês 4 · Negocie:</b> seus direitos e como conduzir a conversa</li><li><b>Mês 5 · Acelere:</b> renda extra e parcelas adiantadas com desconto</li><li><b>Mês 6 · Blinde-se:</b> a reserva que impede a volta ao vermelho</li></ul></div></div></div></article><article class="eb rv"><div class="eb-img"><img src="img/vol2.webp" alt="Capa do guia Guia de renegociação" width="540" height="640" loading="lazy"></div>
+<div class="eb-b"><div class="eb-v">Guia 2 de 6 · <span class="se">Semestral e Anual</span></div><h3>Guia de renegociação</h3><p class="eb-d">O que pedir, o que comparar e o que nunca aceitar para baixar juros e parcelas.</p>
+<button class="eb-t" type="button" aria-expanded="false" aria-controls="eb2">Ver o que tem dentro<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+<div class="eb-x" id="eb2"><div><p>Antes de ligar para o banco, saiba exatamente o que pedir. O guia mostra como preparar a conversa, comparar propostas pelo custo total e usar os direitos que você já tem.</p><ul><li>Quanto você pode pagar por mês, antes de qualquer ligação</li><li>Roteiros prontos para cartão, cheque especial e empréstimo</li><li>Como comparar propostas pelo custo total, não pela parcela</li><li>Rotativo, portabilidade e pagamento antecipado: seus direitos</li><li>Quando quitar à vista com desconto vale a pena</li><li>O que nunca aceitar numa renegociação</li></ul></div></div></div></article><article class="eb rv"><div class="eb-img"><img src="img/vol3.webp" alt="Capa do guia Controle de gastos em 21 dias" width="540" height="640" loading="lazy"></div>
+<div class="eb-b"><div class="eb-v">Guia 3 de 6 · <span class="an">Incluído no plano Anual</span></div><h3>Controle de gastos em 21 dias</h3><p class="eb-d">Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real.</p>
+<button class="eb-t" type="button" aria-expanded="false" aria-controls="eb3">Ver o que tem dentro<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+<div class="eb-x" id="eb3"><div><p>Três semanas, uma tarefa de poucos minutos por dia. Na primeira você enxerga para onde vai o dinheiro, na segunda corta o que não faz falta e na terceira transforma isso em hábito.</p><ul><li><b>Semana 1 · Enxergar:</b> anotar tudo o que sai, sem julgar</li><li><b>Semana 2 · Cortar:</b> assinaturas, tarifas e compras por impulso</li><li><b>Semana 3 · Manter:</b> limite por categoria e revisão semanal</li><li>Checklist diário para acompanhar no Quita</li></ul></div></div></div></article><article class="eb rv"><div class="eb-img"><img src="img/vol4.webp" alt="Capa do guia Reserva de emergência do zero" width="540" height="640" loading="lazy"></div>
+<div class="eb-b"><div class="eb-v">Guia 4 de 6 · <span class="an">Incluído no plano Anual</span></div><h3>Reserva de emergência do zero</h3><p class="eb-d">Quanto guardar, onde deixar o dinheiro e como juntar sem apertar o mês.</p>
+<button class="eb-t" type="button" aria-expanded="false" aria-controls="eb4">Ver o que tem dentro<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+<div class="eb-x" id="eb4"><div><p>A reserva é o que paga o imprevisto sem empréstimo. O guia mostra quanto você precisa, onde deixar o dinheiro e como começar mesmo guardando pouco.</p><ul><li>Quanto guardar: de 3 a 6 meses do seu custo de vida</li><li>Os três degraus, começando por R$ 1.000</li><li>Onde deixar: seguro e com resgate no mesmo dia</li><li>Como juntar sem apertar o orçamento</li><li>Quando usar a reserva, e quando não usar</li></ul></div></div></div></article><article class="eb rv"><div class="eb-img"><img src="img/vol5.webp" alt="Capa do guia Primeiros passos em renda extra" width="540" height="640" loading="lazy"></div>
+<div class="eb-b"><div class="eb-v">Guia 5 de 6 · <span class="an">Incluído no plano Anual</span></div><h3>Primeiros passos em renda extra</h3><p class="eb-d">Ideias reais por perfil para aumentar a renda começando com pouco.</p>
+<button class="eb-t" type="button" aria-expanded="false" aria-controls="eb5">Ver o que tem dentro<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+<div class="eb-x" id="eb5"><div><p>Ideias para ganhar um dinheiro a mais, organizadas pelo que você já tem: uma habilidade, tempo livre ou coisas paradas em casa. Tudo começando com pouco ou nenhum investimento.</p><ul><li>Ideias por perfil, com investimento baixo ou zero</li><li>Como conseguir os primeiros clientes perto de você</li><li>Quanto cobrar pelo seu trabalho</li><li>Como mandar o dinheiro extra direto para as dívidas</li></ul></div></div></div></article><article class="eb rv"><div class="eb-img"><img src="img/vol6.webp" alt="Capa do guia Dividendos para iniciantes" width="540" height="640" loading="lazy"></div>
+<div class="eb-b"><div class="eb-v">Guia 6 de 6 · <span class="an">Incluído no plano Anual</span></div><h3>Dividendos para iniciantes</h3><p class="eb-d">Como funciona a renda passiva, os riscos e por onde começar a estudar.</p>
+<button class="eb-t" type="button" aria-expanded="false" aria-controls="eb6">Ver o que tem dentro<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+<div class="eb-x" id="eb6"><div><p>Um primeiro passo para entender renda passiva, sem promessa de dinheiro fácil. É para o momento em que as dívidas caras já acabaram e você quer fazer o dinheiro trabalhar.</p><ul><li>O que são dividendos e como eles são pagos</li><li>Os riscos, e por que diversificar</li><li>Os termos básicos, explicados sem complicação</li><li>Por onde começar a estudar com segurança</li></ul></div></div></div></article></div>
     <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Anual com os 6 guias<svg class="ic"><use href="#i-arrow"/></svg></a><p>Ou comece pelo Semestral (guias 1 e 2).</p></div>
     
   </div>
@@ -587,6 +650,7 @@ footer nav a:hover{color:var(--ink)}
 </footer>
 
 <div class="mbar" id="mbar"><a class="btn btn-pri" href="#comprar">Quero o Quita<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+<a class="wa" id="wa" href="https://wa.me/5582998108786?text=Ol%C3%A1!%20Vi%20a%20p%C3%A1gina%20do%20Quita%20e%20fiquei%20com%20uma%20d%C3%BAvida." target="_blank" rel="noopener" aria-label="Tirar dúvidas no WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4.6A11.4 11.4 0 0 0 6.2 21.8L4.6 27.4l5.8-1.5A11.4 11.4 0 1 0 16 4.6z" fill="none" stroke="#fff" stroke-width="2.3" stroke-linejoin="round"/><path fill="#fff" d="M12.4 10.4c-.3-.6-.6-.6-.9-.6h-.8c-.3 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.1s1.4 3.6 1.5 3.9c.2.2 2.6 4.2 6.5 5.7 3.2 1.3 3.9 1 4.6.9.7-.1 2.3-.9 2.6-1.8.3-.9.3-1.7.2-1.8-.1-.2-.3-.3-.7-.5l-2.4-1.2c-.3-.1-.6-.2-.8.2-.2.4-.9 1.2-1.1 1.4-.2.2-.4.3-.8.1-.4-.2-1.6-.6-3-1.9-1.1-1-1.9-2.2-2.1-2.6-.2-.4 0-.6.2-.8l.6-.7c.2-.2.3-.4.4-.7.1-.3 0-.5 0-.7z"/></svg></a>
 
 <script>
 (function(){
@@ -822,5 +886,5 @@ footer nav a:hover{color:var(--ink)}
 <script>(function(){var tl=document.getElementById('tl');if(!tl)return;var f=document.getElementById('tlFill'),it=[].slice.call(tl.querySelectorAll('.tl-i'));
 function u(){var r=tl.getBoundingClientRect(),vh=innerHeight,mark=vh*0.62;var p=Math.max(0,Math.min(1,(mark-r.top)/r.height));f.style.height=(p*100)+'%';
 it.forEach(function(e){var d=e.querySelector('.tl-dot').getBoundingClientRect();e.classList.toggle('on',d.top<mark)})}
-addEventListener('scroll',u,{passive:true});addEventListener('resize',u);u()})();</script></body>
+addEventListener('scroll',u,{passive:true});addEventListener('resize',u);u()})();</script><script>(function(){[].forEach.call(document.querySelectorAll('.eb-t'),function(b){b.addEventListener('click',function(){var c=b.closest('.eb'),on=!c.classList.contains('on');c.classList.toggle('on',on);b.setAttribute('aria-expanded',on);b.firstChild.nodeValue=on?'Fechar':'Ver o que tem dentro'})})})();</script><script>(function(){var w=document.getElementById('wa'),h=document.getElementById('inicio');if(!w)return;function u(){var lim=h?h.offsetHeight*0.6:500;w.classList.toggle('on',scrollY>lim)}addEventListener('scroll',u,{passive:true});u()})();</script></body>
 </html>
