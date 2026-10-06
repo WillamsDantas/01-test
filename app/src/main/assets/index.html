@@ -414,7 +414,7 @@ nav.bottom button span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .upd-news{list-style:none;margin:0 0 16px;padding:0}
 .upd-news li{display:flex;gap:10px;font-size:14px;line-height:1.4;padding:9px 0;border-top:1px solid var(--border)}
 .upd-news li:first-child{border-top:0}.upd-news li .ic{width:17px;height:17px;color:var(--pos);flex:none;margin-top:1px}
-.upd-prog{height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:8px 0 6px}.upd-prog span{display:block;height:100%;width:0;background:var(--pos);border-radius:99px;transition:width .3s}
+.upd-prog{height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:8px 0 6px}.upd-prog span{display:block;height:100%;width:0;background:var(--pos);border-radius:99px}
 .upd-pl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2)}
 /* ---------- aviso (pílula fosca) ---------- */
 .nt{--c:var(--pos);--s:var(--pos-soft);position:fixed;left:50%;top:50%;z-index:85;display:flex;align-items:center;gap:9px;width:max-content;max-width:calc(100% - 32px);padding:7px 14px 7px 7px;border-radius:var(--r);background:rgba(30,30,34,.90);-webkit-backdrop-filter:blur(24px) saturate(140%);backdrop-filter:blur(24px) saturate(140%);border:1px solid rgba(255,255,255,.10);box-shadow:0 10px 28px rgba(0,0,0,.35);color:var(--ink);overflow:hidden;opacity:0;transform:translate(-50%,calc(-50% + 12px)) scale(.97);pointer-events:none;transition:opacity .25s ease,transform .36s cubic-bezier(.2,.9,.3,1.12)}
@@ -2430,7 +2430,7 @@ function checkUpdate(manual){
 }
 function updBannerHTML(){
   if(!UPD||S.ajustes.updDispensada===UPD.versao)return '';
-  return '<div class="upd-ban"><span class="ab-ic">'+IC_AB.spark+'</span><span class="ab-tx"><b>Nova versão disponível</b><span>Quita '+esc(UPD.versao)+' · com novidades</span></span><button class="btn pri" data-upd="ver">Ver</button><button class="upd-x" data-upd="x" aria-label="Dispensar">'+ICON.x+'</button></div>';
+  return '<div class="upd-ban"><span class="ab-ic">'+IC_AB.spark+'</span><span class="ab-tx"><b>Nova versão</b><span>Quita '+esc(UPD.versao)+' disponível</span></span><button class="btn pri" data-upd="ver">Ver</button><button class="upd-x" data-upd="x" aria-label="Dispensar">'+ICON.x+'</button></div>';
 }
 document.addEventListener('click',function(e){
   var b=e.target&&e.target.closest?e.target.closest('[data-upd]'):null;if(!b)return;
@@ -2692,7 +2692,7 @@ function updSyncDot(state){
   var on=temPlanilha();
   i.className=!on?'':state==='run'?'pend':a.erro?'err':a.pendente?'pend':'ok';
   $('#btnSync').hidden=!on;
-  $('#topSub').textContent=!on?'Controle financeiro':googleOn()?(state==='run'?'Sincronizando…':a.erro?'Erro ao sincronizar':a.pendente?'Sincronização pendente':'Dados protegidos'):state==='run'?'Sincronizando…':a.erro?'Planilha: erro na sincronização':a.pendente?'Planilha: alterações pendentes':'Planilha sincronizada';
+  $('#topSub').textContent=!on?'Controle financeiro':googleOn()?(state==='run'?'Sincronizando…':a.erro?'Falha no envio':a.pendente?'Envio pendente':'Dados protegidos'):state==='run'?'Sincronizando…':a.erro?'Planilha: erro na sincronização':a.pendente?'Planilha: alterações pendentes':'Planilha sincronizada';
 }
 
 /* ---------------- tema ---------------- */
