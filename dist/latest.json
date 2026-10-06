@@ -1,0 +1,10 @@
+{
+ "versao": "2.0.3",
+ "codigo": 37,
+ "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.3.apk",
+ "novidades": [
+  "Tela \"Sobre e suporte\" com WhatsApp e e-mail direto",
+  "Aviso de nova versão com download dentro do app",
+  "Avisos no centro da tela"
+ ]
+}
