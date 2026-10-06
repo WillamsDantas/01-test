@@ -454,6 +454,19 @@ footer nav a:hover{color:var(--ink)}
 
 <script>
 (function(){
+  /* sempre começa no topo: os links internos rolam a página sem gravar #seção no endereço,
+     então o link copiado e compartilhado abre na página principal */
+  if('scrollRestoration' in history)history.scrollRestoration='manual';
+  if(location.hash){history.replaceState(null,'',location.pathname+location.search);window.scrollTo(0,0)}
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a)return;
+    var id=a.getAttribute('href').slice(1),alvo=id?document.getElementById(id):null;
+    e.preventDefault();
+    if(!alvo||id==='inicio'){window.scrollTo({top:0,behavior:'smooth'});return}
+    var y=alvo.getBoundingClientRect().top+window.scrollY-(id==='comprar'?72:64);
+    window.scrollTo({top:y,behavior:'smooth'});
+  });
+
   /* entrada do topo: palavras do título uma a uma, contador da sobra e barra */
   var reduz=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var h=document.getElementById('heroH'),k=0;
