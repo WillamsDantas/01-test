@@ -456,6 +456,21 @@ footer nav a:hover{color:var(--ink)}
  .gp h3{font-size:22px}.gp-d{font-size:15.5px}.gp-x p{font-size:14.5px}.gp-x li{font-size:14px}
  .gp-nav{justify-content:center}
 }
+
+/* ajuste mobile preço */
+.buy-head .nw{display:inline-block}
+.buy-head .lead b{color:var(--ink);font-weight:600}
+.buy-sub{margin:10px auto 0;max-width:440px;color:var(--ink-3);font-size:15px;line-height:1.6;text-wrap:balance}
+@media (max-width:560px){
+ .h2{line-height:1.16}
+ .buy-head .nw{white-space:nowrap}
+ .buy-head .h2{font-size:clamp(22px,6.7vw,29px);line-height:1.22}
+ .buy-head .lead{max-width:32ch;margin-top:16px;line-height:1.55}
+ .buy-sub{max-width:33ch;font-size:14.5px;margin-top:12px}
+ .seg-in{display:flex;width:100%;max-width:400px}
+ .seg button{flex:1 1 auto;justify-content:center;padding:0 8px;font-size:14px;gap:5px}
+ .seg button i{font-size:10.5px;padding:2px 5px}
+}
 </style>
 </head>
 <body>
@@ -632,8 +647,9 @@ footer nav a:hover{color:var(--ink)}
 <section class="band alt" id="planos" style="overflow:hidden">
   <div class="wrap" id="comprar" style="padding-top:var(--sec);padding-bottom:var(--sec);scroll-margin-top:80px">
     <div class="buy-head rv">
-      <h2 class="h2">Menos de R$ 0,41 por dia para ter o controle de volta.</h2>
-      <p class="lead">É o que custa o plano Anual: R$ 147 por ano. Escolha o plano, baixe o app e entre com o mesmo <span style="white-space:nowrap">e-mail</span> Google usado no pagamento.</p>
+      <h2 class="h2"><span class="nw">Menos de R$&nbsp;0,41 por&nbsp;dia</span> <span class="nw">para ter o controle de volta.</span></h2>
+      <p class="lead">É o que custa o plano Anual: <b style="white-space:nowrap">R$ 147 por ano.</b></p>
+      <p class="buy-sub">Escolha o plano, baixe o app e entre com o mesmo <span style="white-space:nowrap">e-mail</span> Google usado no pagamento.</p>
     </div>
     <div class="seg rv"><div class="seg-in" role="tablist" aria-label="Escolha o plano" id="pSeg">
       <button type="button" role="tab">Mensal</button><button type="button" role="tab">Anual<i>-59%</i></button><button type="button" role="tab">Semestral<i>-46%</i></button>
