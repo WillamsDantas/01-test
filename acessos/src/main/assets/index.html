@@ -35,9 +35,16 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;str
 .srch input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:14.5px;color:var(--ink)}
 .srch input::placeholder{color:var(--ink3)}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
-.who{display:flex;align-items:center;gap:12px}
-.av{width:40px;height:40px;border-radius:var(--r-sm);background:var(--s3);display:grid;place-items:center;font:600 16px InterD;flex:none;text-transform:uppercase}
-.tx{flex:1;min-width:0}.tx b{display:block;font-size:14.5px;font-weight:600;overflow-wrap:break-word}.tx span{display:block;font-size:12.5px;color:var(--ink2);margin-top:1px}
+.who{display:flex;align-items:center;gap:10px}
+.av{width:36px;height:36px;border-radius:var(--r-sm);background:var(--s3);display:grid;place-items:center;font:600 16px InterD;flex:none;text-transform:uppercase}
+.tx{flex:1;min-width:0}.tx b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1.3}
+.tx b.wrap{white-space:normal;overflow-wrap:break-word}
+.st{display:block;font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.4}
+.st i{font-style:normal;font-weight:600;display:inline-flex;align-items:center;gap:5px;margin-right:4px}
+.st i:before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}
+.tx .st span{display:inline;margin:0;font-size:12.5px}
+.nm{font-size:13px;color:var(--ink2);margin-top:1px;overflow-wrap:break-word}
+.st i.pendente{color:var(--warn)}.st i.ativo{color:var(--pos)}.st i.inativo{color:var(--neg)}.tx span{display:block;font-size:12.5px;color:var(--ink2);margin-top:1px}
 .pill{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:99px;white-space:nowrap;flex:none}
 .pill.pendente{background:var(--warn-soft);color:var(--warn)}.pill.ativo{background:var(--pos-soft);color:var(--pos)}.pill.inativo{background:var(--neg-soft);color:var(--neg)}
 .meta{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--ink3);margin-top:10px}
@@ -184,25 +191,30 @@ function desenhar(){
   el.querySelectorAll('.seg button').forEach(function(t){t.onclick=function(){ABA=t.dataset.a;desenhar()}});
   var bi=$('#busca');bi.oninput=function(){BUSCA=bi.value;desenhar()};
   if(foco){bi.focus();try{bi.setSelectionRange(pos,pos)}catch(e){}}
+  ajustarEmails(el);
   el.querySelectorAll('[data-act]').forEach(function(bt){bt.onclick=function(){acao(bt.dataset.act,bt.dataset.em)}});
 }
+/* e-mail numa linha só: diminui a letra até caber (mínimo 12px); se ainda não couber, quebra no @ */
+function ajustarEmails(el){el.querySelectorAll('b.fit').forEach(function(b){var s=14.5;b.style.fontSize=s+'px';while(b.scrollWidth>b.clientWidth+1&&s>11.5){s-=.5;b.style.fontSize=s+'px'}if(b.scrollWidth>b.clientWidth+1){b.classList.add('wrap');b.innerHTML=b.innerHTML.replace('@','<wbr>@')}})}
 function tab(a,t,c,w){return '<button data-a="'+a+'" class="'+(ABA===a?'on':'')+'">'+t+' <span class="cnt'+(w&&c?' w':'')+'">'+c+'</span></button>'}
 function cartao(x){
   var nome=x.nome?esc(x.nome):'',sub,meta='',acts;
   if(x.status==='pendente'){
-    sub=nome||'Sem nome';
+    sub='';
     meta='<div class="meta"><span>Pediu '+(ha(x.pedido)||'—')+'</span><span>'+quando(x.pedido)+'</span></div>';
     acts='<div class="acts"><button class="btn" data-act="recusar" data-em="'+esc(x.email)+'">Recusar</button><button class="btn ok" data-act="liberar" data-em="'+esc(x.email)+'">'+IC.check+'Liberar</button></div>';
   } else if(x.status==='ativo'){
-    sub=(nome?nome+' · ':'')+(x.ultimo?'Último acesso: '+quando(x.ultimo):'Ainda não entrou');
+    sub=x.ultimo?'acessou '+quando(x.ultimo):'ainda não entrou';
     acts='<div class="acts one"><button class="btn" data-act="bloquear" data-em="'+esc(x.email)+'">Bloquear</button></div>';
   } else {
-    sub=(nome?nome+' · ':'')+(x.ultimo?'Último acesso: '+quando(x.ultimo):'Bloqueado');
+    sub=x.ultimo?'acessou '+quando(x.ultimo):'';
     acts='<div class="acts one"><button class="btn" data-act="reativar" data-em="'+esc(x.email)+'">Reativar</button></div>';
   }
   var adm=x.email==='willamsdanttas@gmail.com';
-  if(adm){acts='';sub=nome||'Administrador'}
-  return '<div class="card"><div class="who"><span class="av">'+esc(x.email.charAt(0))+'</span><span class="tx"><b>'+esc(x.email).replace('@','<wbr>@')+'</b><span>'+sub+'</span></span><span class="pill '+x.status+'">'+(adm?'Admin':x.status==='ativo'?'Ativo':x.status==='inativo'?'Inativo':'Pendente')+'</span></div>'+meta+(x.obs?'<div class="obs">'+esc(x.obs)+'</div>':'')+acts+'</div>';
+  if(adm){acts='';sub=''}
+  var nm=nome&&!adm?'<div class="nm">'+nome+'</div>':'';
+  var rot=adm?'Admin':x.status==='ativo'?'Ativo':x.status==='inativo'?'Inativo':'Pendente';
+  return '<div class="card"><div class="who"><span class="av">'+esc(x.email.charAt(0))+'</span><span class="tx"><b class="fit">'+esc(x.email)+'</b>'+nm+'<span class="st"><i class="'+x.status+'">'+rot+'</i>'+(sub?'<span>· '+sub+'</span>':'')+'</span></span></div>'+meta+(x.obs&&!adm?'<div class="obs">'+esc(x.obs)+'</div>':'')+acts+'</div>';
 }
 function acao(a,em){
   if(a==='liberar')mudar(em,'ativo',null,em+' liberado');
