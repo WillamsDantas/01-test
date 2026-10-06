@@ -964,7 +964,7 @@ function pctTxt(p){return isFinite(p)?Math.round(p*100)+'%':'—'}
 
 /* ---------------- UI base ---------------- */
 var curTab='painel', curMonth=curYM(), debtFilter='abertas';
-var QMARK='<svg class="qmark" viewBox="1 1 106 106"><path d="M57.38 80.25 L41.50 80.25 A19.25 19.25 0 0 1 22.25 61.00 L22.25 47.00 A19.25 19.25 0 0 1 41.50 27.75 L55.50 27.75 A19.25 19.25 0 0 1 74.59 44.54 L66.25 52.88 L66.25 47.00 A10.75 10.75 0 0 0 55.50 36.25 L41.50 36.25 A10.75 10.75 0 0 0 30.75 47.00 L30.75 61.00 A10.75 10.75 0 0 0 41.50 71.75 L48.88 71.75 Z" fill="#F4F4F5"/><path d="M52.50 63.00 L60.50 71.00 L81.50 50.00" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var QMARK='<svg class="qmark" viewBox="1 1 106 106"><path d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z" fill="#F4F4F5"/><path d="M56.87 63.00 L64.87 71.00 L78.37 57.50" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var ICON={
   shieldOk:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></svg>',
   cloud:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></svg>',
@@ -1666,7 +1666,7 @@ window.quitaGoogle=function(r){
     if(valida&&(appVazio()||String(o.atualizadoEm||'')>String(S.atualizadoEm||''))){
       o.ajustes=o.ajustes||{};o.ajustes.google=g;o.ajustes.googlePulou=true;o.ajustes.auto=true;o.ajustes.onboard=true;o.ajustes.copiaEm=r.backupEm||'';
       restaurar(o,true);restaurou=true;
-      aviso='Seus dados foram restaurados'+(r.backupEm?' (cópia de '+quando(r.backupEm)+')':'');
+      aviso='Dados carregados ✓';
     }
   }
   if(!restaurou){
