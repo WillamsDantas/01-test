@@ -748,7 +748,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '1.9.5';
+var VERSION = '1.9.6';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -782,6 +782,12 @@ function parseMoney(s){
 }
 var NUM2=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 function moneyInput(v){return v?NUM2.format(r2(v)):''}
+/* datas e horários: um toque sempre abre o calendário (no tablet/DeX o campo virava edição por partes) */
+document.addEventListener('click',function(e){
+  var el=e.target&&e.target.closest?e.target.closest('input[type=date],input[type=time],input[type=month]'):null;
+  if(!el||el.disabled||el.readOnly||typeof el.showPicker!=='function')return;
+  try{el.showPicker();e.preventDefault()}catch(x){}
+},true);
 /* máscara de real: digita só números e o valor se formata (centavos à direita) */
 document.addEventListener('input',function(e){
   var el=e.target;if(!el.matches||!el.matches('.prefix input'))return;
