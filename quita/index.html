@@ -187,6 +187,30 @@ footer nav a:hover{color:var(--ink)}
 
 .mbar{display:none}
 
+/* entrada do topo */
+.top{animation:topIn .7s cubic-bezier(.2,.7,.2,1) both}
+@keyframes topIn{from{opacity:0;transform:translateY(-100%)}}
+.ha{animation:hIn .9s cubic-bezier(.2,.7,.2,1) var(--d,0s) both}
+@keyframes hIn{from{opacity:0;transform:translateY(18px);filter:blur(8px)}}
+#heroH .w{display:inline-block;animation:wIn .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes wIn{from{opacity:0;transform:translateY(.45em) rotate(2deg);filter:blur(10px)}}
+.gIn{animation:gIn 1.6s ease .1s both}
+@keyframes gIn{from{opacity:0;transform:scale(1.06)}}
+.hero>.glow{animation:glowIn 2s ease .3s both}
+@keyframes glowIn{from{opacity:0;transform:scale(.7)}}
+.stage{perspective:1200px}
+.stage>.phone{transform-origin:50% 100%;animation:phIn 1.3s cubic-bezier(.16,.8,.2,1) .45s both}
+@keyframes phIn{from{opacity:0;transform:translateY(90px) rotateX(24deg) scale(.92)}60%{opacity:1}}
+.stage>.phone::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%) no-repeat;background-size:250% 100%;background-position:150% 0;animation:shine 1.6s ease 1.5s both}
+@keyframes shine{to{background-position:-60% 0}}
+.stage>.glow{animation:glowIn 1.8s ease .7s both}
+.f1{animation:fIn .8s cubic-bezier(.2,.9,.3,1.2) 1.35s both,float 6s ease-in-out 2.15s infinite}
+.f2{animation:fIn .8s cubic-bezier(.2,.9,.3,1.2) 1.6s both,float 7s ease-in-out 2.4s infinite}
+@keyframes fIn{from{opacity:0;transform:translateY(24px) scale(.88)}}
+.f-bar i{width:0;transition:width 1.4s cubic-bezier(.2,.7,.2,1) 1.6s}
+.f-bar.go i{width:56%}
+.stage.wait>.phone,.stage.wait>.glow,.stage.wait>.float,.stage.wait>.phone::after{animation-play-state:paused}
+
 .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
 .card.rv.in:hover{transform:translateY(-3px)}
@@ -213,7 +237,7 @@ footer nav a:hover{color:var(--ink)}
   .mbar .btn{flex:1;box-shadow:0 14px 40px rgba(0,0,0,.6)}
   footer .wrap{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 }
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}.f-bar i{width:56%}}
 </style>
 </head>
 <body>
@@ -252,18 +276,18 @@ footer nav a:hover{color:var(--ink)}
 
 <main>
 <section class="hero" id="inicio">
-  <div class="hero-grid"></div>
+  <div class="hero-grid gIn"></div>
   <div class="glow" style="width:620px;height:620px;right:-140px;top:40px"></div>
   <div class="wrap">
     <div class="hero-tx">
-      <span class="pill"><span class="dot"></span><b>App para Android · finanças e dívidas</b></span>
-      <h1>Saiba quanto sobra no mês. E <em>quando você fica livre</em> das dívidas.</h1>
-      <p class="lead">O Quita junta sua renda, suas contas fixas e suas parcelas num lugar só. Você vê, mês a mês, o que entra, o que sai, o que sobra e a data em que a última parcela acaba.</p>
-      <div class="ctas">
+      <span class="pill ha" style="--d:.15s"><span class="dot"></span><b>App para Android · finanças e dívidas</b></span>
+      <h1 id="heroH">Saiba quanto sobra no mês. E <em>quando você fica livre</em> das dívidas.</h1>
+      <p class="lead ha" style="--d:.95s">O Quita junta sua renda, suas contas fixas e suas parcelas num lugar só. Você vê, mês a mês, o que entra, o que sai, o que sobra e a data em que a última parcela acaba.</p>
+      <div class="ctas ha" style="--d:1.1s">
         <a class="btn btn-pri" href="#comprar">Quero organizar meu mês<svg class="ic"><use href="#i-arrow"/></svg></a>
         <a class="btn btn-sec" href="#telas">Ver as telas</a>
       </div>
-      <div class="trust">
+      <div class="trust ha" style="--d:1.25s">
         <span><svg class="ic"><use href="#i-cloud"/></svg>Backup automático no Google</span>
         <span><svg class="ic"><use href="#i-lock"/></svg>Só você vê seus dados</span>
         <span><svg class="ic"><use href="#i-check"/></svg>Sem planilha para montar</span>
@@ -410,6 +434,46 @@ footer nav a:hover{color:var(--ink)}
 
 <script>
 (function(){
+  /* entrada do topo: palavras do título uma a uma, contador da sobra e barra */
+  var reduz=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var h=document.getElementById('heroH'),k=0;
+  if(h&&!reduz){
+    (function split(node){
+      [].slice.call(node.childNodes).forEach(function(c){
+        if(c.nodeType===3){
+          var f=document.createDocumentFragment();
+          c.textContent.split(/(\s+)/).forEach(function(t){
+            if(!t)return;
+            if(/^\s+$/.test(t)){f.appendChild(document.createTextNode(t));return}
+            var w=document.createElement('span');w.className='w';w.textContent=t;w.style.animationDelay=(.3+k*.07).toFixed(2)+'s';k++;f.appendChild(w);
+          });
+          node.replaceChild(f,c);
+        } else if(c.nodeType===1)split(c);
+      });
+    })(h);
+  }
+  var bar=document.querySelector('.f-bar'),val=document.querySelector('.f1 .f-v'),stage=document.querySelector('.stage');
+  function contar(atraso){
+    if(bar)bar.classList.add('go');
+    if(!val||reduz)return;
+    var alvo=1600,t0=null,dur=1300;
+    setTimeout(function(){requestAnimationFrame(function step(ts){
+      if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur),e=1-Math.pow(1-p,3);
+      val.textContent=fmt(Math.round(alvo*e));if(p<1)requestAnimationFrame(step);
+    })},atraso);
+  }
+  var fmt=function(v){return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})};
+  if(val&&!reduz)val.textContent=fmt(0);
+  /* no celular o aparelho fica abaixo da dobra: a entrada dele começa quando aparece na tela */
+  var r0=stage&&stage.getBoundingClientRect();
+  if(stage&&!reduz&&'IntersectionObserver' in window&&r0.top>window.innerHeight*.75){
+    stage.classList.add('wait');
+    var so=new IntersectionObserver(function(es){if(es[0].isIntersecting){so.disconnect();
+      [].forEach.call(stage.querySelectorAll('.phone,.glow,.float'),function(el){el.style.animationDelay=el.classList.contains('f2')?'.85s, 1.65s':el.classList.contains('f1')?'.6s, 1.4s':'0s'});
+      stage.classList.remove('wait');contar(800)}},{threshold:.25});
+    so.observe(stage);
+  } else requestAnimationFrame(function(){contar(1500)});
+
   var top=document.getElementById('top'),mbar=document.getElementById('mbar'),buy=document.getElementById('comprar');
   function onScroll(){
     var y=window.scrollY;top.classList.toggle('sc',y>8);
