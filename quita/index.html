@@ -200,6 +200,34 @@ footer nav a:hover{color:var(--ink)}
 
 .mbar{display:none}
 
+/* bônus */
+.hl{font-style:normal;color:var(--pos)}
+.bset{margin:34px auto 0;max-width:1100px}
+.bset img{width:100%;height:auto;display:block}
+.bsum{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:8px}
+.bsum span{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;border:1px solid var(--border);background:var(--surface);font-size:14px;color:var(--ink-2)}
+.bsum b{color:var(--ink);font-weight:600}.bsum i{width:8px;height:8px;border-radius:50%;background:var(--pos)}
+.bcar{display:flex;gap:16px;margin-top:40px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px;outline:none}
+.bcar::-webkit-scrollbar{display:none}
+.bc{flex:0 0 calc((100% - 32px)/3);scroll-snap-align:start;border-radius:22px;border:1px solid var(--border);background:linear-gradient(180deg,#151518,#111113);overflow:hidden;transition:border-color .25s}
+.bc:hover{border-color:var(--border-2)}
+.bc-img{position:relative;height:250px;background:radial-gradient(70% 70% at 50% 62%,rgba(143,217,174,.10),transparent);display:grid;place-items:center;border-bottom:1px solid var(--line)}
+.bc-img img{height:222px;width:auto;display:block}
+.bc-soon{position:absolute;top:14px;right:14px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:99px;background:rgba(232,201,138,.12);color:#E8C98A;border:1px solid rgba(232,201,138,.25)}
+.bc-b{padding:20px 22px 22px}
+.bc-v{font-family:"Geist Mono",monospace;font-size:11.5px;letter-spacing:1.4px;color:var(--ink-3);text-transform:uppercase}
+.bc h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:6px 0 0;text-wrap:balance}
+.bc ul{list-style:none;padding:0;margin:14px 0 0;display:flex;flex-direction:column;gap:8px;font-size:14.5px;color:var(--ink-2)}
+.bc li{display:flex;gap:9px}.bc li:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--pos);margin-top:8px;flex:none}
+.bc-tag{display:inline-block;margin-top:16px;padding:5px 11px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--pos-soft);color:var(--pos)}
+.bc-tag.an{background:var(--ink);color:#0B0B0C}
+#bonus .p-nav{margin-top:24px}
+.plan li.gift{color:var(--ink)}
+.plan li.gift .ic{color:var(--pos)}
+.plan li.gift b{font-weight:600}
+@media (max-width:980px){.bc{flex-basis:calc((100% - 16px)/2)}}
+@media (max-width:600px){.bset{margin-left:-28%;margin-right:-28%;max-width:none}.bcar{margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1);padding-left:var(--gut);scroll-padding-left:var(--gut)}.bc{flex-basis:82%}.bsum span{font-size:13px}}
+
 /* entrada do topo */
 .top{animation:topIn .7s cubic-bezier(.2,.7,.2,1) both}
 @keyframes topIn{from{opacity:0;transform:translateY(-100%)}}
@@ -270,6 +298,7 @@ footer nav a:hover{color:var(--ink)}
   <symbol id="i-cloudok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="m9 14 2 2 4-4"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-sync" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="i-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
@@ -390,7 +419,54 @@ footer nav a:hover{color:var(--ink)}
     </div>
     <div class="faq" id="faq"></div>
   </div>
-  <div class="wrap" id="comprar" style="padding-bottom:var(--sec);scroll-margin-top:80px">
+</section>
+
+<section class="band" id="bonus" style="overflow:hidden">
+  <div class="glow" style="left:50%;top:160px;width:1000px;height:700px;margin-left:-500px;opacity:.7"></div>
+  <div class="wrap pad" style="position:relative">
+    <div class="head c rv">
+      <div class="eyebrow">Bônus inclusos</div>
+      <h2 class="h2">Seis guias para você sair do vermelho <em class="hl">mais rápido.</em></h2>
+      <p class="lead">Além do app, você recebe a Coleção Quita: guias práticos, no mesmo visual do app, para ler no celular e aplicar no mesmo dia.</p>
+    </div>
+    <div class="bset rv"><img src="img/colecao.webp" alt="Os seis guias bônus da Coleção Quita" width="1600" height="517" loading="lazy"></div>
+    <div class="bsum rv"><span><i></i><b>Anual:</b> os 6 guias</span><span><i></i><b>Semestral:</b> Vol. 01 e 02</span></div>
+    <div class="bcar" id="bcar" tabindex="0" aria-roledescription="carrossel" aria-label="Guias bônus">
+      <article class="bc" role="group" aria-label="Volume 01: Plano de 6 meses para sair das dívidas">
+        <div class="bc-img"><span class="bc-soon">Em breve</span><img src="img/vol1.webp" alt="Capa do guia Plano de 6 meses para sair das dívidas" width="394" height="520" loading="lazy"></div>
+        <div class="bc-b"><div class="bc-v">Vol. 01</div><h3>Plano de 6 meses para sair das dívidas</h3><ul><li>Os 6 passos, um por mês</li><li>A história da Ana, com contas reais</li><li>Checklists e "Faça no Quita"</li></ul><span class="bc-tag">Semestral e Anual</span></div>
+      </article>
+      <article class="bc" role="group" aria-label="Volume 02: Guia de renegociação">
+        <div class="bc-img"><span class="bc-soon">Em breve</span><img src="img/vol2.webp" alt="Capa do guia Guia de renegociação" width="394" height="520" loading="lazy"></div>
+        <div class="bc-b"><div class="bc-v">Vol. 02</div><h3>Guia de renegociação</h3><ul><li>Roteiros prontos para falar com o banco</li><li>Seus direitos: rotativo e portabilidade</li><li>Quando quitar à vista compensa</li></ul><span class="bc-tag">Semestral e Anual</span></div>
+      </article>
+      <article class="bc" role="group" aria-label="Volume 03: Controle de gastos em 21 dias">
+        <div class="bc-img"><span class="bc-soon">Em breve</span><img src="img/vol3.webp" alt="Capa do guia Controle de gastos em 21 dias" width="394" height="520" loading="lazy"></div>
+        <div class="bc-b"><div class="bc-v">Vol. 03</div><h3>Controle de gastos em 21 dias</h3><ul><li>Uma tarefa curta por dia</li><li>Enxergar, cortar e manter</li><li>Checklist diário no app</li></ul><span class="bc-tag an">Plano Anual</span></div>
+      </article>
+      <article class="bc" role="group" aria-label="Volume 04: Reserva de emergência do zero">
+        <div class="bc-img"><span class="bc-soon">Em breve</span><img src="img/vol4.webp" alt="Capa do guia Reserva de emergência do zero" width="394" height="520" loading="lazy"></div>
+        <div class="bc-b"><div class="bc-v">Vol. 04</div><h3>Reserva de emergência do zero</h3><ul><li>Quanto guardar: de 3 a 6 meses</li><li>Onde deixar com resgate rápido</li><li>Como juntar sem apertar o mês</li></ul><span class="bc-tag an">Plano Anual</span></div>
+      </article>
+      <article class="bc" role="group" aria-label="Volume 05: Primeiros passos em renda extra">
+        <div class="bc-img"><span class="bc-soon">Em breve</span><img src="img/vol5.webp" alt="Capa do guia Primeiros passos em renda extra" width="394" height="520" loading="lazy"></div>
+        <div class="bc-b"><div class="bc-v">Vol. 05</div><h3>Primeiros passos em renda extra</h3><ul><li>Ideias reais por perfil</li><li>Como começar com pouco</li><li>Quanto cobrar pelo seu trabalho</li></ul><span class="bc-tag an">Plano Anual</span></div>
+      </article>
+      <article class="bc" role="group" aria-label="Volume 06: Dividendos para iniciantes">
+        <div class="bc-img"><span class="bc-soon">Em breve</span><img src="img/vol6.webp" alt="Capa do guia Dividendos para iniciantes" width="394" height="520" loading="lazy"></div>
+        <div class="bc-b"><div class="bc-v">Vol. 06</div><h3>Dividendos para iniciantes</h3><ul><li>O que é renda passiva</li><li>Riscos e diversificação</li><li>Por onde começar a estudar</li></ul><span class="bc-tag an">Plano Anual</span></div>
+      </article>
+    </div>
+    <div class="p-nav">
+      <button class="arw" id="bPrev" type="button" aria-label="Guia anterior"><svg class="ic"><use href="#i-l"/></svg></button>
+      <div class="p-dots" id="bDots"></div>
+      <button class="arw" id="bNext" type="button" aria-label="Próximo guia"><svg class="ic"><use href="#i-r"/></svg></button>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="planos" style="overflow:hidden">
+  <div class="wrap" id="comprar" style="padding-top:var(--sec);padding-bottom:var(--sec);scroll-margin-top:80px">
     <div class="buy-head rv">
       <div class="eyebrow">Planos</div>
       <h2 class="h2">Comece hoje a ver o seu mês por inteiro.</h2>
@@ -416,7 +492,7 @@ footer nav a:hover{color:var(--ink)}
         <div class="pl-eq">Equivale a <b>R$ 12,25</b> por mês</div>
         <div class="pl-an"><s>R$ 359,88</s> no mensal · <b>economize 59%</b></div>
         <a class="btn btn-pri" href="#comprar">Assinar anual<svg class="ic"><use href="#i-arrow"/></svg></a>
-        <ul><li><svg class="ic"><use href="#i-check"/></svg>Todos os recursos do app</li><li><svg class="ic"><use href="#i-check"/></svg>Backup automático no Google</li><li><svg class="ic"><use href="#i-check"/></svg>Atualizações incluídas</li><li><svg class="ic"><use href="#i-check"/></svg>Suporte pelo WhatsApp</li></ul>
+        <ul><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>+ 6 e-books bônus</b> (Coleção Quita)</span></li><li><svg class="ic"><use href="#i-check"/></svg>Todos os recursos do app</li><li><svg class="ic"><use href="#i-check"/></svg>Backup automático no Google</li><li><svg class="ic"><use href="#i-check"/></svg>Atualizações incluídas</li><li><svg class="ic"><use href="#i-check"/></svg>Suporte pelo WhatsApp</li></ul>
       </article>
       <article class="plan">
         <div class="pl-n">Semestral</div>
@@ -425,7 +501,7 @@ footer nav a:hover{color:var(--ink)}
         <div class="pl-eq">Equivale a <b>R$ 16,17</b> por mês</div>
         <div class="pl-an"><s>R$ 179,94</s> no mensal · <b>economize 46%</b></div>
         <a class="btn btn-sec" href="#comprar">Assinar semestral<svg class="ic"><use href="#i-arrow"/></svg></a>
-        <ul><li><svg class="ic"><use href="#i-check"/></svg>Todos os recursos do app</li><li><svg class="ic"><use href="#i-check"/></svg>Backup automático no Google</li><li><svg class="ic"><use href="#i-check"/></svg>Atualizações incluídas</li><li><svg class="ic"><use href="#i-check"/></svg>Suporte pelo WhatsApp</li></ul>
+        <ul><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>+ 2 e-books bônus</b> (Vol. 01 e 02)</span></li><li><svg class="ic"><use href="#i-check"/></svg>Todos os recursos do app</li><li><svg class="ic"><use href="#i-check"/></svg>Backup automático no Google</li><li><svg class="ic"><use href="#i-check"/></svg>Atualizações incluídas</li><li><svg class="ic"><use href="#i-check"/></svg>Suporte pelo WhatsApp</li></ul>
       </article>
     </div>
     <div class="p-nav">
@@ -639,6 +715,22 @@ footer nav a:hover{color:var(--ink)}
     window.addEventListener('resize',function(){alto();draw()});
     if(document.fonts&&document.fonts.ready)document.fonts.ready.then(alto);
     alto();draw();
+  })();
+
+  /* carrossel dos bônus (arrastar nativo + setas + bolinhas) */
+  (function(){
+    var c=document.getElementById('bcar');if(!c)return;
+    var cards=[].slice.call(c.querySelectorAll('.bc')),dots=document.getElementById('bDots');
+    cards.forEach(function(_,i){var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Volume '+(i+1));b.addEventListener('click',function(){ir(i)});dots.appendChild(b)});
+    function passo(){return cards[0].getBoundingClientRect().width+16}
+    function atual(){return Math.round(c.scrollLeft/passo())}
+    function ir(i){i=Math.max(0,Math.min(cards.length-1,i));c.scrollTo({left:i*passo(),behavior:'smooth'})}
+    function marca(){var a=atual(),max=Math.round((c.scrollWidth-c.clientWidth)/passo());[].forEach.call(dots.children,function(b,i){b.setAttribute('aria-current',i===a||(a>=max&&i>=max&&i===cards.length-1&&a===max)?'true':'false')})}
+    document.getElementById('bPrev').addEventListener('click',function(){ir(atual()-1)});
+    document.getElementById('bNext').addEventListener('click',function(){var a=atual(),max=Math.round((c.scrollWidth-c.clientWidth)/passo());ir(a>=max?0:a+1)});
+    c.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')ir(atual()-1);else if(e.key==='ArrowRight')ir(atual()+1)});
+    var t;c.addEventListener('scroll',function(){clearTimeout(t);t=setTimeout(marca,60)},{passive:true});
+    window.addEventListener('resize',marca);marca();
   })();
 
   /* perguntas frequentes */
