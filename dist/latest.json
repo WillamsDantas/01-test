@@ -1,9 +1,9 @@
 {
- "versao": "2.0.7",
- "codigo": 41,
- "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.7.apk",
+ "versao": "2.0.8",
+ "codigo": 42,
+ "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.8.apk",
  "novidades": [
-  "Área do administrador para liberar e bloquear acessos",
-  "Ajustes mostram quantos pedidos estão esperando"
+  "Verificação de acesso logo após entrar, sem mostrar a tela principal antes",
+  "Área do administrador para liberar e bloquear acessos"
  ]
 }
