@@ -9,8 +9,8 @@ PLAT="$SDK/platforms/android-34"
 JAR="$PLAT/android.jar"
 echo "build-tools: $BT"; echo "platform: $PLAT"
 APP=app/src/main
-VERSION=2.0.4
-CODE=38
+VERSION=2.0.5
+CODE=39
 OUT=build
 rm -rf "$OUT"; mkdir -p "$OUT/gen" "$OUT/classes" "$OUT/dex" dist
 

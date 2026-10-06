@@ -2431,7 +2431,7 @@ function openSobre(){
 
 
 /* ---------------- Controle de acesso (lista de e-mails liberados) ---------------- */
-var ACESSO_URL='';            /* link do Apps Script da planilha "Acessos" — vazio = todos entram */
+var ACESSO_URL='https://script.google.com/macros/s/AKfycbyZpqYeU3CDX56ClrrLq0XK5SmgkCHdwr36YIkJEFXoZIx0F11gFa6l8R6MjpiFgxhlPQ/exec';            /* link do Apps Script da planilha "Acessos" — vazio = todos entram */
 var ACESSO_DIAS=7, acessoAberto=false;
 function emailConta(){var g=S.ajustes.google;return ((g&&g.email)||'').toLowerCase()}
 function ehAdmin(){return emailConta()===ADMIN_EMAIL}

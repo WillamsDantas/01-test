@@ -1,4 +1,4 @@
 # Novidades da versão (uma por linha). Aparecem no aviso de nova versão do app.
-Entrada com a conta Google em todos os aparelhos
-Botão "Precisa de ajuda?" direto no WhatsApp
-Sair da conta volta para a tela de entrada
+Acesso liberado por e-mail (controle de assinantes)
+Textos do topo sem cortes
+Avisos e download de atualização mais caprichados
