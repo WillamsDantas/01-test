@@ -164,7 +164,7 @@ public class MainActivity extends Activity {
         if (requestCode == REQ_ACCOUNT) {
             if (resultCode == RESULT_OK && data != null) {
                 String name = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                if (name != null) { gAuthorize(new Account(name, "com.google")); return; }
+                if (name != null) { gEtapa("conta"); gAuthorize(new Account(name, "com.google")); return; }
             }
             gResult(false, "Login cancelado", null, null);
             return;
@@ -311,6 +311,11 @@ public class MainActivity extends Activity {
         runOnUiThread(new Runnable() { @Override public void run() { web.evaluateJavascript(js, null); } });
     }
 
+    /** avisa a tela de carregamento em que etapa o login está */
+    private void gEtapa(String etapa) {
+        try { gEmit("quitaGEtapa", new JSONObject().put("etapa", etapa)); } catch (Exception ignored) { }
+    }
+
     private void gResult(boolean ok, String msg, String email, JSONObject sheet) {
         try {
             JSONObject o = new JSONObject().put("ok", ok).put("msg", msg == null ? "" : msg);
@@ -339,6 +344,7 @@ public class MainActivity extends Activity {
                         String token = b.getString(AccountManager.KEY_AUTHTOKEN);
                         if (token == null) { gResult(false, "O Google não liberou o acesso", null, null); return; }
                         gPrefs().edit().putString("g_account", acc.name).apply();
+                        gEtapa("dados");
                         // 1) já existe planilha do Quita nesse Google? traz a cópia para o app decidir
                         try {
                             String sid = gPrefs().getString("g_sheet", "");
