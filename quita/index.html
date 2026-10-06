@@ -200,6 +200,23 @@ footer nav a:hover{color:var(--ink)}
 
 .mbar{display:none}
 
+/* v5: carrossel dos guias com o visual novo */
+.bcar{margin-top:36px;gap:18px}
+.bcar .bc{position:relative;overflow:hidden;background:linear-gradient(180deg,#141417,#101012);border-color:#232328;border-radius:24px}
+.bcar .bc:before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(143,217,174,.55),transparent);z-index:1}
+.bcar .bc-img{height:310px;background:radial-gradient(60% 60% at 50% 60%,rgba(143,217,174,.16),transparent 70%)}
+.bcar .bc-img img{height:270px;margin-top:22px}
+.bcar .bc-b{position:relative;padding:22px 24px 24px}
+.bcar .bc-n{font-size:86px;right:18px;bottom:4px}
+.bcar .bc h3{font-size:20px}
+.bcar .bc-d{font-size:14.5px}
+.bcar .bc ul{margin-top:16px;padding-top:14px;border-top:1px solid #222227;gap:8px}
+.bcar .bc li{color:#C9C9CF}
+.bcar .bc li:before{width:16px;height:16px;margin-top:2px;border-radius:5px;background:rgba(143,217,174,.14) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238FD9AE' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/10px no-repeat}
+#bNav{margin-top:22px}
+.bcta .btn{white-space:nowrap}
+@media (max-width:600px){.bcar .bc-img{height:260px}.bcar .bc-img img{height:226px}.bcar .bc-b{padding:20px 20px 22px}.bcar .bc-n{font-size:70px}.bcta .btn{width:100%;font-size:15.5px;padding:0 16px;white-space:nowrap!important}}
+
 /* v4: dois níveis */
 .bmore{display:flex;align-items:center;gap:16px;max-width:980px;margin:44px auto 0;color:var(--ink);font-size:17px}
 .bmore b{font-weight:600;white-space:nowrap}
@@ -476,36 +493,38 @@ footer nav a:hover{color:var(--ink)}
       <p class="lead">Além do app, você recebe a Coleção Quita: guias práticos, no mesmo visual do app, para ler no celular e aplicar no mesmo dia.</p>
     </div>
     <p class="bnote rv">No plano Anual você recebe os 6 guias. No Semestral, os volumes 01 e 02.</p>
-    <div class="blist" id="bcar">
+    <div class="bcar" id="bcar" tabindex="0" aria-roledescription="carrossel" aria-label="Guias bônus">
       <article class="bc" role="group" aria-label="Volume 01: Plano de 6 meses para sair das dívidas">
-        <div class="bc-img"><img src="img/vol1.webp" alt="Capa do guia Plano de 6 meses para sair das dívidas" width="394" height="520" loading="lazy"></div>
+        <div class="bc-img"><img src="img/vol1.webp" alt="Capa do guia Plano de 6 meses para sair das dívidas" width="540" height="640" loading="lazy"></div>
         <div class="bc-b"><span class="bc-n" aria-hidden="true">01</span><div class="bc-v">Vol. 01 · Guia bônus</div><h3>Plano de 6 meses para sair das dívidas</h3><p class="bc-d">Um degrau por mês: parar de afundar, quitar o que custa mais caro e voltar a ter sobra.</p><ul><li>Os 6 passos, um por mês</li><li>A história da Ana, com contas reais</li><li>Checklists e "Faça no Quita"</li></ul><span class="bc-tag">Semestral e Anual</span></div>
       </article>
       <article class="bc" role="group" aria-label="Volume 02: Guia de renegociação">
-        <div class="bc-img"><img src="img/vol2.webp" alt="Capa do guia Guia de renegociação" width="394" height="520" loading="lazy"></div>
+        <div class="bc-img"><img src="img/vol2.webp" alt="Capa do guia Guia de renegociação" width="540" height="640" loading="lazy"></div>
         <div class="bc-b"><span class="bc-n" aria-hidden="true">02</span><div class="bc-v">Vol. 02 · Guia bônus</div><h3>Guia de renegociação</h3><p class="bc-d">O que pedir, o que comparar e o que nunca aceitar para baixar juros e parcelas.</p><ul><li>Roteiros prontos para falar com o banco</li><li>Seus direitos: rotativo e portabilidade</li><li>Quando quitar à vista compensa</li></ul><span class="bc-tag">Semestral e Anual</span></div>
       </article>
-    </div>
-    <div class="bmore rv"><span></span><b>E no plano Anual, mais 4 guias</b><span></span></div>
-    <div class="bgrid">
-      <article class="bc sm" role="group" aria-label="Volume 03: Controle de gastos em 21 dias">
-        <div class="bc-img"><img src="img/vol3.webp" alt="Capa do guia Controle de gastos em 21 dias" width="394" height="520" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">03</span><div class="bc-v">Vol. 03 · Guia bônus</div><h3>Controle de gastos em 21 dias</h3><p class="bc-d">Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real.</p><span class="bc-tag an">Plano Anual</span></div>
+      <article class="bc" role="group" aria-label="Volume 03: Controle de gastos em 21 dias">
+        <div class="bc-img"><img src="img/vol3.webp" alt="Capa do guia Controle de gastos em 21 dias" width="540" height="640" loading="lazy"></div>
+        <div class="bc-b"><span class="bc-n" aria-hidden="true">03</span><div class="bc-v">Vol. 03 · Guia bônus</div><h3>Controle de gastos em 21 dias</h3><p class="bc-d">Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real.</p><ul><li>Uma tarefa curta por dia</li><li>Enxergar, cortar e manter</li><li>Checklist diário no app</li></ul><span class="bc-tag an">Plano Anual</span></div>
       </article>
-      <article class="bc sm" role="group" aria-label="Volume 04: Reserva de emergência do zero">
-        <div class="bc-img"><img src="img/vol4.webp" alt="Capa do guia Reserva de emergência do zero" width="394" height="520" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">04</span><div class="bc-v">Vol. 04 · Guia bônus</div><h3>Reserva de emergência do zero</h3><p class="bc-d">Quanto guardar, onde deixar o dinheiro e como juntar sem apertar o mês.</p><span class="bc-tag an">Plano Anual</span></div>
+      <article class="bc" role="group" aria-label="Volume 04: Reserva de emergência do zero">
+        <div class="bc-img"><img src="img/vol4.webp" alt="Capa do guia Reserva de emergência do zero" width="540" height="640" loading="lazy"></div>
+        <div class="bc-b"><span class="bc-n" aria-hidden="true">04</span><div class="bc-v">Vol. 04 · Guia bônus</div><h3>Reserva de emergência do zero</h3><p class="bc-d">Quanto guardar, onde deixar o dinheiro e como juntar sem apertar o mês.</p><ul><li>Quanto guardar: de 3 a 6 meses</li><li>Onde deixar com resgate rápido</li><li>Como juntar sem apertar o mês</li></ul><span class="bc-tag an">Plano Anual</span></div>
       </article>
-      <article class="bc sm" role="group" aria-label="Volume 05: Primeiros passos em renda extra">
-        <div class="bc-img"><img src="img/vol5.webp" alt="Capa do guia Primeiros passos em renda extra" width="394" height="520" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">05</span><div class="bc-v">Vol. 05 · Guia bônus</div><h3>Primeiros passos em renda extra</h3><p class="bc-d">Ideias reais por perfil para aumentar a renda começando com pouco.</p><span class="bc-tag an">Plano Anual</span></div>
+      <article class="bc" role="group" aria-label="Volume 05: Primeiros passos em renda extra">
+        <div class="bc-img"><img src="img/vol5.webp" alt="Capa do guia Primeiros passos em renda extra" width="540" height="640" loading="lazy"></div>
+        <div class="bc-b"><span class="bc-n" aria-hidden="true">05</span><div class="bc-v">Vol. 05 · Guia bônus</div><h3>Primeiros passos em renda extra</h3><p class="bc-d">Ideias reais por perfil para aumentar a renda começando com pouco.</p><ul><li>Ideias reais por perfil</li><li>Como começar com pouco</li><li>Quanto cobrar pelo seu trabalho</li></ul><span class="bc-tag an">Plano Anual</span></div>
       </article>
-      <article class="bc sm" role="group" aria-label="Volume 06: Dividendos para iniciantes">
-        <div class="bc-img"><img src="img/vol6.webp" alt="Capa do guia Dividendos para iniciantes" width="394" height="520" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">06</span><div class="bc-v">Vol. 06 · Guia bônus</div><h3>Dividendos para iniciantes</h3><p class="bc-d">Como funciona a renda passiva, os riscos e por onde começar a estudar.</p><span class="bc-tag an">Plano Anual</span></div>
+      <article class="bc" role="group" aria-label="Volume 06: Dividendos para iniciantes">
+        <div class="bc-img"><img src="img/vol6.webp" alt="Capa do guia Dividendos para iniciantes" width="540" height="640" loading="lazy"></div>
+        <div class="bc-b"><span class="bc-n" aria-hidden="true">06</span><div class="bc-v">Vol. 06 · Guia bônus</div><h3>Dividendos para iniciantes</h3><p class="bc-d">Como funciona a renda passiva, os riscos e por onde começar a estudar.</p><ul><li>O que é renda passiva</li><li>Riscos e diversificação</li><li>Por onde começar a estudar</li></ul><span class="bc-tag an">Plano Anual</span></div>
       </article>
     </div>
-    <div class="bcta rv"><a class="btn btn-pri" href="#comprar">Quero o plano Anual com os 6 guias<svg class="ic"><use href="#i-arrow"/></svg></a><p>Ou comece pelo Semestral, com os volumes 01 e 02.</p></div>
+    <div class="p-nav" id="bNav">
+      <button class="arw" id="bPrev" type="button" aria-label="Guia anterior"><svg class="ic"><use href="#i-l"/></svg></button>
+      <div class="p-dots" id="bDots"></div>
+      <button class="arw" id="bNext" type="button" aria-label="Próximo guia"><svg class="ic"><use href="#i-r"/></svg></button>
+    </div>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Anual com os 6 guias<svg class="ic"><use href="#i-arrow"/></svg></a><p>Ou comece pelo Semestral (Vol. 01 e 02).</p></div>
     
   </div>
 </section>
@@ -641,7 +660,7 @@ footer nav a:hover{color:var(--ink)}
   var top=document.getElementById('top'),mbar=document.getElementById('mbar'),buy=document.getElementById('comprar');
   function onScroll(){
     var y=window.scrollY;top.classList.toggle('sc',y>8);
-    var r=buy.getBoundingClientRect();mbar.classList.toggle('on',y>520&&r.top>window.innerHeight*.9);
+    var r=buy.getBoundingClientRect(),cta=document.getElementById('bCta'),rc=cta?cta.getBoundingClientRect():null,vis=rc&&rc.top<window.innerHeight&&rc.bottom>0;mbar.classList.toggle('on',y>520&&r.top>window.innerHeight*.9&&!vis);
   }
   window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 
