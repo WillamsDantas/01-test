@@ -673,6 +673,33 @@ public class MainActivity extends Activity {
             } }).start();
         }
 
+        /** Funções do administrador na planilha (com o login do Google). Responde em window.quitaApi(id, json). */
+        @JavascriptInterface
+        public void acApi(final String id, final String url) {
+            new Thread(new Runnable() { @Override public void run() {
+                JSONObject o;
+                try {
+                    String name = gPrefs().getString("g_account", "");
+                    if (name.length() == 0) throw new Exception("sem conta");
+                    Account acc = new Account(name, "com.google");
+                    AccountManager am = AccountManager.get(MainActivity.this);
+                    String token = am.blockingGetAuthToken(acc, GoogleSheets.SCOPE, true);
+                    if (token == null) throw new Exception("O Google pediu para confirmar o acesso");
+                    o = acGet(url, token);
+                    if (!o.optBoolean("ok") && "login".equals(o.optString("erro"))) {
+                        am.invalidateAuthToken("com.google", token);
+                        String t2 = am.blockingGetAuthToken(acc, GoogleSheets.SCOPE, true);
+                        if (t2 != null) o = acGet(url, t2);
+                    }
+                } catch (Exception e) {
+                    o = new JSONObject();
+                    try { o.put("ok", false).put("msg", e.getMessage() == null ? "Sem conexão" : e.getMessage()); } catch (Exception ignored) { }
+                }
+                final String js = "window.quitaApi && window.quitaApi(" + JSONObject.quote(id) + "," + o.toString() + ")";
+                runOnUiThread(new Runnable() { @Override public void run() { web.evaluateJavascript(js, null); } });
+            } }).start();
+        }
+
         /** Confere na planilha "Acessos" se o e-mail da conta Google está liberado. Responde em window.quitaAcesso. */
         @JavascriptInterface
         public void acCheck(final String url) {
@@ -881,7 +908,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "2.0.6";
+            return "2.0.7";
         }
 
         /* ---------- atualização dentro do app ---------- */

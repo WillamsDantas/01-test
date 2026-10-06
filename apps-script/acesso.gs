@@ -1,5 +1,5 @@
 /**
- * Quita · Controle de acesso (versão 2)
+ * Quita · Controle de acesso (versão 3 — administrador pelo próprio app Quita)
  * Planilha "Acessos": E-mail | Status | Nome | Observação | Último acesso | Pedido em
  * Status: ativo (entra), inativo (bloqueado), pendente (pediu acesso, aguardando você)
  *
@@ -36,6 +36,7 @@ function doGet(e) {
   var q = (e && e.parameter) || {};
   try {
     if (q.k) return json_(admin_(q));
+    if (q.acao && q.t) return json_(adminLogin_(q));
     return json_(cliente_(q.t));
   } catch (err) {
     return json_({ ok: false, msg: String(err) });
@@ -85,10 +86,24 @@ function cliente_(t) {
   return res;
 }
 
-/* ---------- app Quita Acessos (administrador) ---------- */
+/* ---------- administrador ---------- */
+// pelo app Quita: só o login real do administrador (sem chave)
+function adminLogin_(q) {
+  var r = UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)', {
+    headers: { Authorization: 'Bearer ' + q.t }, muteHttpExceptions: true
+  });
+  if (r.getResponseCode() !== 200) return { ok: false, erro: 'login', msg: 'login inválido' };
+  var email = String((JSON.parse(r.getContentText()).user || {}).emailAddress || '').toLowerCase();
+  if (email !== ADMIN) return { ok: false, erro: 'admin', msg: 'apenas o administrador' };
+  return adminOps_(q);
+}
+// pelo app Quita Acessos (chave)
 function admin_(q) {
   var k = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');
   if (!k || q.k !== k) return { ok: false, erro: 'chave', msg: 'chave inválida' };
+  return adminOps_(q);
+}
+function adminOps_(q) {
   var sh = aba_();
   if (q.acao === 'status') {
     var email = String(q.email || '').trim().toLowerCase();

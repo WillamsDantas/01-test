@@ -416,6 +416,38 @@ nav.bottom button span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .upd-news li:first-child{border-top:0}.upd-news li .ic{width:17px;height:17px;color:var(--pos);flex:none;margin-top:1px}
 .upd-prog{height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:8px 0 6px}.upd-prog span{display:block;height:100%;width:0;background:var(--pos);border-radius:99px}
 .upd-pl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2)}
+/* ---------- administrador: acessos ---------- */
+.adm-dot{position:relative}
+.adm-dot:after{content:'';position:absolute;top:7px;right:7px;width:9px;height:9px;border-radius:50%;background:var(--warn);box-shadow:0 0 0 2px var(--surface)}
+.ad-badge{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:99px;white-space:nowrap;background:var(--warn);color:#1a1405}
+.ad-tools{display:flex;gap:8px;margin:-4px 0 12px}
+.ad-tools .btn{flex:1;height:40px}
+.ad-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;margin-bottom:10px}
+.ad-seg button{display:flex;align-items:center;justify-content:center;gap:6px;height:38px;border:0;border-radius:9px;background:none;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.ad-seg button.on{background:var(--surface-3);color:var(--ink)}
+.ad-cnt{min-width:20px;height:20px;padding:0 6px;border-radius:99px;font-size:11.5px;display:grid;place-items:center;background:var(--surface-3);color:var(--ink-2)}
+.ad-seg button.on .ad-cnt{background:var(--surface-2)}
+.ad-cnt.w{background:var(--warn)!important;color:#1a1405!important}
+.ad-srch{display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink-3);margin-bottom:12px}
+.ad-srch input{flex:1;min-width:0;border:0;background:none;outline:none;font:inherit;font-size:14.5px;color:var(--ink);height:auto;padding:0}
+.ad-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.ad-who{display:flex;align-items:center;gap:10px}
+.ad-av{width:36px;height:36px;border-radius:var(--r-sm);background:var(--surface-3);display:grid;place-items:center;font-weight:600;font-size:15px;flex:none;text-transform:uppercase}
+.ad-tx{flex:1;min-width:0}
+.ad-tx b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1.3}
+.ad-tx b.wrap{white-space:normal;overflow-wrap:break-word}
+.ad-nm{font-size:13px;color:var(--ink-2);margin-top:1px;overflow-wrap:break-word}
+.ad-st{font-size:12.5px;color:var(--ink-2);margin-top:3px;line-height:1.4}
+.ad-st i{font-style:normal;font-weight:600;display:inline-flex;align-items:center;gap:5px;margin-right:4px}
+.ad-st i:before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}
+.ad-st i.pendente{color:var(--warn)}.ad-st i.ativo{color:var(--pos)}.ad-st i.inativo{color:var(--neg)}
+.ad-meta{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--ink-3);margin-top:10px}
+.ad-obs{font-size:12.5px;color:var(--ink-2);margin-top:8px;padding:8px 10px;border-radius:9px;background:var(--surface)}
+.ad-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.ad-acts.one{grid-template-columns:1fr}
+.ad-acts .btn{height:42px}
+.btn.ad-ok{background:var(--pos);border-color:var(--pos);color:#0B1A11}
+.ad-empty{text-align:center;color:var(--ink-2);padding:34px 10px;font-size:14px;line-height:1.5}
 /* ---------- aviso (pílula fosca) ---------- */
 .nt{--c:var(--pos);--s:var(--pos-soft);position:fixed;left:50%;top:50%;z-index:85;display:flex;align-items:center;gap:9px;width:max-content;max-width:calc(100% - 32px);padding:7px 14px 7px 7px;border-radius:var(--r);background:rgba(30,30,34,.90);-webkit-backdrop-filter:blur(24px) saturate(140%);backdrop-filter:blur(24px) saturate(140%);border:1px solid rgba(255,255,255,.10);box-shadow:0 10px 28px rgba(0,0,0,.35);color:var(--ink);overflow:hidden;opacity:0;transform:translate(-50%,calc(-50% + 12px)) scale(.97);pointer-events:none;transition:opacity .25s ease,transform .36s cubic-bezier(.2,.9,.3,1.12)}
 [data-theme="light"] .nt{background:rgba(255,255,255,.90);border-color:rgba(255,255,255,.75);box-shadow:0 10px 28px rgba(15,16,18,.14)}
@@ -838,7 +870,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '2.0.6';
+var VERSION = '2.0.7';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -2315,7 +2347,7 @@ function choiceBox(msg,opts){
 var SCRIPT_GS = document.getElementById('gs').textContent.trim();
 function openSettings(){
   var a=S.ajustes;
-  var h=head('Ajustes')+
+  var h=head('Ajustes')+admItemAjustes()+
     '<div class="ab-list" style="margin-bottom:4px"><button class="ab-it" id="sSobre"><span class="ab-ic">'+ICON.badge+'</span><span class="ab-tx"><b>Sobre e suporte</b><span>Versão, assinatura e ajuda</span></span>'+(UPD?'<span class="ab-badge">Nova versão</span>':'')+'<svg class="ic ab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></div>'+
     '<div class="sec-title">Aparência</div>'+
     '<div class="seg" id="sTema"><button data-tm="dark">'+'Escuro</button><button data-tm="light">Claro</button><button data-tm="auto">Automático</button></div>'+
@@ -2346,6 +2378,7 @@ function openSettings(){
   openSheet(h,function(el){
     bindAlertas(el);bindSeguranca(el);bindBackup(el);bindGoogleBox(el);
     $('#sSobre',el).onclick=function(){openSobre()};
+    var sa=$('#sAcessos',el);if(sa)sa.onclick=openAcessos;
     function setTm(t){$$('#sTema button',el).forEach(function(b){b.classList.toggle('on',b.dataset.tm===t)})}
     setTm(a.tema||'dark');
     $$('#sTema button',el).forEach(function(b){b.onclick=function(){a.tema=b.dataset.tm;setTm(a.tema);persist();applyTheme()}});
@@ -2440,7 +2473,8 @@ function emailConta(){var g=S.ajustes.google;return ((g&&g.email)||'').toLowerCa
 function ehAdmin(){return emailConta()===ADMIN_EMAIL}
 function acessoCacheOk(){var a=S.ajustes.acesso,em=emailConta();return !!(a&&a.ativo&&a.email===em&&(Date.now()-Date.parse(a.em||0))<ACESSO_DIAS*864e5)}
 function controleAcesso(){
-  if(!ACESSO_URL||!HAS_NATIVE||!Android.acCheck||!googleOn()||ehAdmin())return;
+  if(ehAdmin()&&googleOn()){admCarregar();return}
+  if(!ACESSO_URL||!HAS_NATIVE||!Android.acCheck||!googleOn())return;
   if(!acessoCacheOk())openAcesso('verificando');
   Android.acCheck(ACESSO_URL);
 }
@@ -2477,6 +2511,107 @@ function openAcesso(modo,r){
   if(b=$('#acHelp',g))b.onclick=function(){abrirLink('https://wa.me/'+SUP_WA+'?text='+encodeURIComponent('Olá! Não consigo verificar meu acesso ao Quita ('+em+').'))};
   if(b=$('#acWa',g))b.onclick=function(){abrirLink('https://wa.me/'+SUP_WA+'?text='+encodeURIComponent('Olá! Quero acesso ao Quita. Meu e-mail: '+em))};
   if(b=$('#acOutra',g))b.onclick=function(){try{Android.gLogout()}catch(e){}S.ajustes.google=null;S.ajustes.acesso=null;persist();acessoAberto=false;openGoogleIntro();entrarGoogle()};
+}
+
+
+/* ---------------- Administrador: acessos (só no e-mail do administrador) ---------------- */
+var ADM={lista:null,aba:'pendente',busca:'',carregando:false,erro:''},admCbs={},admSeq=0;
+function admPend(){return (ADM.lista||[]).filter(function(x){return x.status==='pendente'}).length}
+function admDot(){var b=$('#btnSettings');if(b)b.classList.toggle('adm-dot',ehAdmin()&&admPend()>0)}
+window.quitaApi=function(id,o){var f=admCbs[id];delete admCbs[id];if(f)f(o||{})};
+function admApi(params,cb){
+  if(!ACESSO_URL||!HAS_NATIVE||!Android.acApi){cb({ok:false,msg:'Disponível no app instalado'});return}
+  var q=Object.keys(params).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(params[k])}).join('&');
+  var id='a'+(++admSeq);admCbs[id]=cb;Android.acApi(id,ACESSO_URL+'?'+q+'&_='+Date.now());
+}
+function admCarregar(){
+  if(!ehAdmin()||ADM.carregando)return;
+  ADM.carregando=true;ADM.erro='';admRender();
+  admApi({acao:'lista'},function(o){
+    ADM.carregando=false;
+    if(o.ok)ADM.lista=o.lista||[];else ADM.erro=o.msg||'Não foi possível atualizar';
+    admDot();admRender();
+  });
+}
+function admMudar(email,status,extra,okMsg){
+  var p={acao:'status',email:email,status:status};if(extra){if(extra.nome)p.nome=extra.nome;if(extra.obs)p.obs=extra.obs}
+  if(ADM.lista){var ach=false;ADM.lista.forEach(function(x){if(x.email===email){x.status=status;ach=true}});if(!ach)ADM.lista.unshift({email:email,status:status,nome:(extra&&extra.nome)||'',obs:(extra&&extra.obs)||'',ultimo:'',pedido:new Date().toISOString()})}
+  admRender();admDot();haptic();
+  admApi(p,function(o){if(o.ok){ADM.lista=o.lista||ADM.lista;snack(okMsg)}else{toast(o.msg||'Não foi possível salvar');admCarregar()}admDot();admRender()});
+}
+function admQuando(iso){
+  if(!iso)return '';var d=new Date(iso);if(isNaN(d))return '';
+  var hh=pad(d.getHours())+':'+pad(d.getMinutes()),hj=new Date(),on=new Date(Date.now()-864e5);
+  if(d.toDateString()===hj.toDateString())return 'hoje · '+hh;if(d.toDateString()===on.toDateString())return 'ontem · '+hh;
+  return pad(d.getDate())+'/'+pad(d.getMonth()+1)+' · '+hh;
+}
+function admHa(iso){var s=(Date.now()-new Date(iso).getTime())/1000;if(!iso||isNaN(s))return '';if(s<60)return 'agora';if(s<3600)return 'há '+Math.floor(s/60)+' min';if(s<86400)return 'há '+Math.floor(s/3600)+' h';var d=Math.floor(s/86400);return 'há '+d+(d===1?' dia':' dias')}
+var IC_ADM='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+function admItemAjustes(){
+  if(!ehAdmin())return '';var n=admPend();
+  return '<div class="sec-title" style="margin-top:0">Administrador</div><div class="ab-list" style="margin-bottom:8px"><button class="ab-it" id="sAcessos"><span class="ab-ic" style="background:var(--warn-soft);color:var(--warn)">'+IC_ADM+'</span><span class="ab-tx"><b>Acessos</b><span>Liberar e bloquear</span></span>'+(n?'<span class="ad-badge">'+n+' pendente'+(n>1?'s':'')+'</span>':'')+IC_CHEV+'</button></div>';
+}
+function admCartao(x){
+  var adm=x.email===ADMIN_EMAIL,nome=x.nome&&!adm?esc(x.nome):'',sub='',meta='',acts='',rot=adm?'Admin':x.status==='ativo'?'Ativo':x.status==='inativo'?'Inativo':'Pendente',em=esc(x.email);
+  if(x.status==='pendente'){meta='<div class="ad-meta"><span>Pediu '+(admHa(x.pedido)||'—')+'</span><span>'+admQuando(x.pedido)+'</span></div>';acts='<div class="ad-acts"><button class="btn ghost" data-ad="recusar" data-em="'+em+'">Recusar</button><button class="btn ad-ok" data-ad="liberar" data-em="'+em+'">'+ICON.check+'Liberar</button></div>'}
+  else if(x.status==='ativo'){sub=x.ultimo?'acessou '+admQuando(x.ultimo):'ainda não entrou';acts='<div class="ad-acts one"><button class="btn ghost" data-ad="bloquear" data-em="'+em+'">Bloquear</button></div>'}
+  else{sub=x.ultimo?'acessou '+admQuando(x.ultimo):'';acts='<div class="ad-acts one"><button class="btn ghost" data-ad="reativar" data-em="'+em+'">Reativar</button></div>'}
+  if(adm){acts='';sub=''}
+  return '<div class="ad-card"><div class="ad-who"><span class="ad-av">'+esc(x.email.charAt(0))+'</span><span class="ad-tx"><b class="ad-fit">'+em+'</b>'+(nome?'<div class="ad-nm">'+nome+'</div>':'')+'<div class="ad-st"><i class="'+x.status+'">'+rot+'</i>'+(sub?'· '+sub:'')+'</div></span></div>'+meta+(x.obs&&!adm?'<div class="ad-obs">'+esc(x.obs)+'</div>':'')+acts+'</div>';
+}
+var admAberto=false;
+function openAcessos(){admAberto=true;admRender(true);admCarregar()}
+function admRender(abrir){
+  if(!admAberto)return;
+  if(!abrir&&!(sheetOpen&&$('#adBody')))return;
+  var L=ADM.lista||[],n={pendente:0,ativo:0,inativo:0};L.forEach(function(x){if(n[x.status]!=null)n[x.status]++});
+  var b=ADM.busca.trim().toLowerCase(),ab=ADM.aba;
+  var it=L.filter(function(x){return x.status===ab&&(!b||x.email.indexOf(b)>=0||String(x.nome).toLowerCase().indexOf(b)>=0)});
+  it.sort(function(a,c){var ka=ab==='ativo'?a.ultimo:a.pedido,kc=ab==='ativo'?c.ultimo:c.pedido;return String(kc||'').localeCompare(String(ka||''))});
+  var tb=function(a,t,c,w){return '<button data-ab="'+a+'" class="'+(ab===a?'on':'')+'">'+t+' <span class="ad-cnt'+(w&&c?' w':'')+'">'+c+'</span></button>'};
+  var corpo='<div class="ad-tools"><button class="btn ghost" id="adRef">'+ICON.sync+(ADM.carregando?'Atualizando…':'Atualizar')+'</button><button class="btn ghost" id="adAdd">'+ICON.plus+'Liberar alguém</button></div>'+
+    '<div class="ad-seg">'+tb('pendente','Pendentes',n.pendente,true)+tb('ativo','Ativos',n.ativo)+tb('inativo','Inativos',n.inativo)+'</div>'+
+    '<label class="ad-srch">'+IC_SRCH+'<input id="adBusca" placeholder="Buscar e-mail ou nome" value="'+esc(ADM.busca)+'" autocomplete="off"></label>'+
+    (ADM.erro?'<div class="note" style="color:var(--neg)">'+esc(ADM.erro)+'</div>':'');
+  if(ADM.lista===null)corpo+='<div class="ad-empty">Carregando…</div>';
+  else if(!it.length)corpo+='<div class="ad-empty">'+(b?'Nada encontrado para essa busca.':ab==='pendente'?'Nenhum pedido pendente.<br>Quando alguém pedir acesso, aparece aqui e você recebe um e-mail na hora.':ab==='ativo'?'Ninguém ativo ainda.':'Ninguém bloqueado.')+'</div>';
+  else it.forEach(function(x){corpo+=admCartao(x)});
+  var foco=document.activeElement&&document.activeElement.id==='adBusca',pos=foco?document.activeElement.selectionStart:0;
+  if(abrir)openSheet(head('Acessos')+'<div id="adBody">'+corpo+'</div>',function(){admBind()});
+  else{$('#adBody').innerHTML=corpo;admBind()}
+  if(foco){var bi=$('#adBusca');if(bi){bi.focus();try{bi.setSelectionRange(pos,pos)}catch(e){}}}
+}
+var IC_SRCH='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>';
+function admBind(){
+  var el=$('#adBody');if(!el)return;
+  $('#adRef',el).onclick=admCarregar;$('#adAdd',el).onclick=admAdd;
+  el.querySelectorAll('[data-ab]').forEach(function(t){t.onclick=function(){ADM.aba=t.dataset.ab;admRender()}});
+  var bi=$('#adBusca',el);bi.oninput=function(){ADM.busca=bi.value;admRender()};
+  el.querySelectorAll('b.ad-fit').forEach(function(b){var s=14.5;b.style.fontSize=s+'px';while(b.scrollWidth>b.clientWidth+1&&s>11.5){s-=.5;b.style.fontSize=s+'px'}if(b.scrollWidth>b.clientWidth+1){b.classList.add('wrap');b.innerHTML=b.innerHTML.replace('@','<wbr>@')}});
+  el.querySelectorAll('[data-ad]').forEach(function(bt){bt.onclick=function(){
+    var a=bt.dataset.ad,em=bt.dataset.em;
+    if(a==='liberar')admMudar(em,'ativo',null,em+' liberado');
+    else if(a==='reativar')admMudar(em,'ativo',null,em+' reativado');
+    else if(a==='recusar')admConfirm('Recusar o pedido de <b>'+esc(em)+'</b>? A pessoa fica bloqueada; você pode reativar depois na aba Inativos.','Recusar',function(){admMudar(em,'inativo',null,'Pedido recusado')});
+    else if(a==='bloquear')admConfirm('Bloquear <b>'+esc(em)+'</b>? A pessoa não vai mais conseguir usar o Quita. Os dados dela continuam na conta dela.','Bloquear',function(){admMudar(em,'inativo',null,em+' bloqueado')});
+  }});
+}
+function openAcessosVolta(){setTimeout(function(){if(!sheetOpen||!$('#adBody'))admRender(true)},60)}
+function admConfirm(msg,okText,cb){openSheet(head('Confirmar')+'<p style="margin:0 0 18px">'+msg+'</p><div class="btn-row"><button class="btn ghost" id="cNo">Cancelar</button><button class="btn danger" id="cYes">'+okText+'</button></div>',function(el){$('#cNo',el).onclick=function(){admRender(true)};$('#cYes',el).onclick=function(){admRender(true);cb()}})}
+function admAdd(){
+  openSheet(head('Liberar acesso')+'<p class="muted" style="margin:-4px 0 14px">A pessoa entra no Quita assim que fizer login com este e-mail.</p>'+
+    '<div class="field"><label>E-mail da conta Google</label><input id="adEm" type="email" placeholder="cliente@gmail.com" autocomplete="off" autocapitalize="off"></div>'+
+    '<div class="field"><label>Nome (opcional)</label><input id="adNo" placeholder="Ex.: Maria Souza"></div>'+
+    '<div class="field"><label>Observação (opcional)</label><input id="adOb" placeholder="Ex.: comprou em 06/10, teste"></div>'+
+    '<div class="btn-row"><button class="btn ghost" id="adVolta">Voltar</button><button class="btn pri" id="adOk">Liberar acesso</button></div>',function(el){
+    $('#adVolta',el).onclick=function(){admRender(true)};
+    $('#adOk',el).onclick=function(){
+      var em=$('#adEm',el).value.trim().toLowerCase();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){toast('Confira o e-mail');return}
+      var ex={nome:$('#adNo',el).value.trim(),obs:$('#adOb',el).value.trim()};
+      ADM.aba='ativo';admRender(true);admMudar(em,'ativo',ex,em+' liberado');
+    };
+  });
 }
 
 /* ---------------- Nova versão ---------------- */
