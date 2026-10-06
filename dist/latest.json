@@ -1,9 +1,9 @@
 {
- "versao": "2.0.6",
- "codigo": 40,
- "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.6.apk",
+ "versao": "2.0.7",
+ "codigo": 41,
+ "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.7.apk",
  "novidades": [
-  "Cada conta Google vê só os próprios dados, mesmo trocando de conta no mesmo aparelho",
-  "Melhorias de segurança no login"
+  "Área do administrador para liberar e bloquear acessos",
+  "Ajustes mostram quantos pedidos estão esperando"
  ]
 }
