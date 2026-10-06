@@ -9,7 +9,8 @@ ver o painel de comprometimento da renda, gerar relatório e espelhar tudo numa 
 - `.github/workflows/build-apk.yml` — compila no GitHub Actions a cada push
 - `dist/` — APK pronto
 
-Obs.: `keystore/quita.jks` é a chave de assinatura (senha quita123). Mantenha-a para que as
-próximas versões instalem por cima da atual sem apagar os dados.
+Obs.: `keystore/quita-release.p12` é a chave de assinatura. A senha NÃO fica no projeto: ela é lida
+do segredo `QUITA_KS_PASS` do GitHub Actions. Guarde a chave e a senha em local seguro; sem elas
+não é possível publicar atualizações que instalem por cima da versão atual.
 
 <!-- build v1.8.1 (2) -->
