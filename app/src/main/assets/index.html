@@ -870,7 +870,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '2.0.7';
+var VERSION = '2.0.8';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1816,12 +1816,14 @@ window.quitaGoogle=function(r){
     persist();
   }
   updSyncDot();haptic();
-  if(gIntroAberto){fecharGate();depoisDoGoogle()}
+  var verificar=precisaVerificar();
+  if(verificar){acessoPosLogin=gIntroAberto;openAcesso('verificando')}
+  else if(gIntroAberto){fecharGate();depoisDoGoogle()}
   else if(sheetOpen)openSettings();
   renderAll();
   if(r.existente&&(restaurou||!appVazio()))scheduleSync();
-  snack(aviso||(r.id||r.existente?'Pronto! Seus dados estão protegidos':(r.msg||'Conta Google conectada')),null,{sub:avisoSub});
-  controleAcesso();
+  if(verificar)Android.acCheck(ACESSO_URL);
+  else{snack(aviso||(r.id||r.existente?'Pronto! Seus dados estão protegidos':(r.msg||'Conta Google conectada')),null,{sub:avisoSub});controleAcesso()}
 };
 window.quitaGSync=function(r){
   var a=S.ajustes;syncing=false;
@@ -2468,7 +2470,8 @@ function openSobre(){
 
 /* ---------------- Controle de acesso (lista de e-mails liberados) ---------------- */
 var ACESSO_URL='https://script.google.com/macros/s/AKfycbyZpqYeU3CDX56ClrrLq0XK5SmgkCHdwr36YIkJEFXoZIx0F11gFa6l8R6MjpiFgxhlPQ/exec';            /* link do Apps Script da planilha "Acessos" — vazio = todos entram */
-var ACESSO_DIAS=7, acessoAberto=false;
+var ACESSO_DIAS=7, acessoAberto=false, acessoPosLogin=false, acessoNegou=false;
+function precisaVerificar(){return !!(ACESSO_URL&&HAS_NATIVE&&Android.acCheck&&googleOn()&&!ehAdmin()&&!acessoCacheOk())}
 function emailConta(){var g=S.ajustes.google;return ((g&&g.email)||'').toLowerCase()}
 function ehAdmin(){return emailConta()===ADMIN_EMAIL}
 function acessoCacheOk(){var a=S.ajustes.acesso,em=emailConta();return !!(a&&a.ativo&&a.email===em&&(Date.now()-Date.parse(a.em||0))<ACESSO_DIAS*864e5)}
@@ -2481,8 +2484,8 @@ function controleAcesso(){
 window.quitaAcesso=function(r){
   if(r&&r.ok){
     S.ajustes.acesso={email:String(r.email||'').toLowerCase(),ativo:!!r.ativo,status:r.status||'',em:new Date().toISOString()};persist();
-    if(r.ativo){if(acessoAberto){fecharGate();acessoAberto=false;snack('Acesso liberado')}}
-    else openAcesso('negado',r);
+    if(r.ativo){if(acessoAberto){fecharGate();acessoAberto=false;if(acessoNegou)snack('Acesso liberado');acessoNegou=false;if(acessoPosLogin){acessoPosLogin=false;depoisDoGoogle()}}}
+    else{acessoNegou=true;openAcesso('negado',r)}
   } else if(!acessoCacheOk())openAcesso('erro',r);
 };
 var IC_INFO='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
@@ -2945,7 +2948,7 @@ if(lockCfg().on&&lockCfg().pin){var _nl=/[?&]nolock=1/.test(location.search),_aw
 setTab('painel');
 if(HAS_NATIVE&&Android.gLogin&&!googleOn())setTimeout(openGoogleIntro,350);
 else if(precisaOnboard())setTimeout(function(){openOnboarding(0)},350);
-if(googleOn()){if(!S.ajustes.dono){S.ajustes.dono=emailConta();persist()}setTimeout(controleAcesso,300)}
+if(googleOn()){if(!S.ajustes.dono){S.ajustes.dono=emailConta();persist()}controleAcesso()}
 syncAlerts();
 if(temPlanilha()&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync();
 setTimeout(function(){autoBackup()},2500);

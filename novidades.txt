@@ -1,3 +1,3 @@
 # Novidades da versão (uma por linha). Aparecem no aviso de nova versão do app.
+Verificação de acesso logo após entrar, sem mostrar a tela principal antes
 Área do administrador para liberar e bloquear acessos
-Ajustes mostram quantos pedidos estão esperando
