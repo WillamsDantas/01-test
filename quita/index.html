@@ -341,6 +341,25 @@ footer nav a:hover{color:var(--ink)}
   footer .wrap{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}.f-bar i{width:56%}}
+.dvmock{margin:30px auto 0;max-width:1100px}.dvmock img{display:block;width:100%;height:auto}
+.tl-h{text-align:center;margin:36px 0 0}.tl-h span{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.tl{list-style:none;position:relative;max-width:760px;margin:26px auto 0;padding:0 0 0 44px}
+.tl-track{position:absolute;left:11px;top:8px;bottom:8px;width:2px;border-radius:2px;background:#222227;overflow:hidden}
+.tl-track i{position:absolute;left:0;top:0;width:100%;height:0;background:#8FD9AE;border-radius:2px}
+.tl-i{position:relative;display:grid;grid-template-columns:112px 1fr;gap:22px;align-items:start;padding:0 0 38px;opacity:.28;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.tl-i.on{opacity:1;transform:none}
+.tl-dot{position:absolute;left:-39px;top:6px;width:14px;height:14px;border-radius:50%;background:#0B0B0C;border:2px solid #34343B;transition:all .4s ease}
+.tl-i.on .tl-dot{border-color:#8FD9AE;background:#8FD9AE}
+.tl-cv{width:112px;height:auto;border-radius:4px 8px 8px 4px;box-shadow:0 14px 30px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.06);display:block}
+.tl-v{font-size:13.5px;color:var(--ink-3)}
+.tl-t h3{font-size:21px;line-height:1.25;margin:2px 0 8px;letter-spacing:-.02em;text-wrap:balance}
+.tl-t p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.55;text-wrap:pretty}
+.tl-t ul{list-style:none;padding:0;margin:14px 0 0;display:flex;flex-direction:column;gap:7px}
+.tl-t li{text-wrap:pretty;position:relative;padding-left:20px;color:var(--ink-2);font-size:14.5px;line-height:1.45}
+.tl-t li:before{content:"";position:absolute;left:2px;top:10px;width:8px;height:1.5px;background:#52525B}
+.tl-div{position:relative;margin:2px 0 34px -44px;padding-left:0}
+.tl-div span{display:inline-block;margin-left:0;padding:6px 12px;border-radius:99px;border:1px solid #2f2f35;background:#131316;color:var(--ink);font-size:13px;font-weight:600}
+@media (max-width:700px){.dvmock{margin:24px calc(var(--gut) * -1) 0}.tl{padding-left:34px}.tl-track{left:7px}.tl-dot{left:-33px}.tl-i{grid-template-columns:76px 1fr;gap:16px;padding-bottom:30px}.tl-cv{width:76px}.tl-t h3{font-size:18px;margin-top:4px}.tl-t p{font-size:14.5px}.tl-t ul{margin-top:12px}.tl-t li{font-size:14px}.tl-div{margin-left:-34px}}
 </style>
 </head>
 <body>
@@ -419,7 +438,6 @@ footer nav a:hover{color:var(--ink)}
 <section class="band alt" id="recursos">
   <div class="wrap pad">
     <div class="head rv">
-      <div class="eyebrow">Como funciona</div>
       <h2 class="h2">Cadastre uma vez. O Quita monta todos os meses para você.</h2>
     </div>
     <div class="steps">
@@ -442,7 +460,6 @@ footer nav a:hover{color:var(--ink)}
   <div class="glow" style="left:50%;top:200px;width:900px;height:900px;margin-left:-450px;opacity:.6"></div>
   <div class="wrap pad" style="position:relative">
     <div class="head c rv">
-      <div class="eyebrow">Por dentro do app</div>
       <h2 class="h2">Tudo claro, em poucas telas.</h2>
       <p class="lead">Arraste, toque nas setas ou nos nomes para conhecer cada parte do Quita.</p>
     </div>
@@ -459,7 +476,6 @@ footer nav a:hover{color:var(--ink)}
 <section class="band alt" id="seguranca">
   <div class="wrap pad split">
     <div class="rv">
-      <div class="eyebrow">Seus dados, sua conta</div>
       <h2 class="h2">Trocou de celular? Entre com a mesma conta e tudo volta.</h2>
       <p class="lead" style="margin:18px 0 0;max-width:520px">Você entra com a sua conta Google. A cada alteração, o Quita guarda uma cópia numa planilha que fica no seu próprio Google Drive. Ninguém mais tem acesso.</p>
     </div>
@@ -475,7 +491,6 @@ footer nav a:hover{color:var(--ink)}
 <section class="band" id="duvidas" style="overflow:hidden">
   <div class="wrap pad faq-wrap">
     <div class="faq-side rv">
-      <div class="eyebrow">Dúvidas</div>
       <h2 class="h2">Perguntas frequentes</h2>
       <p class="lead" style="margin:16px 0 0;max-width:360px">Não achou a sua? Fale direto com o suporte.</p>
       <a class="btn btn-sec wa" style="margin-top:22px" href="https://wa.me/5582998108786?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Quita." target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>Suporte no WhatsApp</a>
@@ -488,43 +503,13 @@ footer nav a:hover{color:var(--ink)}
   <div class="glow" style="left:50%;top:160px;width:1000px;height:700px;margin-left:-500px;opacity:.7"></div>
   <div class="wrap pad" style="position:relative">
     <div class="head c rv">
-      <div class="eyebrow">Bônus inclusos</div>
       <h2 class="h2">Seis guias para você sair do vermelho <em class="hl">mais rápido.</em></h2>
       <p class="lead">Além do app, você recebe a Coleção Quita: guias práticos, no mesmo visual do app, para ler no celular e aplicar no mesmo dia.</p>
     </div>
-    <p class="bnote rv">No plano Anual você recebe os 6 guias. No Semestral, os volumes 01 e 02.</p>
-    <div class="bcar" id="bcar" tabindex="0" aria-roledescription="carrossel" aria-label="Guias bônus">
-      <article class="bc" role="group" aria-label="Volume 01: Plano de 6 meses para sair das dívidas">
-        <div class="bc-img"><img src="img/vol1.webp" alt="Capa do guia Plano de 6 meses para sair das dívidas" width="540" height="640" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">01</span><div class="bc-v">Vol. 01 · Guia bônus</div><h3>Plano de 6 meses para sair das dívidas</h3><p class="bc-d">Um degrau por mês: parar de afundar, quitar o que custa mais caro e voltar a ter sobra.</p><ul><li>Os 6 passos, um por mês</li><li>A história da Ana, com contas reais</li><li>Checklists e "Faça no Quita"</li></ul><span class="bc-tag">Semestral e Anual</span></div>
-      </article>
-      <article class="bc" role="group" aria-label="Volume 02: Guia de renegociação">
-        <div class="bc-img"><img src="img/vol2.webp" alt="Capa do guia Guia de renegociação" width="540" height="640" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">02</span><div class="bc-v">Vol. 02 · Guia bônus</div><h3>Guia de renegociação</h3><p class="bc-d">O que pedir, o que comparar e o que nunca aceitar para baixar juros e parcelas.</p><ul><li>Roteiros prontos para falar com o banco</li><li>Seus direitos: rotativo e portabilidade</li><li>Quando quitar à vista compensa</li></ul><span class="bc-tag">Semestral e Anual</span></div>
-      </article>
-      <article class="bc" role="group" aria-label="Volume 03: Controle de gastos em 21 dias">
-        <div class="bc-img"><img src="img/vol3.webp" alt="Capa do guia Controle de gastos em 21 dias" width="540" height="640" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">03</span><div class="bc-v">Vol. 03 · Guia bônus</div><h3>Controle de gastos em 21 dias</h3><p class="bc-d">Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real.</p><ul><li>Uma tarefa curta por dia</li><li>Enxergar, cortar e manter</li><li>Checklist diário no app</li></ul><span class="bc-tag an">Plano Anual</span></div>
-      </article>
-      <article class="bc" role="group" aria-label="Volume 04: Reserva de emergência do zero">
-        <div class="bc-img"><img src="img/vol4.webp" alt="Capa do guia Reserva de emergência do zero" width="540" height="640" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">04</span><div class="bc-v">Vol. 04 · Guia bônus</div><h3>Reserva de emergência do zero</h3><p class="bc-d">Quanto guardar, onde deixar o dinheiro e como juntar sem apertar o mês.</p><ul><li>Quanto guardar: de 3 a 6 meses</li><li>Onde deixar com resgate rápido</li><li>Como juntar sem apertar o mês</li></ul><span class="bc-tag an">Plano Anual</span></div>
-      </article>
-      <article class="bc" role="group" aria-label="Volume 05: Primeiros passos em renda extra">
-        <div class="bc-img"><img src="img/vol5.webp" alt="Capa do guia Primeiros passos em renda extra" width="540" height="640" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">05</span><div class="bc-v">Vol. 05 · Guia bônus</div><h3>Primeiros passos em renda extra</h3><p class="bc-d">Ideias reais por perfil para aumentar a renda começando com pouco.</p><ul><li>Ideias reais por perfil</li><li>Como começar com pouco</li><li>Quanto cobrar pelo seu trabalho</li></ul><span class="bc-tag an">Plano Anual</span></div>
-      </article>
-      <article class="bc" role="group" aria-label="Volume 06: Dividendos para iniciantes">
-        <div class="bc-img"><img src="img/vol6.webp" alt="Capa do guia Dividendos para iniciantes" width="540" height="640" loading="lazy"></div>
-        <div class="bc-b"><span class="bc-n" aria-hidden="true">06</span><div class="bc-v">Vol. 06 · Guia bônus</div><h3>Dividendos para iniciantes</h3><p class="bc-d">Como funciona a renda passiva, os riscos e por onde começar a estudar.</p><ul><li>O que é renda passiva</li><li>Riscos e diversificação</li><li>Por onde começar a estudar</li></ul><span class="bc-tag an">Plano Anual</span></div>
-      </article>
-    </div>
-    <div class="p-nav" id="bNav">
-      <button class="arw" id="bPrev" type="button" aria-label="Guia anterior"><svg class="ic"><use href="#i-l"/></svg></button>
-      <div class="p-dots" id="bDots"></div>
-      <button class="arw" id="bNext" type="button" aria-label="Próximo guia"><svg class="ic"><use href="#i-r"/></svg></button>
-    </div>
-    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Anual com os 6 guias<svg class="ic"><use href="#i-arrow"/></svg></a><p>Ou comece pelo Semestral (Vol. 01 e 02).</p></div>
+    <p class="bnote rv">No plano Anual você recebe os 6 guias. No Semestral, os guias 1 e 2.</p>
+    <figure class="dvmock rv"><img src="img/colecao-devices.webp" alt="Os guias da Coleção Quita no notebook e no celular" width="1400" height="869" loading="lazy"></figure>
+    <ol class="tl" id="tl"><span class="tl-track"><i id="tlFill"></i></span><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa1.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 1 de 6</div><h3>Plano de 6 meses para sair das dívidas</h3><p>Um degrau por mês: parar de afundar, quitar o que custa mais caro e voltar a ter sobra.</p><ul><li>Os 6 passos, um por mês</li><li>Exemplos com contas reais, mês a mês</li><li>Checklists e "Faça no Quita"</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa2.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 2 de 6</div><h3>Guia de renegociação</h3><p>O que pedir, o que comparar e o que nunca aceitar para baixar juros e parcelas.</p><ul><li>Roteiros prontos para falar com o banco</li><li>Seus direitos: rotativo e portabilidade</li><li>Quando quitar à vista compensa</li></ul></div></li><li class="tl-div"><span>+ 4 guias no plano Anual</span></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa3.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 3 de 6</div><h3>Controle de gastos em 21 dias</h3><p>Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real.</p><ul><li>Uma tarefa curta por dia</li><li>Enxergar, cortar e manter</li><li>Checklist diário no app</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa4.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 4 de 6</div><h3>Reserva de emergência do zero</h3><p>Quanto guardar, onde deixar o dinheiro e como juntar sem apertar o mês.</p><ul><li>Quanto guardar: de 3 a 6 meses</li><li>Onde deixar com resgate rápido</li><li>Como juntar sem apertar o mês</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa5.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 5 de 6</div><h3>Primeiros passos em renda extra</h3><p>Ideias reais por perfil para aumentar a renda começando com pouco.</p><ul><li>Ideias reais por perfil</li><li>Como começar com pouco</li><li>Quanto cobrar pelo seu trabalho</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="img/capa6.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 6 de 6</div><h3>Dividendos para iniciantes</h3><p>Como funciona a renda passiva, os riscos e por onde começar a estudar.</p><ul><li>O que é renda passiva</li><li>Riscos e diversificação</li><li>Por onde começar a estudar</li></ul></div></li></ol>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Anual com os 6 guias<svg class="ic"><use href="#i-arrow"/></svg></a><p>Ou comece pelo Semestral (guias 1 e 2).</p></div>
     
   </div>
 </section>
@@ -532,7 +517,6 @@ footer nav a:hover{color:var(--ink)}
 <section class="band alt" id="planos" style="overflow:hidden">
   <div class="wrap" id="comprar" style="padding-top:var(--sec);padding-bottom:var(--sec);scroll-margin-top:80px">
     <div class="buy-head rv">
-      <div class="eyebrow">Planos</div>
       <h2 class="h2">Comece hoje a ver o seu mês por inteiro.</h2>
       <p class="lead">Escolha o plano, baixe o app e entre com o mesmo e-mail Google usado no pagamento. Seu acesso é liberado.</p>
     </div>
@@ -565,7 +549,7 @@ footer nav a:hover{color:var(--ink)}
         <div class="pl-eq">Equivale a <b>R$ 16,17</b> por mês</div>
         <div class="pl-an"><s>R$ 179,94</s> no mensal · <b>economize 46%</b></div>
         <a class="btn btn-sec" href="#comprar">Assinar semestral<svg class="ic"><use href="#i-arrow"/></svg></a>
-        <ul><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>+ 2 e-books bônus</b> (Vol. 01 e 02)</span></li><li><svg class="ic"><use href="#i-check"/></svg>Todos os recursos do app</li><li><svg class="ic"><use href="#i-check"/></svg>Backup automático no Google</li><li><svg class="ic"><use href="#i-check"/></svg>Atualizações incluídas</li><li><svg class="ic"><use href="#i-check"/></svg>Suporte pelo WhatsApp</li></ul>
+        <ul><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>+ 2 e-books bônus</b> (guias 1 e 2)</span></li><li><svg class="ic"><use href="#i-check"/></svg>Todos os recursos do app</li><li><svg class="ic"><use href="#i-check"/></svg>Backup automático no Google</li><li><svg class="ic"><use href="#i-check"/></svg>Atualizações incluídas</li><li><svg class="ic"><use href="#i-check"/></svg>Suporte pelo WhatsApp</li></ul>
       </article>
     </div>
     <div class="p-nav">
@@ -821,5 +805,8 @@ footer nav a:hover{color:var(--ink)}
   });
 })();
 </script>
-</body>
+<script>(function(){var tl=document.getElementById('tl');if(!tl)return;var f=document.getElementById('tlFill'),it=[].slice.call(tl.querySelectorAll('.tl-i'));
+function u(){var r=tl.getBoundingClientRect(),vh=innerHeight,mark=vh*0.62;var p=Math.max(0,Math.min(1,(mark-r.top)/r.height));f.style.height=(p*100)+'%';
+it.forEach(function(e){var d=e.querySelector('.tl-dot').getBoundingClientRect();e.classList.toggle('on',d.top<mark)})}
+addEventListener('scroll',u,{passive:true});addEventListener('resize',u);u()})();</script></body>
 </html>
