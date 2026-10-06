@@ -731,6 +731,39 @@ body.gated main,body.gated nav.bottom,body.gated .top{visibility:hidden}
 .dm-more.op .ic{transform:rotate(90deg)}
 .dm-box{border-left:2px solid var(--border);padding-left:12px;margin:-2px 0 12px}
 .dm-box[hidden]{display:none}
+/* seletor de mês e de data do próprio Quita (igual em qualquer celular) */
+.pk-f{width:100%;height:46px;border:1px solid var(--border);border-radius:11px;padding:0 12px;background:var(--surface-2);display:flex;align-items:center;justify-content:space-between;gap:8px;font:inherit;font-size:15px;color:var(--ink);text-align:left;cursor:pointer}
+.pk-f span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pk-f.vazio span{color:var(--ink-3)}
+.pk-f svg{width:18px;height:18px;color:var(--ink-3);flex:none}
+.pk-f.on{border-color:var(--ink-3);background:var(--surface)}
+.pk-scr{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:80;display:grid;place-items:center;padding:20px;animation:pkFade .18s ease}
+@keyframes pkFade{from{opacity:0}}
+.pk{width:min(340px,100%);background:var(--surface);border:1px solid var(--border-2);border-radius:20px;padding:16px 16px 12px;box-shadow:0 24px 60px rgba(0,0,0,.45);animation:pkIn .22s cubic-bezier(.2,.8,.2,1)}
+@keyframes pkIn{from{opacity:0;transform:translateY(10px) scale(.97)}}
+.pk-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pk-h b{font-size:15px;font-weight:600}
+.pk-h .x{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);display:grid;place-items:center;color:var(--ink-2)}
+.pk-h .x svg{width:16px;height:16px}
+.pk-y{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:12px}
+.pk-y>button{width:40px;height:40px;border-radius:9px;display:grid;place-items:center;color:var(--ink-2)}
+.pk-y>button svg{width:18px;height:18px}
+.pk-y .t{font:600 17px var(--f-disp);letter-spacing:-.2px;padding:8px 12px;border-radius:9px;color:var(--ink);white-space:nowrap;width:auto;height:auto;flex:0 1 auto;background:none;border:0;display:inline-flex;align-items:center;gap:4px}
+.pk-y .t.lk:after{content:' ▾';font-size:12px;color:var(--ink-3)}
+.pk-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pk-g button{position:relative;height:48px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2);font-size:15px;font-weight:500;color:var(--ink)}
+.pk-g button.sel{background:var(--ink);color:var(--on-accent);border-color:var(--ink);font-weight:600}
+.pk-g button.hj:after{content:'';position:absolute;left:50%;bottom:6px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--pos)}
+.pk-g.pk-d{grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.pk-d button{height:40px;border:0;background:none;border-radius:10px;font-size:14.5px}
+.pk-d button.fora{color:var(--ink-3);opacity:.5;pointer-events:none}
+.pk-d button.hj:after{bottom:4px}
+.pk-d .wd{font-size:11.5px;color:var(--ink-3);text-align:center;padding:4px 0;font-weight:600}
+.pk-ft{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;font-size:12.5px;color:var(--ink-3);white-space:nowrap;min-height:36px}
+.pk-ft .lk{color:var(--ink);font-weight:600;font-size:14px;padding:8px 6px;margin-left:auto;flex:0 0 auto;width:auto}
+.pk-ft .lk2{flex:0 0 auto;width:auto}
+.pk-ft .lk2{color:var(--ink-2);font-weight:500;font-size:14px;padding:8px 6px}
+.pk-ft i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pos);margin-right:6px;vertical-align:1px}
 /* carregamento do login: uma tela só, sem piscar */
 .ld-bar{width:min(220px,70%);height:5px;border-radius:9px;background:var(--surface-3);margin:22px auto 0;overflow:hidden}
 .ld-bar i{display:block;height:100%;width:0;border-radius:9px;background:var(--pos);transition:width .6s ease}
@@ -2196,7 +2229,7 @@ function openSheet(html,onMount){
   var c=$('[data-close]',$('#sheet'));if(c)c.onclick=closeSheet;
   if(onMount)onMount($('#sheetBody'));
 }
-function closeSheet(){$('#scrim').classList.remove('on');$('#sheet').classList.remove('on');sheetOpen=false;if(document.activeElement)document.activeElement.blur()}
+function closeSheet(){pkFechar();$('#scrim').classList.remove('on');$('#sheet').classList.remove('on');sheetOpen=false;if(document.activeElement)document.activeElement.blur()}
 $('#scrim').onclick=closeSheet;
 function head(t){return '<h2>'+t+'<button data-close aria-label="Fechar">'+ICON.x+'</button></h2>'}
 function confirmBox(msg,okText,cb){
@@ -2206,14 +2239,78 @@ function confirmBox(msg,okText,cb){
 }
 
 /* dívida: formulário */
+/* ---------- seletor de mês e de data (desenhado pelo app, igual em qualquer celular) ---------- */
+var IC_CAL='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>';
+var IC_PKL='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',IC_PKR=IC_PKL.replace('m15 18-6-6 6-6','m9 18 6-6-6-6');
+var MES_C=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+function ymCurto(k){var p=k.split('-');return MES_C[+p[1]-1]+'/'+p[0]}
+var pkAberto=null;
+function pkFechar(){if(pkAberto){var f=pkAberto;pkAberto=null;f.el.remove();if(f.fim)f.fim()}}
+function pkAbrir(html,fim){
+  pkFechar();var d=document.createElement('div');d.className='pk-scr';d.innerHTML='<div class="pk" role="dialog" aria-modal="true">'+html+'</div>';
+  d.addEventListener('click',function(e){if(e.target===d)pkFechar()});
+  document.body.appendChild(d);pkAberto={el:d,fim:fim};return d;
+}
+function openPickerMes(titulo,valor,onPick,fim){
+  var hoje=curYM(),ano=+((valor||hoje).slice(0,4));
+  var d=pkAbrir('',fim);
+  function draw(){
+    $('.pk',d).innerHTML='<div class="pk-h"><b>'+esc(titulo)+'</b><button type="button" class="x" data-x aria-label="Fechar">'+ICON.x+'</button></div>'+
+      '<div class="pk-y"><button type="button" data-a="-1" aria-label="Ano anterior">'+IC_PKL+'</button><span class="t">'+ano+'</span><button type="button" data-a="1" aria-label="Próximo ano">'+IC_PKR+'</button></div>'+
+      '<div class="pk-g">'+MES_C.map(function(m,i){var k=ano+'-'+pad(i+1);return '<button type="button" data-m="'+k+'" class="'+(k===valor?'sel':'')+(k===hoje?' hj':'')+'">'+m+'</button>'}).join('')+'</div>'+
+      '<div class="pk-ft"><span><i></i>mês atual</span><button type="button" class="lk" data-hj>Este mês</button></div>';
+  }
+  d.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    if(b.hasAttribute('data-x')){pkFechar();return}
+    if(b.dataset.a){ano+=+b.dataset.a;draw();return}
+    var k=b.dataset.m||(b.hasAttribute('data-hj')?hoje:null);
+    if(k){haptic();pkFechar();onPick(k)}
+  });
+  draw();
+}
+function openPickerData(titulo,valor,onPick,fim){
+  var hj=todayISO(),cur=(valor||hj).slice(0,7),modo='dia';
+  var d=pkAbrir('',fim);
+  function draw(){
+    var y=+cur.slice(0,4),m=+cur.slice(5,7),h='<div class="pk-h"><b>'+esc(titulo)+'</b><button type="button" class="x" data-x aria-label="Fechar">'+ICON.x+'</button></div>';
+    if(modo==='mes'){
+      h+='<div class="pk-y"><button type="button" data-a="-12" aria-label="Ano anterior">'+IC_PKL+'</button><span class="t">'+y+'</span><button type="button" data-a="12" aria-label="Próximo ano">'+IC_PKR+'</button></div>'+
+        '<div class="pk-g">'+MES_C.map(function(n,i){var k=y+'-'+pad(i+1);return '<button type="button" data-ir="'+k+'" class="'+(k===cur?'sel':'')+(k===hj.slice(0,7)?' hj':'')+'">'+n+'</button>'}).join('')+'</div>'+
+        '<div class="pk-ft"><span>Escolha o mês</span><button type="button" class="lk" data-dia>Voltar aos dias</button></div>';
+    } else {
+      var nome=MESES[m-1].charAt(0).toUpperCase()+MESES[m-1].slice(1);
+      var ini=new Date(y,m-1,1).getDay(),dias=new Date(y,m,0).getDate(),ant=new Date(y,m-1,0).getDate(),g='';
+      ['D','S','T','Q','Q','S','S'].forEach(function(w){g+='<div class="wd">'+w+'</div>'});
+      for(var i=ini-1;i>=0;i--)g+='<button type="button" class="fora" tabindex="-1">'+(ant-i)+'</button>';
+      for(var dd=1;dd<=dias;dd++){var k=cur+'-'+pad(dd);g+='<button type="button" data-d="'+k+'" class="'+(k===valor?'sel':'')+(k===hj?' hj':'')+'">'+dd+'</button>'}
+      h+='<div class="pk-y"><button type="button" data-a="-1" aria-label="Mês anterior">'+IC_PKL+'</button><button type="button" class="t lk" data-mes>'+nome+' '+y+'</button><button type="button" data-a="1" aria-label="Próximo mês">'+IC_PKR+'</button></div>'+
+        '<div class="pk-g pk-d">'+g+'</div>'+
+        '<div class="pk-ft">'+(valor?'<button type="button" class="lk2" data-limpa>Limpar</button>':'<span>Toque no mês para trocar</span>')+'<button type="button" class="lk" data-hj>Hoje</button></div>';
+    }
+    $('.pk',d).innerHTML=h;
+  }
+  d.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    if(b.hasAttribute('data-x')){pkFechar();return}
+    if(b.dataset.a){cur=ymAdd(cur,+b.dataset.a);draw();return}
+    if(b.hasAttribute('data-mes')){modo='mes';draw();return}
+    if(b.hasAttribute('data-dia')){modo='dia';draw();return}
+    if(b.dataset.ir){cur=b.dataset.ir;modo='dia';draw();return}
+    if(b.hasAttribute('data-limpa')){pkFechar();onPick('');return}
+    var k=b.dataset.d||(b.hasAttribute('data-hj')?hj:null);
+    if(k){haptic();pkFechar();onPick(k)}
+  });
+  draw();
+}
 /* campos da dívida: os mesmos na configuração inicial e em Nova/Editar dívida */
 function divCamposHTML(d,pagasAgora){
   var prim=d?d.primeiraMes:curYM(),mais=!!(d&&(d.credor||d.jurosMes||d.obs));
   return '<div class="field"><label>Nome da dívida *</label><input id="fNome" placeholder="Ex.: Cartão Nubank, Geladeira" value="'+esc(d?d.nome:'')+'"></div>'+
   '<div class="two"><div class="field"><label>Valor da parcela *</label><div class="prefix"><input id="fParcela" inputmode="numeric" placeholder="0,00" value="'+(d?moneyInput(d.parcela):'')+'"></div></div>'+
   '<div class="field"><label>Nº de parcelas *</label><input id="fTotal" type="number" min="1" max="600" inputmode="numeric" placeholder="Ex.: 12" value="'+(d?d.totalParcelas:'')+'"></div></div>'+
-  '<div class="two"><div class="field"><label>Data da compra</label><input id="fCompra" type="date" value="'+(d&&d.dataCompra?d.dataCompra:'')+'"><div class="hint">Opcional</div></div>'+
-  '<div class="field"><label>Mês da 1ª parcela *</label><input id="fPrim" type="month" value="'+prim+'"><div class="hint">Sai da data da compra</div></div></div>'+
+  '<div class="two"><div class="field"><label>Data da compra</label><input id="fCompra" type="hidden" value="'+(d&&d.dataCompra?d.dataCompra:'')+'"><button type="button" class="pk-f" id="fCompraB"><span></span>'+IC_CAL+'</button><div class="hint">Opcional</div></div>'+
+  '<div class="field"><label>Mês da 1ª parcela *</label><input id="fPrim" type="hidden" value="'+prim+'"><button type="button" class="pk-f" id="fPrimB"><span></span>'+IC_CAL+'</button><div class="hint" id="fPrimH"></div></div></div>'+
   '<div class="two"><div class="field"><label>Já pagas</label><input id="fPagas" type="number" min="0" inputmode="numeric" value="'+(pagasAgora||0)+'"><div class="hint">Quantas já quitou</div></div>'+
   '<div class="field"><label>Dia do vencimento *</label><input id="fDia" type="number" min="1" max="31" inputmode="numeric" value="'+(d?d.diaVenc:10)+'"></div></div>'+
   '<div class="field" id="fSug"></div>'+
@@ -2225,10 +2322,19 @@ function divCamposHTML(d,pagasAgora){
 function divBind(el,d){
   var primTouched=!!d;
   var compra=$('#fCompra',el),prm=$('#fPrim',el),sug=$('#fSug',el);
-  compra.onchange=function(){if(!primTouched&&compra.value){prm.value=ymAdd(ym(compra.value),1)}upd()};
-  prm.onchange=function(){primTouched=true;upd()};
+  var cB=$('#fCompraB',el),pB=$('#fPrimB',el),pH=$('#fPrimH',el),porCompra=false;
+  function mostra(){
+    cB.classList.toggle('vazio',!compra.value);cB.querySelector('span').textContent=compra.value?br(compra.value):'Escolher';
+    pB.querySelector('span').textContent=prm.value?ymCurto(prm.value):'Escolher';
+    pH.textContent=porCompra&&compra.value?'Preenchido pela data da compra':'Quando cai a 1ª';
+  }
+  function setCompra(v){compra.value=v||'';if(!primTouched&&compra.value){prm.value=ymAdd(ym(compra.value),1);porCompra=true}mostra();upd()}
+  function setPrm(v,manual){prm.value=v;if(manual){primTouched=true;porCompra=false}mostra();upd()}
+  cB.onclick=function(){cB.classList.add('on');openPickerData('Data da compra',compra.value,function(v){setCompra(v)},function(){cB.classList.remove('on')})};
+  pB.onclick=function(){pB.classList.add('on');openPickerMes('Mês da 1ª parcela',prm.value,function(v){setPrm(v,true)},function(){pB.classList.remove('on')})};
   /* dívida nova sem data da compra: se já pagou N, a 1ª parcela foi N meses atrás */
-  $('#fPagas',el).addEventListener('input',function(){if(!primTouched&&!compra.value){var n=Math.max(0,parseInt(this.value,10)||0);prm.value=ymAdd(curYM(),-n)}});
+  $('#fPagas',el).addEventListener('input',function(){if(!primTouched&&!compra.value){var n=Math.max(0,parseInt(this.value,10)||0);setPrm(ymAdd(curYM(),-n))}});
+  mostra();
   var mb=$('#fMais',el),box=$('#fMaisBox',el);
   mb.onclick=function(){var op=box.hidden;box.hidden=!op;mb.classList.toggle('op',op);if(op)setTimeout(function(){box.scrollIntoView({block:'nearest',behavior:'smooth'})},60)};
   function upd(){
@@ -3037,7 +3143,7 @@ $('#btnSettings').onclick=openSettings;
 $('#btnEye').onclick=toggleOcultar;
 pdfHTML=semMascara(pdfHTML);exportCSV=semMascara(exportCSV);reportText=semMascara(reportText);
 $('#btnSync').onclick=function(){syncNow(true)};
-window.quitaBack=function(){if(sheetOpen){closeSheet();return true}if(curTab!=='painel'){setTab('painel');return true}return false};
+window.quitaBack=function(){if(pkAberto){pkFechar();return true}if(sheetOpen){closeSheet();return true}if(curTab!=='painel'){setTab('painel');return true}return false};
 window.quitaResume=function(away){var lc=lockCfg();if(lc.on&&lc.pin&&away>30000&&!$('#lock').classList.contains('on'))showLock('unlock');if(S&&S.ajustes.tema==='auto')applyTheme();renderAll();if(temPlanilha()&&S.ajustes.pendente&&S.ajustes.auto)scheduleSync();autoBackup()};
 
 load();
