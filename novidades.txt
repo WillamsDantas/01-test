@@ -1,5 +1,4 @@
 # Novidades da versão (uma por linha). Aparecem no aviso de nova versão do app.
-Entrada sem piscar: uma tela de carregamento acompanha cada etapa até a configuração
-Cadastro de dívida completo também na configuração inicial (data da compra e mês da 1ª parcela)
-Botão para solicitar acesso ou desbloqueio direto pelo app
-Avisos maiores e mais fáceis de ler
+Novo seletor de mês e de data no cadastro de dívida, no visual do app
+Mês da 1ª parcela aparece completo (ex.: Out/2026) em qualquer celular
+Data da compra mais clara: toque em "Escolher" para preencher
