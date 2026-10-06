@@ -706,6 +706,7 @@ body.gated main,body.gated nav.bottom,body.gated .top{visibility:hidden}
 .ac-tx{flex:1;min-width:0}.ac-tx b{display:block;font-size:14.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ac-pill{display:inline-flex;align-items:center;gap:6px;margin-top:4px;padding:3px 9px;border-radius:99px;font-size:12px;font-weight:600;background:var(--warn-soft);color:var(--warn)}
 .ac-pill:before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.ac-pill.ok{background:var(--pos-soft);color:var(--pos)}
 .ac-pill.er{background:var(--neg-soft);color:var(--neg)}
 .ac-tip{display:flex;gap:10px;align-items:flex-start;margin:14px 0 0;padding:12px 14px;border-radius:var(--r);background:var(--surface-2);border:1px solid var(--border);color:var(--ink-2);font-size:13.5px;line-height:1.45}
 .ac-tip .ic{width:17px;height:17px;flex:none;margin-top:1px;color:var(--ink-2)}
@@ -2471,6 +2472,7 @@ function openSobre(){
 /* ---------------- Controle de acesso (lista de e-mails liberados) ---------------- */
 var ACESSO_URL='https://script.google.com/macros/s/AKfycbyZpqYeU3CDX56ClrrLq0XK5SmgkCHdwr36YIkJEFXoZIx0F11gFa6l8R6MjpiFgxhlPQ/exec';            /* link do Apps Script da planilha "Acessos" — vazio = todos entram */
 var ACESSO_DIAS=7, acessoAberto=false, acessoPosLogin=false, acessoNegou=false;
+var acUltimo=null;
 function precisaVerificar(){return !!(ACESSO_URL&&HAS_NATIVE&&Android.acCheck&&googleOn()&&!ehAdmin()&&!acessoCacheOk())}
 function emailConta(){var g=S.ajustes.google;return ((g&&g.email)||'').toLowerCase()}
 function ehAdmin(){return emailConta()===ADMIN_EMAIL}
@@ -2500,26 +2502,41 @@ function openAcesso(modo,r){
     top=logo+'<h1>Não foi possível verificar seu acesso</h1><p class="gt-lead">Confira sua conexão com a internet e tente de novo.</p>';
     bot='<button class="btn g-btn" id="acRetry"><span>Tentar de novo</span></button><p class="gt-note"><button class="gt-help" id="acHelp">Precisa de ajuda?</button></p>';
   } else {
-    top=logo+'<h1>'+(encerrado?'Seu acesso foi encerrado':'Acesso ainda não liberado')+'</h1><p class="gt-lead">'+(encerrado?'Para voltar a usar o Quita, fale com a gente.':'Seu acesso ao Quita ainda não foi liberado para este e-mail.')+'</p>';
-    meio='<div class="ac-card"><span class="ac-av">'+esc(em.charAt(0)||'?')+'</span><span class="ac-tx"><b>'+esc(em)+'</b><span class="ac-pill'+(encerrado?' er':'')+'">'+(encerrado?'Acesso encerrado':'Aguardando liberação')+'</span></span></div>'+
-      '<div class="ac-tip">'+IC_INFO+'<span>Já comprou? Confira se entrou com o <b>mesmo e-mail da compra</b>. Seus dados continuam guardados na sua conta.</span></div>';
-    bot='<button class="btn g-btn" id="acWa">'+IC_AB.wa.replace('class="ic"','class="ic wa-ic"')+'<span>Pedir acesso pelo WhatsApp</span></button>'+
-      '<button class="btn ghost" id="acRetry">Já fui liberado · verificar</button>'+
-      '<p class="gt-note"><button class="gt-help" id="acOutra">Entrar com outra conta</button></p>';
+    acUltimo=r;
+    var ped=S.ajustes.pedidoAcesso,enviado=!!(ped&&ped.email===em&&ped.tipo===(encerrado?'desbloqueio':'acesso')&&(Date.now()-Date.parse(ped.em||0))<7*864e5);
+    var tit=encerrado?'Seu acesso está bloqueado':'Acesso ainda não liberado';
+    var lead=enviado?'Pedido enviado. Assim que for '+(encerrado?'desbloqueado':'liberado')+', toque em verificar.':encerrado?'Peça o desbloqueio e você será avisado quando puder voltar.':'Toque em solicitar e o pedido chega na hora para a equipe do Quita.';
+    var pill=enviado?'<span class="ac-pill ok">Pedido enviado · '+esc((quando(ped.em)||'').replace(/^hoje às /,'hoje · '))+'</span>':encerrado?'<span class="ac-pill er">Acesso bloqueado</span>':'<span class="ac-pill">Aguardando liberação</span>';
+    top=logo+'<h1>'+tit+'</h1><p class="gt-lead">'+lead+'</p>';
+    meio='<div class="ac-card"><span class="ac-av">'+esc(em.charAt(0)||'?')+'</span><span class="ac-tx"><b>'+esc(em)+'</b>'+pill+'</span></div>'+
+      (encerrado?'':'<div class="ac-tip">'+IC_INFO+'<span>Já comprou? Confira se entrou com o <b>mesmo e-mail da compra</b>. Seus dados continuam guardados na sua conta.</span></div>');
+    bot=(enviado?'<button class="btn g-btn" id="acRetry"><span>Verificar se já fui '+(encerrado?'desbloqueado':'liberado')+'</span></button>'
+               :'<button class="btn g-btn" id="acPedir"><span>'+(encerrado?'Solicitar desbloqueio':'Solicitar acesso')+'</span></button>')+
+      '<button class="btn ghost" id="acWa">'+IC_AB.wa.replace('class="ic"','class="ic wa-ic"')+'Falar com o suporte</button>'+
+      '<p class="gt-note">'+(enviado?'':'<button class="gt-help" id="acRetry2">'+(encerrado?'Já fui desbloqueado':'Já fui liberado')+' · verificar</button><br>')+'<button class="gt-help" id="acOutra">Entrar com outra conta</button></p>';
   }
   g.innerHTML='<div class="gt-wrap"><div class="gt-top">'+top+'</div>'+meio+'<div class="gt-bottom">'+bot+'</div></div>';
   g.classList.add('on');document.body.classList.add('gated');
   var b;
   if(b=$('#acRetry',g))b.onclick=function(){openAcesso('verificando');Android.acCheck(ACESSO_URL)};
+  if(b=$('#acRetry2',g))b.onclick=function(){openAcesso('verificando');Android.acCheck(ACESSO_URL)};
   if(b=$('#acHelp',g))b.onclick=function(){abrirLink('https://wa.me/'+SUP_WA+'?text='+encodeURIComponent('Olá! Não consigo verificar meu acesso ao Quita ('+em+').'))};
-  if(b=$('#acWa',g))b.onclick=function(){abrirLink('https://wa.me/'+SUP_WA+'?text='+encodeURIComponent('Olá! Quero acesso ao Quita. Meu e-mail: '+em))};
+  if(b=$('#acWa',g))b.onclick=function(){abrirLink('https://wa.me/'+SUP_WA+'?text='+encodeURIComponent('Olá! Preciso de ajuda com o acesso ao Quita. Meu e-mail: '+em))};
+  if(b=$('#acPedir',g))b.onclick=function(){
+    var bt=this,tipo=encerrado?'desbloqueio':'acesso';bt.disabled=true;bt.querySelector('span').textContent='Enviando…';
+    admApi({acao:'pedir',tipo:tipo},function(o){
+      if(o.ok){S.ajustes.pedidoAcesso={email:em,tipo:tipo,em:new Date().toISOString()};persist();snack('Pedido enviado');openAcesso('negado',acUltimo)}
+      else{bt.disabled=false;bt.querySelector('span').textContent=encerrado?'Solicitar desbloqueio':'Solicitar acesso';toast(o.msg||'Não foi possível enviar. Tente de novo.')}
+    });
+  };
   if(b=$('#acOutra',g))b.onclick=function(){try{Android.gLogout()}catch(e){}S.ajustes.google=null;S.ajustes.acesso=null;persist();acessoAberto=false;openGoogleIntro();entrarGoogle()};
 }
 
 
 /* ---------------- Administrador: acessos (só no e-mail do administrador) ---------------- */
 var ADM={lista:null,aba:'pendente',busca:'',carregando:false,erro:''},admCbs={},admSeq=0;
-function admPend(){return (ADM.lista||[]).filter(function(x){return x.status==='pendente'}).length}
+function admEhPedido(x){return x.status==='pendente'||(x.status==='inativo'&&x.solicitacao==='desbloqueio')}
+function admPend(){return (ADM.lista||[]).filter(admEhPedido).length}
 function admDot(){var b=$('#btnSettings');if(b)b.classList.toggle('adm-dot',ehAdmin()&&admPend()>0)}
 window.quitaApi=function(id,o){var f=admCbs[id];delete admCbs[id];if(f)f(o||{})};
 function admApi(params,cb){
@@ -2538,7 +2555,7 @@ function admCarregar(){
 }
 function admMudar(email,status,extra,okMsg){
   var p={acao:'status',email:email,status:status};if(extra){if(extra.nome)p.nome=extra.nome;if(extra.obs)p.obs=extra.obs}
-  if(ADM.lista){var ach=false;ADM.lista.forEach(function(x){if(x.email===email){x.status=status;ach=true}});if(!ach)ADM.lista.unshift({email:email,status:status,nome:(extra&&extra.nome)||'',obs:(extra&&extra.obs)||'',ultimo:'',pedido:new Date().toISOString()})}
+  if(ADM.lista){var ach=false;ADM.lista.forEach(function(x){if(x.email===email){x.status=status;x.solicitacao='';ach=true}});if(!ach)ADM.lista.unshift({email:email,status:status,nome:(extra&&extra.nome)||'',obs:(extra&&extra.obs)||'',ultimo:'',pedido:new Date().toISOString()})}
   admRender();admDot();haptic();
   admApi(p,function(o){if(o.ok){ADM.lista=o.lista||ADM.lista;snack(okMsg)}else{toast(o.msg||'Não foi possível salvar');admCarregar()}admDot();admRender()});
 }
@@ -2556,20 +2573,21 @@ function admItemAjustes(){
 }
 function admCartao(x){
   var adm=x.email===ADMIN_EMAIL,nome=x.nome&&!adm?esc(x.nome):'',sub='',meta='',acts='',rot=adm?'Admin':x.status==='ativo'?'Ativo':x.status==='inativo'?'Inativo':'Pendente',em=esc(x.email);
-  if(x.status==='pendente'){meta='<div class="ad-meta"><span>Pediu '+(admHa(x.pedido)||'—')+'</span><span>'+admQuando(x.pedido)+'</span></div>';acts='<div class="ad-acts"><button class="btn ghost" data-ad="recusar" data-em="'+em+'">Recusar</button><button class="btn ad-ok" data-ad="liberar" data-em="'+em+'">'+ICON.check+'Liberar</button></div>'}
+  if(x.status==='inativo'&&x.solicitacao==='desbloqueio'){rot='Pediu desbloqueio';meta='<div class="ad-meta"><span>Pediu '+(admHa(x.pedido)||'—')+'</span><span>'+admQuando(x.pedido)+'</span></div>';acts='<div class="ad-acts"><button class="btn ghost" data-ad="recusar" data-em="'+em+'">Recusar</button><button class="btn ad-ok" data-ad="reativar" data-em="'+em+'">'+ICON.check+'Desbloquear</button></div>'}
+  else if(x.status==='pendente'){meta='<div class="ad-meta"><span>Pediu '+(admHa(x.pedido)||'—')+'</span><span>'+admQuando(x.pedido)+'</span></div>';acts='<div class="ad-acts"><button class="btn ghost" data-ad="recusar" data-em="'+em+'">Recusar</button><button class="btn ad-ok" data-ad="liberar" data-em="'+em+'">'+ICON.check+'Liberar</button></div>'}
   else if(x.status==='ativo'){sub=x.ultimo?'acessou '+admQuando(x.ultimo):'ainda não entrou';acts='<div class="ad-acts one"><button class="btn ghost" data-ad="bloquear" data-em="'+em+'">Bloquear</button></div>'}
   else{sub=x.ultimo?'acessou '+admQuando(x.ultimo):'';acts='<div class="ad-acts one"><button class="btn ghost" data-ad="reativar" data-em="'+em+'">Reativar</button></div>'}
   if(adm){acts='';sub=''}
-  return '<div class="ad-card"><div class="ad-who"><span class="ad-av">'+esc(x.email.charAt(0))+'</span><span class="ad-tx"><b class="ad-fit">'+em+'</b>'+(nome?'<div class="ad-nm">'+nome+'</div>':'')+'<div class="ad-st"><i class="'+x.status+'">'+rot+'</i>'+(sub?'· '+sub:'')+'</div></span></div>'+meta+(x.obs&&!adm?'<div class="ad-obs">'+esc(x.obs)+'</div>':'')+acts+'</div>';
+  return '<div class="ad-card"><div class="ad-who"><span class="ad-av">'+esc(x.email.charAt(0))+'</span><span class="ad-tx"><b class="ad-fit">'+em+'</b>'+(nome?'<div class="ad-nm">'+nome+'</div>':'')+'<div class="ad-st"><i class="'+(admEhPedido(x)?'pendente':x.status)+'">'+rot+'</i>'+(sub?'· '+sub:'')+'</div></span></div>'+meta+(x.obs&&!adm?'<div class="ad-obs">'+esc(x.obs)+'</div>':'')+acts+'</div>';
 }
 var admAberto=false;
 function openAcessos(){admAberto=true;admRender(true);admCarregar()}
 function admRender(abrir){
   if(!admAberto)return;
   if(!abrir&&!(sheetOpen&&$('#adBody')))return;
-  var L=ADM.lista||[],n={pendente:0,ativo:0,inativo:0};L.forEach(function(x){if(n[x.status]!=null)n[x.status]++});
+  var L=ADM.lista||[],n={pendente:0,ativo:0,inativo:0};L.forEach(function(x){if(admEhPedido(x))n.pendente++;else if(n[x.status]!=null)n[x.status]++});
   var b=ADM.busca.trim().toLowerCase(),ab=ADM.aba;
-  var it=L.filter(function(x){return x.status===ab&&(!b||x.email.indexOf(b)>=0||String(x.nome).toLowerCase().indexOf(b)>=0)});
+  var it=L.filter(function(x){return (ab==='pendente'?admEhPedido(x):(x.status===ab&&!admEhPedido(x)))&&(!b||x.email.indexOf(b)>=0||String(x.nome).toLowerCase().indexOf(b)>=0)});
   it.sort(function(a,c){var ka=ab==='ativo'?a.ultimo:a.pedido,kc=ab==='ativo'?c.ultimo:c.pedido;return String(kc||'').localeCompare(String(ka||''))});
   var tb=function(a,t,c,w){return '<button data-ab="'+a+'" class="'+(ab===a?'on':'')+'">'+t+' <span class="ad-cnt'+(w&&c?' w':'')+'">'+c+'</span></button>'};
   var corpo='<div class="ad-tools"><button class="btn ghost" id="adRef">'+ICON.sync+(ADM.carregando?'Atualizando…':'Atualizar')+'</button><button class="btn ghost" id="adAdd">'+ICON.plus+'Liberar alguém</button></div>'+
@@ -2594,7 +2612,7 @@ function admBind(){
   el.querySelectorAll('[data-ad]').forEach(function(bt){bt.onclick=function(){
     var a=bt.dataset.ad,em=bt.dataset.em;
     if(a==='liberar')admMudar(em,'ativo',null,em+' liberado');
-    else if(a==='reativar')admMudar(em,'ativo',null,em+' reativado');
+    else if(a==='reativar')admMudar(em,'ativo',null,em+' desbloqueado');
     else if(a==='recusar')admConfirm('Recusar o pedido de <b>'+esc(em)+'</b>? A pessoa fica bloqueada; você pode reativar depois na aba Inativos.','Recusar',function(){admMudar(em,'inativo',null,'Pedido recusado')});
     else if(a==='bloquear')admConfirm('Bloquear <b>'+esc(em)+'</b>? A pessoa não vai mais conseguir usar o Quita. Os dados dela continuam na conta dela.','Bloquear',function(){admMudar(em,'inativo',null,em+' bloqueado')});
   }});
