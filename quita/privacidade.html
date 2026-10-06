@@ -1,85 +1,106 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Quita · Política de Privacidade</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Quita · Política de Privacidade</title><meta name="theme-color" content="#0B0B0C">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#111113;--card:#18181B;--line:#2A2A2F;--ink:#F4F4F5;--ink2:#A1A1AA;--pos:#8FD9AE}
-@media (prefers-color-scheme:light){:root{--bg:#F3F4F6;--card:#fff;--line:#E4E6EA;--ink:#0F1012;--ink2:#585C64;--pos:#2F9E64}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:760px;margin:0 auto;padding:40px 16px 64px}
-header{display:flex;align-items:center;gap:12px;margin-bottom:28px}
-header svg{width:44px;height:44px;border-radius:12px;background:#141416;flex:none}
-header b{font-size:18px;display:block}header span{color:var(--ink2);font-size:14px}
-h1{font-size:30px;line-height:1.2;margin:0 0 6px;letter-spacing:-.4px}
-.upd{color:var(--ink2);font-size:14px;margin:0 0 28px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:0 0 28px}
-.card p{margin:0}
-h2{font-size:19px;margin:32px 0 8px}
-p,li{color:var(--ink)}ul{padding-left:20px}li{margin:4px 0}
-a{color:var(--pos)}
-footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
-</style></head><body><main>
-<header><svg viewBox="18 18 72 72"><path d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z" fill="#F4F4F5" transform="translate(54 54) scale(.7) translate(-54 -54)"/><path d="M56.87 63.00 L64.87 71.00 L78.37 57.50" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" transform="translate(54 54) scale(.7) translate(-54 -54)"/></svg><div><b>Quita</b><span>Controle financeiro</span></div></header>
-
-<h1>Política de Privacidade</h1>
-<p class="upd">Última atualização: 6 de outubro de 2026</p>
-
-<div class="card"><p><b>Resumo:</b> seus dados financeiros ficam no seu celular e, se você quiser, numa planilha dentro da <b>sua própria conta Google</b>. Não temos servidor que guarde suas finanças, não vendemos dados e não exibimos anúncios.</p></div>
-
-<h2>1. Quem é o responsável</h2>
-<p>O aplicativo Quita é desenvolvido e mantido por <b>Willams Dantas</b>, responsável pelo tratamento dos dados descritos nesta política, nos termos da Lei Geral de Proteção de Dados (Lei nº 13.709/2018 – LGPD).</p>
-<p>Contato: <a href="mailto:willamsdanttas@gmail.com">willamsdanttas@gmail.com</a> · WhatsApp <a href="https://wa.me/5582998108786">(82) 99810-8786</a></p>
-
-<h2>2. Quais dados o app usa</h2>
-<ul>
+:root{--bg:#0B0B0C;--surface:#131316;--s2:#18181B;--border:#26262B;--line:#1C1C20;--ink:#F4F4F5;--ink-2:#A1A1AA;--ink-3:#71717A;--pos:#8FD9AE;--gut:clamp(16px,5vw,32px)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 Geist,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--pos);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:1120px;margin:0 auto;padding:0 var(--gut)}
+.top{position:sticky;top:0;z-index:20;background:rgba(11,11,12,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);font-weight:600;font-size:17px}.brand:hover{text-decoration:none}
+.brand svg{width:34px;height:34px;border-radius:10px;background:#141416;border:1px solid var(--border)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border-radius:12px;font-weight:600;font-size:14.5px}
+.btn:hover{text-decoration:none}
+.btn-pri{background:var(--ink);color:#0B0B0C}.btn-sec{border:1px solid var(--border);color:var(--ink);background:var(--surface)}
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero:before{content:"";position:absolute;right:-180px;top:-200px;width:620px;height:620px;border-radius:50%;background:radial-gradient(closest-side,rgba(143,217,174,.12),transparent)}
+.hero .wrap{position:relative;padding-top:clamp(40px,7vw,72px);padding-bottom:clamp(32px,5vw,48px)}
+.tabs{display:inline-flex;gap:4px;padding:4px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.tabs a{padding:8px 16px;border-radius:10px;color:var(--ink-2);font-size:14.5px;font-weight:500}.tabs a:hover{text-decoration:none;color:var(--ink)}
+.tabs a.on{background:var(--ink);color:#0B0B0C}
+h1{font-size:clamp(34px,5.4vw,52px);line-height:1.08;letter-spacing:-.035em;font-weight:600;margin:26px 0 0}
+.upd{color:var(--ink-3);font-size:14.5px;margin:12px 0 0}
+.sum{margin:28px 0 0;max-width:760px;padding:20px 22px;border-radius:18px;border:1px solid rgba(143,217,174,.28);background:linear-gradient(160deg,rgba(143,217,174,.09),var(--surface) 60%);font-size:16.5px;line-height:1.65}
+.sum b{color:var(--ink)}
+.grid{display:grid;grid-template-columns:240px minmax(0,1fr);gap:56px;padding-top:44px;padding-bottom:40px}
+.toc{position:sticky;top:92px;align-self:start}
+.toc p{margin:0 0 10px;font-size:13.5px;color:var(--ink-3)}
+.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.toc a{display:flex;gap:10px;padding:7px 10px;border-radius:10px;color:var(--ink-2);font-size:14px;line-height:1.4}
+.toc a span{color:var(--ink-3);min-width:16px;font-variant-numeric:tabular-nums}
+.toc a:hover,.toc a.on{background:var(--surface);color:var(--ink);text-decoration:none}.toc a.on span{color:var(--pos)}
+.doc{max-width:700px}
+.ls{padding:6px 0 26px;scroll-margin-top:84px}.ls+.ls{border-top:1px solid var(--line);padding-top:26px}
+.ls h2{display:flex;align-items:center;gap:12px;font-size:21px;line-height:1.3;letter-spacing:-.02em;font-weight:600;margin:0 0 10px}
+.ln{width:28px;height:28px;border-radius:8px;background:var(--pos);color:#0B0B0C;font-size:13.5px;font-weight:600;display:grid;place-items:center;flex:none}
+.ls p,.ls li{color:var(--ink-2);font-size:16px}.ls p{margin:10px 0 0}.ls b{color:var(--ink);font-weight:600}.ls i{color:var(--ink)}
+.ls ul{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.ls li{position:relative;padding-left:20px}.ls li:before{content:"";position:absolute;left:2px;top:13px;width:8px;height:1.5px;background:#52525B}
+.help{margin:34px 0 0;padding:24px;border-radius:20px;border:1px solid var(--border);background:var(--surface);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.help b{display:block;font-size:18px}.help span{color:var(--ink-2);font-size:15px}
+.help .acts{display:flex;flex-wrap:wrap;gap:10px}
+.wa-b{background:#25D366;color:#06210f}
+footer{border-top:1px solid var(--line)}footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;padding-top:24px;padding-bottom:calc(28px + env(safe-area-inset-bottom));font-size:14px;color:var(--ink-3)}
+footer a{color:var(--ink-2)}
+.tocm{display:none}
+@media (max-width:900px){
+ .grid{grid-template-columns:1fr;gap:0;padding-top:24px}
+ .toc{display:none}
+ .tocm{display:block;margin:0 0 18px;border:1px solid var(--border);border-radius:16px;background:var(--surface)}
+ .tocm summary{list-style:none;cursor:pointer;padding:14px 18px;font-weight:600;font-size:15px;display:flex;justify-content:space-between}
+ .tocm summary::-webkit-details-marker{display:none}
+ .tocm summary:after{content:"+";color:var(--ink-3);font-weight:400;font-size:20px;line-height:1}
+ .tocm[open] summary:after{content:"–"}
+ .tocm ol{list-style:none;margin:0;padding:0 8px 10px}
+ .tocm a{display:flex;gap:10px;padding:8px 10px;border-radius:10px;color:var(--ink-2);font-size:14.5px}
+ .tocm a span{color:var(--ink-3);min-width:18px}
+ .help{flex-direction:column;align-items:flex-start}
+}
+@media (max-width:480px){.ls h2{font-size:19px}.ls p,.ls li{font-size:15.5px}}
+</style></head><body>
+<header class="top"><div class="wrap"><a class="brand" href="./" aria-label="Quita, página inicial"><svg viewBox="18 18 72 72"><path d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z" fill="#F4F4F5" transform="translate(54 54) scale(.7) translate(-54 -54)"/><path d="M56.87 63.00 L64.87 71.00 L78.37 57.50" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" transform="translate(54 54) scale(.7) translate(-54 -54)"/></svg>Quita</a><a class="btn btn-sec" href="./"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Voltar ao Quita</a></div></header>
+<section class="hero"><div class="wrap">
+<nav class="tabs" aria-label="Documentos"><a href="privacidade.html" class="on" aria-current="page">Privacidade</a><a href="termos.html">Termos de uso</a></nav>
+<h1>Política de Privacidade</h1><p class="upd">Última atualização: 6 de outubro de 2026</p>
+<div class="sum"><b>Resumo:</b> seus dados financeiros ficam no seu celular e, se você quiser, numa planilha dentro da <b>sua própria conta Google</b>. Não temos servidor que guarde suas finanças, não vendemos dados e não exibimos anúncios.</div>
+</div></section>
+<main class="wrap grid">
+<aside class="toc"><p>Nesta página</p><ol><li><a href="#s1"><span>1</span>Quem é o responsável</a></li><li><a href="#s2"><span>2</span>Quais dados o app usa</a></li><li><a href="#s3"><span>3</span>Onde os dados ficam</a></li><li><a href="#s4"><span>4</span>Uso dos dados do Google</a></li><li><a href="#s5"><span>5</span>Assinatura e controle de acesso</a></li><li><a href="#s6"><span>6</span>Compartilhamento</a></li><li><a href="#s7"><span>7</span>Segurança</a></li><li><a href="#s8"><span>8</span>Seus direitos</a></li><li><a href="#s9"><span>9</span>Por quanto tempo guardamos</a></li><li><a href="#s10"><span>10</span>Crianças</a></li><li><a href="#s11"><span>11</span>Mudanças nesta política</a></li></ol></aside>
+<div class="doc">
+<details class="tocm"><summary>Nesta página</summary><ol><li><a href="#s1"><span>1</span>Quem é o responsável</a></li><li><a href="#s2"><span>2</span>Quais dados o app usa</a></li><li><a href="#s3"><span>3</span>Onde os dados ficam</a></li><li><a href="#s4"><span>4</span>Uso dos dados do Google</a></li><li><a href="#s5"><span>5</span>Assinatura e controle de acesso</a></li><li><a href="#s6"><span>6</span>Compartilhamento</a></li><li><a href="#s7"><span>7</span>Segurança</a></li><li><a href="#s8"><span>8</span>Seus direitos</a></li><li><a href="#s9"><span>9</span>Por quanto tempo guardamos</a></li><li><a href="#s10"><span>10</span>Crianças</a></li><li><a href="#s11"><span>11</span>Mudanças nesta política</a></li></ol></details>
+<section class="ls" id="s1"><h2><span class="ln">1</span>Quem é o responsável</h2><p>O aplicativo Quita é desenvolvido e mantido por <b>Willams Dantas</b>, responsável pelo tratamento dos dados descritos nesta política, nos termos da Lei Geral de Proteção de Dados (Lei nº 13.709/2018 – LGPD).</p>
+<p>Contato: <a href="mailto:willamsdanttas@gmail.com">willamsdanttas@gmail.com</a> · WhatsApp <a href="https://wa.me/5582998108786">(82) 99810-8786</a></p></section><section class="ls" id="s2"><h2><span class="ln">2</span>Quais dados o app usa</h2><ul>
 <li><b>Dados financeiros que você cadastra:</b> dívidas, parcelas, receitas, despesas, metas, categorias e anotações.</li>
 <li><b>Conta Google (opcional):</b> quando você escolhe "Entrar com Google", o app recebe o seu endereço de e-mail e uma autorização de acesso limitada ao Google Drive (escopo <i>drive.file</i>).</li>
 <li><b>Preferências do app:</b> tema, PIN de bloqueio, horário dos lembretes e configurações semelhantes.</li>
 </ul>
-<p>O app não coleta localização, contatos, fotos, dados bancários ou senhas de banco.</p>
-
-<h2>3. Onde os dados ficam</h2>
-<ul>
+<p>O app não coleta localização, contatos, fotos, dados bancários ou senhas de banco.</p></section><section class="ls" id="s3"><h2><span class="ln">3</span>Onde os dados ficam</h2><ul>
 <li><b>No seu celular:</b> todos os dados ficam guardados no próprio aparelho.</li>
 <li><b>Na sua conta Google (se você entrar):</b> o app cria uma planilha no seu Google Drive e mantém nela uma cópia dos seus dados, para você não perder nada ao trocar de celular. Essa planilha pertence a você e fica visível só para você, a menos que você mesmo a compartilhe.</li>
 <li><b>Cópias de segurança locais:</b> o app pode salvar cópias semanais na pasta Downloads/Quita do seu aparelho.</li>
 </ul>
-<p>O desenvolvedor <b>não tem acesso</b> à sua planilha nem aos seus dados financeiros.</p>
-
-<h2>4. Uso dos dados do Google</h2>
-<p>A autorização <i>drive.file</i> permite ao Quita acessar <b>somente os arquivos que o próprio app criou</b>. O app não lê, não altera e não vê nenhum outro arquivo do seu Google Drive.</p>
-<p>O uso e a transferência de informações recebidas das APIs do Google seguem a <a href="https://developers.google.com/terms/api-services-user-data-policy">Política de Dados do Usuário dos Serviços de API do Google</a>, incluindo os requisitos de Uso Limitado. Esses dados são usados apenas para salvar e restaurar as suas próprias informações no app, nunca para publicidade, venda ou treinamento de modelos de inteligência artificial.</p>
-
-<h2>5. Assinatura e controle de acesso</h2>
-<p>Para verificar se a sua assinatura está ativa, o app pode consultar o seu e-mail numa lista de acessos liberados. Esse processo usa apenas o e-mail e a situação da assinatura informada pela plataforma onde você comprou. Seus dados financeiros nunca são enviados nessa verificação.</p>
-
-<h2>6. Compartilhamento</h2>
-<p>Não vendemos, alugamos nem compartilhamos seus dados com terceiros para fins comerciais. Os únicos serviços envolvidos são o Google (quando você usa o login e a planilha) e a plataforma de pagamento da assinatura, cada um com a sua própria política de privacidade.</p>
-
-<h2>7. Segurança</h2>
-<ul>
+<p>O desenvolvedor <b>não tem acesso</b> à sua planilha nem aos seus dados financeiros.</p></section><section class="ls" id="s4"><h2><span class="ln">4</span>Uso dos dados do Google</h2><p>A autorização <i>drive.file</i> permite ao Quita acessar <b>somente os arquivos que o próprio app criou</b>. O app não lê, não altera e não vê nenhum outro arquivo do seu Google Drive.</p>
+<p>O uso e a transferência de informações recebidas das APIs do Google seguem a <a href="https://developers.google.com/terms/api-services-user-data-policy">Política de Dados do Usuário dos Serviços de API do Google</a>, incluindo os requisitos de Uso Limitado. Esses dados são usados apenas para salvar e restaurar as suas próprias informações no app, nunca para publicidade, venda ou treinamento de modelos de inteligência artificial.</p></section><section class="ls" id="s5"><h2><span class="ln">5</span>Assinatura e controle de acesso</h2><p>Para verificar se a sua assinatura está ativa, o app pode consultar o seu e-mail numa lista de acessos liberados. Esse processo usa apenas o e-mail e a situação da assinatura informada pela plataforma onde você comprou. Seus dados financeiros nunca são enviados nessa verificação.</p></section><section class="ls" id="s6"><h2><span class="ln">6</span>Compartilhamento</h2><p>Não vendemos, alugamos nem compartilhamos seus dados com terceiros para fins comerciais. Os únicos serviços envolvidos são o Google (quando você usa o login e a planilha) e a plataforma de pagamento da assinatura, cada um com a sua própria política de privacidade.</p></section><section class="ls" id="s7"><h2><span class="ln">7</span>Segurança</h2><ul>
 <li>Bloqueio do app por PIN ou digital, feito no próprio aparelho.</li>
 <li>Comunicação com o Google por conexão criptografada (HTTPS).</li>
 <li>Modo de esconder valores na tela.</li>
-</ul>
-
-<h2>8. Seus direitos</h2>
-<p>Pela LGPD, você pode, a qualquer momento:</p>
+</ul></section><section class="ls" id="s8"><h2><span class="ln">8</span>Seus direitos</h2><p>Pela LGPD, você pode, a qualquer momento:</p>
 <ul>
 <li>acessar e exportar seus dados (pelo próprio app ou abrindo a planilha);</li>
 <li>corrigir qualquer informação cadastrada;</li>
 <li>apagar seus dados: em Ajustes → apagar dados, ou excluindo a planilha do seu Drive;</li>
 <li>desconectar a conta Google em Ajustes ou em <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>;</li>
 <li>tirar dúvidas ou fazer pedidos pelo contato do item 1.</li>
-</ul>
-
-<h2>9. Por quanto tempo guardamos</h2>
-<p>Os dados ficam no seu aparelho e na sua conta Google enquanto você quiser. Ao desinstalar o app, os dados do aparelho são apagados; a planilha no Drive continua sua até você excluí-la. O e-mail usado na verificação de assinatura é mantido enquanto houver assinatura e pelo prazo exigido por lei.</p>
-
-<h2>10. Crianças</h2>
-<p>O Quita não é destinado a menores de 18 anos.</p>
-
-<h2>11. Mudanças nesta política</h2>
-<p>Esta política pode ser atualizada. A data no topo indica a versão mais recente, e mudanças importantes serão avisadas dentro do app.</p>
-
-<footer>Quita · desenvolvido e mantido por Willams Dantas · <a href="termos.html">Termos de Uso</a></footer>
-</main></body></html>
+</ul></section><section class="ls" id="s9"><h2><span class="ln">9</span>Por quanto tempo guardamos</h2><p>Os dados ficam no seu aparelho e na sua conta Google enquanto você quiser. Ao desinstalar o app, os dados do aparelho são apagados; a planilha no Drive continua sua até você excluí-la. O e-mail usado na verificação de assinatura é mantido enquanto houver assinatura e pelo prazo exigido por lei.</p></section><section class="ls" id="s10"><h2><span class="ln">10</span>Crianças</h2><p>O Quita não é destinado a menores de 18 anos.</p></section><section class="ls" id="s11"><h2><span class="ln">11</span>Mudanças nesta política</h2><p>Esta política pode ser atualizada. A data no topo indica a versão mais recente, e mudanças importantes serão avisadas dentro do app.</p></section>
+<div class="help"><div><b>Ficou alguma dúvida?</b><span>Fale direto com o responsável pelo Quita.</span></div><div class="acts"><a class="btn wa-b" href="https://wa.me/5582998108786?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Quita.">WhatsApp</a><a class="btn btn-sec" href="mailto:willamsdanttas@gmail.com">E-mail</a></div></div>
+</div></main>
+<footer><div class="wrap"><span>© 2026 Quita · Willams Dantas</span><span><a href="termos.html">Termos de uso</a> · <a href="./">Página do Quita</a></span></div></footer>
+<script>(function(){var L=[].slice.call(document.querySelectorAll('.toc a')),S=L.map(function(a){return document.querySelector(a.getAttribute('href'))});
+function u(){var k=0;S.forEach(function(s,i){if(s.getBoundingClientRect().top<140)k=i});L.forEach(function(a,i){a.classList.toggle('on',i===k)})}
+addEventListener('scroll',u,{passive:true});u();
+[].forEach.call(document.querySelectorAll('.tocm a'),function(a){a.addEventListener('click',function(){a.closest('details').open=false})})})();</script>
+</body></html>

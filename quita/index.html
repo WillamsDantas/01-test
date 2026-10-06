@@ -471,6 +471,24 @@ footer nav a:hover{color:var(--ink)}
  .seg button{flex:1 1 auto;justify-content:center;padding:0 8px;font-size:14px;gap:5px}
  .seg button i{font-size:10.5px;padding:2px 5px}
 }
+
+/* para quem é */
+.pq{max-width:780px}
+.pq .tl-i{grid-template-columns:1fr;padding-bottom:34px}
+.pq-t h3{font-size:20px;line-height:1.3;margin:0 0 6px;letter-spacing:-.02em;text-wrap:balance}
+.pq-t p{margin:0;color:var(--ink-2);font-size:15.5px;line-height:1.6;text-wrap:pretty}
+.pq .tl-dot{top:5px}
+@media (max-width:700px){.pq-t h3{font-size:18px}.pq-t p{font-size:15px}}
+/* depoimentos */
+.dps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:40px}
+.dp{margin:0;display:flex;flex-direction:column;padding:26px 26px 22px;border:1px solid #232328;border-radius:22px;background:linear-gradient(180deg,#151518,#111113)}
+.dp-q{width:26px;height:26px;fill:#8FD9AE;opacity:.85}
+.dp blockquote{margin:16px 0 0;font-size:16px;line-height:1.6;color:var(--ink);text-wrap:pretty;flex:1}
+.dp-r{margin:18px 0 0;padding-top:14px;border-top:1px solid #222227;font-size:14px;color:var(--pos)}
+.dp figcaption{display:flex;align-items:center;gap:12px;margin-top:16px}
+.dp-av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#1f2a24;color:#8FD9AE;font-weight:600;flex:none}
+.dp figcaption b{display:block;font-size:15px;font-weight:600}.dp figcaption small{display:block;font-size:13px;color:var(--ink-3);margin-top:1px}
+@media (max-width:900px){.dps{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(280px,82%);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:28px calc(var(--gut) * -1) 0;padding:0 var(--gut) 6px}.dps::-webkit-scrollbar{display:none}.dp{scroll-snap-align:center}}
 </style>
 </head>
 <body>
@@ -599,6 +617,16 @@ footer nav a:hover{color:var(--ink)}
   </div>
 </section>
 
+<section class="band" id="praquem" style="overflow:hidden">
+  <div class="wrap pad">
+    <div class="head c rv">
+      <h2 class="h2">O Quita é para você se…</h2>
+      <p class="lead">Se você se reconheceu em pelo menos um destes, ele foi feito para você.</p>
+    </div>
+    <ol class="tl pq" id="pq"><span class="tl-track"><i id="pqFill"></i></span><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Paga várias parcelas e não sabe quando elas acabam</h3><p>O Quita mostra cada parcela mês a mês e o mês exato em que a última termina. Você para de pagar no escuro.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Fecha o mês no cheque especial</h3><p>Antes de o mês começar, você vê se a renda cobre tudo. Se não cobre, enxerga onde está o furo e quanto falta.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Já pagou multa por esquecer um boleto</h3><p>O app avisa antes de cada conta e parcela vencer, no horário que você escolher. Uma multa evitada já paga o mês.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Já tentou planilha ou caderno e largou</h3><p>Você cadastra uma vez e o Quita repete as contas fixas e calcula tudo sozinho, todo mês. Sem fórmula e sem montar nada.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Não entende de finanças e nem quer entender</h3><p>A linguagem é simples: entrou, saiu, sobrou. Nada de termos difíceis nem gráficos complicados.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Não quer dar a senha do banco para nenhum app</h3><p>O Quita não se conecta a banco. Você cadastra só o que quer acompanhar, e tudo fica salvo na sua conta Google.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Tem muitas dívidas e não sabe por onde começar</h3><p>Ele mostra qual dívida atacar primeiro e quanto você economiza antecipando parcelas. Você sai da paralisia e começa.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Quer sair do vermelho e começar uma reserva</h3><p>Crie metas com valor e prazo e veja quanto guardar por mês. O próximo imprevisto não vira dívida nova.</p></div></li></ol>
+  </div>
+</section>
+
 <section class="band" id="duvidas" style="overflow:hidden">
   <div class="wrap pad faq-wrap">
     <div class="faq-side rv">
@@ -625,7 +653,29 @@ footer nav a:hover{color:var(--ink)}
   </div>
 </section>
 
-<section class="band alt" id="planos" style="overflow:hidden">
+<section class="band alt" id="depoimentos" style="overflow:hidden">
+  <div class="wrap pad">
+    <div class="head c rv">
+      <h2 class="h2">Quem já organizou o mês com o Quita conta como foi.</h2>
+      <p class="lead">Pessoas comuns, com parcela, cartão e conta para pagar.</p>
+    </div>
+    <div class="dps"><figure class="dp"><svg class="dp-q" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 11H6.2c.3-2.6 1.6-4 3.8-4.6V4C5.9 4.7 4 7.5 4 12v6h6zm10 0h-3.8c.3-2.6 1.6-4 3.8-4.6V4c-4.1.7-6 3.5-6 8v6h6z"/></svg>
+<blockquote>[Depoimento real do cliente, nas palavras dele. Duas a quatro frases contando como era antes e o que mudou com o Quita.]</blockquote><p class="dp-r">[Resultado em uma linha]</p>
+<figcaption><span class="dp-av">A</span><span><b>[Nome do cliente]</b><small>[Cidade · usa o Quita há X meses]</small></span></figcaption></figure><figure class="dp"><svg class="dp-q" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 11H6.2c.3-2.6 1.6-4 3.8-4.6V4C5.9 4.7 4 7.5 4 12v6h6zm10 0h-3.8c.3-2.6 1.6-4 3.8-4.6V4c-4.1.7-6 3.5-6 8v6h6z"/></svg>
+<blockquote>[Depoimento real do cliente, nas palavras dele. Duas a quatro frases contando como era antes e o que mudou com o Quita.]</blockquote><p class="dp-r">[Resultado em uma linha]</p>
+<figcaption><span class="dp-av">B</span><span><b>[Nome do cliente]</b><small>[Cidade · usa o Quita há X meses]</small></span></figcaption></figure><figure class="dp"><svg class="dp-q" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 11H6.2c.3-2.6 1.6-4 3.8-4.6V4C5.9 4.7 4 7.5 4 12v6h6zm10 0h-3.8c.3-2.6 1.6-4 3.8-4.6V4c-4.1.7-6 3.5-6 8v6h6z"/></svg>
+<blockquote>[Depoimento real do cliente, nas palavras dele. Duas a quatro frases contando como era antes e o que mudou com o Quita.]</blockquote><p class="dp-r">[Resultado em uma linha]</p>
+<figcaption><span class="dp-av">C</span><span><b>[Nome do cliente]</b><small>[Cidade · usa o Quita há X meses]</small></span></figcaption></figure><figure class="dp"><svg class="dp-q" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 11H6.2c.3-2.6 1.6-4 3.8-4.6V4C5.9 4.7 4 7.5 4 12v6h6zm10 0h-3.8c.3-2.6 1.6-4 3.8-4.6V4c-4.1.7-6 3.5-6 8v6h6z"/></svg>
+<blockquote>[Depoimento real do cliente, nas palavras dele. Duas a quatro frases contando como era antes e o que mudou com o Quita.]</blockquote><p class="dp-r">[Resultado em uma linha]</p>
+<figcaption><span class="dp-av">D</span><span><b>[Nome do cliente]</b><small>[Cidade · usa o Quita há X meses]</small></span></figcaption></figure><figure class="dp"><svg class="dp-q" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 11H6.2c.3-2.6 1.6-4 3.8-4.6V4C5.9 4.7 4 7.5 4 12v6h6zm10 0h-3.8c.3-2.6 1.6-4 3.8-4.6V4c-4.1.7-6 3.5-6 8v6h6z"/></svg>
+<blockquote>[Depoimento real do cliente, nas palavras dele. Duas a quatro frases contando como era antes e o que mudou com o Quita.]</blockquote><p class="dp-r">[Resultado em uma linha]</p>
+<figcaption><span class="dp-av">E</span><span><b>[Nome do cliente]</b><small>[Cidade · usa o Quita há X meses]</small></span></figcaption></figure><figure class="dp"><svg class="dp-q" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 11H6.2c.3-2.6 1.6-4 3.8-4.6V4C5.9 4.7 4 7.5 4 12v6h6zm10 0h-3.8c.3-2.6 1.6-4 3.8-4.6V4c-4.1.7-6 3.5-6 8v6h6z"/></svg>
+<blockquote>[Depoimento real do cliente, nas palavras dele. Duas a quatro frases contando como era antes e o que mudou com o Quita.]</blockquote><p class="dp-r">[Resultado em uma linha]</p>
+<figcaption><span class="dp-av">F</span><span><b>[Nome do cliente]</b><small>[Cidade · usa o Quita há X meses]</small></span></figcaption></figure></div>
+  </div>
+</section>
+
+<section class="band" id="planos" style="overflow:hidden">
   <div class="wrap" id="comprar" style="padding-top:var(--sec);padding-bottom:var(--sec);scroll-margin-top:80px">
     <div class="buy-head rv">
       <h2 class="h2"><span class="nw">Menos de R$&nbsp;0,41 por&nbsp;dia</span> <span class="nw">para ter o controle de volta.</span></h2>
@@ -927,5 +977,8 @@ addEventListener('scroll',u,{passive:true});addEventListener('resize',u);u()})()
 function go(i,foco){i=(i+bs.length)%bs.length;if(i===cur&&!foco)return;cur=i;bs.forEach(function(b,k){var on=k===i;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
 ps.forEach(function(p,k){var on=k===i;p.classList.toggle('on',on);p.hidden=!on});var b=bs[i],sh=b.parentNode;if(sh.scrollWidth>sh.clientWidth)sh.scrollTo({left:b.offsetLeft-(sh.clientWidth-b.offsetWidth)/2,behavior:'smooth'})}
 bs.forEach(function(b,k){b.addEventListener('click',function(){go(k)})});
-ps.forEach(function(p){p.querySelector('.gp-p').addEventListener('click',function(){go(cur-1,1)});p.querySelector('.gp-n').addEventListener('click',function(){go(cur+1,1)})})})();</script></body>
+ps.forEach(function(p){p.querySelector('.gp-p').addEventListener('click',function(){go(cur-1,1)});p.querySelector('.gp-n').addEventListener('click',function(){go(cur+1,1)})})})();</script><script>(function(){var tl=document.getElementById('pq');if(!tl)return;var f=document.getElementById('pqFill'),it=[].slice.call(tl.querySelectorAll('.tl-i'));
+function u(){var r=tl.getBoundingClientRect(),mark=innerHeight*0.62;var p=Math.max(0,Math.min(1,(mark-r.top)/r.height));f.style.height=(p*100)+'%';
+it.forEach(function(e){e.classList.toggle('on',e.querySelector('.tl-dot').getBoundingClientRect().top<mark)})}
+addEventListener('scroll',u,{passive:true});addEventListener('resize',u);u()})();</script></body>
 </html>
