@@ -1,9 +1,482 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quita · Controle financeiro</title>
-<style>:root{--bg:#111113;--card:#18181B;--line:#2A2A2F;--ink:#F4F4F5;--ink2:#A1A1AA;--pos:#8FD9AE}@media (prefers-color-scheme:light){:root{--bg:#F3F4F6;--card:#fff;--line:#E4E6EA;--ink:#0F1012;--ink2:#585C64;--pos:#2F9E64}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px 16px}
-.c{max-width:420px;text-align:center}svg{width:84px;height:84px;border-radius:22px;background:#141416}h1{margin:16px 0 4px;font-size:28px}p{color:var(--ink2);margin:0 0 24px}
-a.b{display:block;padding:14px;border:1px solid var(--line);background:var(--card);border-radius:14px;color:var(--ink);text-decoration:none;font-weight:600;margin:10px 0}small{display:block;margin-top:24px;color:var(--ink2)}</style></head><body><div class="c">
-<svg viewBox="18 18 72 72"><g transform="translate(54 54) scale(.7) translate(-54 -54)"><path d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z" fill="#F4F4F5"/><path d="M56.87 63.00 L64.87 71.00 L78.37 57.50" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
-<h1>Quita</h1><p>Controle de dívidas, parcelas e finanças pessoais, com seus dados protegidos na sua própria conta Google.</p>
-<a class="b" href="privacidade.html">Política de Privacidade</a><a class="b" href="termos.html">Termos de Uso</a>
-<small>Desenvolvido e mantido por Willams Dantas · <a href="mailto:willamsdanttas@gmail.com" style="color:var(--pos)">willamsdanttas@gmail.com</a></small></div></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Quita · Saiba quanto sobra no mês e quando suas dívidas acabam</title>
+<meta name="description" content="O Quita junta sua renda, suas contas fixas e suas parcelas num lugar só. Veja o que entra, o que sai, o que sobra e quando você fica livre das dívidas.">
+<meta name="theme-color" content="#0B0B0C">
+<meta property="og:title" content="Quita · Seu mês e suas dívidas sob controle">
+<meta property="og:description" content="Saiba quanto sobra no mês e quando você fica livre das dívidas.">
+<meta property="og:image" content="https://willamsdantas.github.io/01-test/quita/img/og.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1 1 106 106'%3E%3Crect x='1' y='1' width='106' height='106' rx='26' fill='%23141416'/%3E%3Cpath d='M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z' fill='%23F4F4F5'/%3E%3Cpath d='M56.87 63.00 L64.87 71.00 L78.37 57.50' fill='none' stroke='%238FD9AE' stroke-width='8.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0B0C;--bg-2:#0E0E10;--surface:#131316;--surface-2:#18181B;--surface-3:#28282D;
+  --line:#1C1C20;--border:#26262B;--border-2:#34343B;
+  --ink:#F4F4F5;--ink-2:#A1A1AA;--ink-3:#71717A;
+  --pos:#8FD9AE;--pos-soft:rgba(143,217,174,.12);
+  --wrap:1200px;--gut:clamp(18px,5vw,24px);--sec:clamp(64px,10vw,112px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Geist",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--pos);outline-offset:3px;border-radius:8px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gut)}
+.eyebrow{font-family:"Geist Mono",ui-monospace,monospace;font-size:12.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--pos)}
+.h2{margin:14px 0 0;font-size:clamp(28px,4.2vw,46px);line-height:1.1;letter-spacing:-.03em;font-weight:600;text-wrap:balance}
+.lead{color:var(--ink-2);font-size:clamp(16px,1.6vw,17.5px);line-height:1.6}
+.ic{width:20px;height:20px;flex:none}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:14px;font-weight:600;font-size:16px;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .2s ease,background .2s,border-color .2s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn-pri{background:var(--ink);color:#0B0B0C}
+.btn-pri:hover{background:#fff}
+.btn-sec{background:var(--surface);border-color:var(--border);color:var(--ink);font-weight:500}
+.btn-sec:hover{border-color:#44444C;background:var(--surface-2)}
+.btn-sm{min-height:42px;padding:0 16px;font-size:14.5px;border-radius:12px}
+
+.top{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.72);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid transparent;transition:border-color .3s}
+.top.sc{border-bottom-color:var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:18px;letter-spacing:-.02em}
+.logo{width:36px;height:36px;border-radius:11px;background:#141416;border:1px solid var(--border);display:grid;place-items:center;overflow:hidden;flex:none}
+.logo svg{width:100%;height:100%}
+.nav{display:flex;gap:28px;font-size:14.5px}
+.nav a{color:var(--ink-2);text-decoration:none;transition:color .2s}
+.nav a:hover{color:var(--ink)}
+
+.hero{position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);pointer-events:none}
+.glow{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(143,217,174,.16),transparent 65%)}
+.hero .wrap{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:clamp(40px,6vw,64px);padding-top:clamp(40px,8vw,96px);padding-bottom:clamp(56px,9vw,104px)}
+.hero-tx{flex:1 1 480px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 9px;border:1px solid var(--border);background:#141416;border-radius:999px;font-size:13px;color:var(--ink-2);max-width:100%}
+.pill b{font-weight:500}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--pos);flex:none;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(143,217,174,.45)}50%{box-shadow:0 0 0 7px rgba(143,217,174,0)}}
+.hero h1{margin:22px 0 0;font-size:clamp(36px,6vw,64px);line-height:1.04;letter-spacing:-.035em;font-weight:600;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--pos)}
+.hero .lead{margin:20px 0 0;max-width:540px;font-size:clamp(16.5px,1.7vw,19px)}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.trust{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:30px;font-size:14px;color:var(--ink-2)}
+.trust span{display:inline-flex;align-items:center;gap:8px}
+.trust .ic{width:17px;height:17px;color:var(--pos)}
+
+.hero-art{flex:1 1 380px;min-width:0;display:flex;justify-content:center}
+.stage{position:relative;width:min(310px,72vw)}
+.phone{position:relative;border-radius:clamp(36px,11vw,46px);background:#050506;padding:clamp(8px,2.6vw,11px);border:1px solid #2E2E34;box-shadow:0 40px 90px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.04)}
+.phone img{width:100%;height:auto;aspect-ratio:390/844;object-fit:cover;object-position:top;border-radius:clamp(28px,9vw,36px);background:#111113}
+.float{position:absolute;padding:13px 15px;border-radius:16px;background:rgba(24,24,27,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid #2E2E34;box-shadow:0 18px 40px rgba(0,0,0,.45);animation:float 6s ease-in-out infinite}
+.f1{left:-118px;top:118px;width:190px}
+.f2{right:-108px;bottom:120px;display:flex;align-items:center;gap:12px;animation-delay:-2.5s;animation-duration:7s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.f-k{font-size:12px;color:var(--ink-2)}
+.f-v{font-size:24px;font-weight:600;letter-spacing:-.02em;color:var(--pos);margin-top:2px}
+.f-bar{height:5px;border-radius:9px;background:var(--surface-3);margin-top:10px;overflow:hidden}
+.f-bar i{display:block;height:100%;width:56%;background:var(--pos);border-radius:9px}
+.f-s{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.f-ic{width:38px;height:38px;border-radius:11px;background:var(--pos-soft);display:grid;place-items:center;color:var(--pos);flex:none}
+.f-ic .ic{width:19px;height:19px}
+.f-t{font-size:16px;font-weight:600;white-space:nowrap}
+
+section{position:relative}
+.band{border-top:1px solid var(--line)}
+.alt{background:var(--bg-2)}
+.pad{padding-top:var(--sec);padding-bottom:var(--sec)}
+.head{max-width:640px}
+.head.c{text-align:center;margin:0 auto}
+.head .lead{margin:14px 0 0}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin-top:40px}
+.step{padding:20px;border-radius:18px;border:1px solid var(--border);background:var(--surface);display:flex;gap:16px;align-items:flex-start}
+.step .n{font-family:"Geist Mono",monospace;font-size:13px;color:#0B0B0C;background:var(--pos);width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none}
+.step b{display:block;font-size:16.5px;font-weight:600}
+.step p{margin:4px 0 0;color:var(--ink-2);font-size:14.5px;line-height:1.5}
+
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;margin-top:14px}
+.card{padding:clamp(22px,4vw,28px);border-radius:20px;border:1px solid var(--border);background:linear-gradient(180deg,#151518,#111113);transition:border-color .25s,transform .25s,opacity .7s ease}
+.card:hover{border-color:var(--border-2)}
+.card .ib{width:46px;height:46px;border-radius:13px;background:var(--pos-soft);display:grid;place-items:center;color:var(--pos)}
+.card .ib .ic{width:22px;height:22px}
+.card h3{margin:18px 0 0;font-size:19px;font-weight:600;letter-spacing:-.01em}
+.card p{margin:8px 0 0;color:var(--ink-2);font-size:15px;line-height:1.55}
+
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:30px}
+.chip{min-height:42px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:500;cursor:pointer;background:var(--surface);color:var(--ink-2);border:1px solid var(--border);transition:all .2s}
+.chip:hover{color:var(--ink);border-color:var(--border-2)}
+.chip[aria-selected="true"]{background:var(--ink);color:#0B0B0C;border-color:var(--ink)}
+.car{--w:280px;position:relative;height:calc(var(--w) * 844 / 390 + 26px);margin-top:36px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.slide{position:absolute;left:50%;top:0;width:var(--w);margin-left:calc(var(--w) / -2);transition:transform .6s cubic-bezier(.2,.7,.2,1),opacity .6s ease,filter .6s ease;will-change:transform}
+.slide .phone{border-radius:44px;padding:10px;box-shadow:0 34px 80px rgba(0,0,0,.6)}
+.slide .phone img{border-radius:35px;pointer-events:none}
+.arw{position:absolute;top:50%;margin-top:-26px;z-index:30;width:52px;height:52px;border-radius:50%;border:1px solid #2E2E34;background:rgba(20,20,22,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:transform .2s,border-color .2s}
+.arw:hover{border-color:#44444C;transform:scale(1.05)}
+.arw.l{left:calc(50% - var(--w) / 2 - 76px)}
+.arw.r{right:calc(50% - var(--w) / 2 - 76px)}
+.cap{text-align:center;margin-top:26px;min-height:96px}
+.cap b{display:block;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.cap p{margin:8px auto 0;color:var(--ink-2);font-size:16px;line-height:1.55;max-width:520px}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:14px}
+.dots button{width:8px;height:8px;padding:0;border:0;border-radius:9px;background:#3A3A42;cursor:pointer;transition:all .3s ease;position:relative}
+.dots button::after{content:"";position:absolute;inset:-12px -4px}
+.dots button[aria-current="true"]{width:28px;background:var(--pos)}
+
+.split{display:flex;flex-wrap:wrap;gap:clamp(32px,5vw,48px);align-items:center}
+.split>div{flex:1 1 420px;min-width:0}
+.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:14px}
+.mini .card{background:var(--surface);padding:22px}
+.mini .card>.ic{width:24px;height:24px;color:var(--pos)}
+.mini b{display:block;font-size:16.5px;font-weight:600;margin-top:14px}
+.mini p{margin:4px 0 0;font-size:14.5px}
+
+.faq-wrap{display:flex;flex-wrap:wrap;gap:clamp(28px,5vw,48px)}
+.faq-side{flex:1 1 300px;min-width:0}
+.faq{flex:2 1 520px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.q{border-radius:16px;border:1px solid var(--border);background:#111113;transition:border-color .2s,background .2s,opacity .7s ease,transform .7s ease}
+.q.on{border-color:var(--border-2);background:#141417}
+.q button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;padding:16px 20px;background:none;border:0;font-size:16.5px;font-weight:500;text-align:left;cursor:pointer}
+.q button .ic{width:18px;height:18px;color:var(--ink-2);transition:transform .3s}
+.q.on button .ic{transform:rotate(45deg);color:var(--ink)}
+.ans{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+.q.on .ans{grid-template-rows:1fr}
+.ans>div{overflow:hidden}
+.ans p{margin:0;padding:0 20px 18px;color:var(--ink-2);font-size:15.5px;line-height:1.6}
+.wa .ic{color:#25D366}
+
+.buy{position:relative;overflow:hidden;border-radius:28px;border:1px solid var(--border);background:linear-gradient(135deg,#16161A 0%,#121214 60%);padding:clamp(24px,6vw,64px);display:flex;flex-wrap:wrap;gap:28px;align-items:center;justify-content:space-between}
+.buy-tx{position:relative;flex:1 1 420px;min-width:0}
+.buy-tx h2{margin:0;font-size:clamp(26px,3.6vw,44px);line-height:1.1;letter-spacing:-.03em;font-weight:600;text-wrap:balance}
+.buy-tx p{margin:14px 0 0;max-width:520px}
+.price{position:relative;flex:1 1 300px;max-width:360px;min-width:0;padding:24px;border-radius:20px;background:var(--bg-2);border:1px solid var(--border)}
+.price .k{font-size:13px;color:var(--ink-2)}
+.price .v{font-size:36px;font-weight:600;letter-spacing:-.03em;margin-top:4px}
+.price .s{font-size:13.5px;color:var(--ink-3)}
+.price .btn{width:100%;margin-top:18px}
+.price .ok{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--ink-2)}
+.price .ok .ic{width:15px;height:15px;color:var(--pos)}
+
+footer{border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;justify-content:space-between;padding-top:26px;padding-bottom:calc(26px + env(safe-area-inset-bottom));font-size:14px;color:var(--ink-3)}
+footer .brand{font-size:14px;font-weight:400;color:var(--ink-3)}
+footer .logo{width:28px;height:28px;border-radius:9px}
+footer nav{display:flex;flex-wrap:wrap;gap:12px 22px}
+footer nav a{color:var(--ink-3);text-decoration:none}
+footer nav a:hover{color:var(--ink)}
+
+.mbar{display:none}
+
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.card.rv.in:hover{transform:translateY(-3px)}
+
+@media (max-width:1100px){.f1{left:-70px}.f2{right:-60px}}
+@media (max-width:860px){
+  .nav{display:none}
+  .f1{left:-18px;top:auto;bottom:-24px;width:168px;padding:11px 13px}
+  .f1 .f-v{font-size:20px}
+  .f2{right:-18px;top:-16px;bottom:auto;padding:10px 12px;gap:10px}
+  .f2 .f-t{font-size:14.5px}
+  .f2 .f-ic{width:32px;height:32px}
+  .car{--w:236px}
+  .arw{top:auto;bottom:-72px;margin-top:0;width:46px;height:46px}
+  .arw.l{left:calc(50% - 116px)}
+  .arw.r{right:calc(50% - 116px)}
+  .cap{margin-top:86px}
+}
+@media (max-width:560px){
+  .hero .ctas .btn{flex:1 1 100%}
+  .price{max-width:none}
+  .mbar{display:flex;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:60;transform:translateY(160%);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+  .mbar.on{transform:none}
+  .mbar .btn{flex:1;box-shadow:0 14px 40px rgba(0,0,0,.6)}
+  footer .wrap{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="qm" viewBox="1 1 106 106"><path d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z" fill="#F4F4F5"/><path d="M56.87 63.00 L64.87 71.00 L78.37 57.50" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20M6 15h3"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M7 12h10M10 18h4"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-future" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></symbol>
+  <symbol id="i-cloudok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="m9 14 2 2 4-4"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+</svg>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="Quita, início"><span class="logo"><svg><use href="#qm"/></svg></span>Quita</a>
+    <nav class="nav" aria-label="Seções">
+      <a href="#recursos">Recursos</a><a href="#telas">Telas</a><a href="#seguranca">Segurança</a><a href="#duvidas">Dúvidas</a>
+    </nav>
+    <a class="btn btn-pri btn-sm" href="#comprar">Quero o Quita</a>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="inicio">
+  <div class="hero-grid"></div>
+  <div class="glow" style="width:620px;height:620px;right:-140px;top:40px"></div>
+  <div class="wrap">
+    <div class="hero-tx">
+      <span class="pill"><span class="dot"></span><b>App para Android · finanças e dívidas</b></span>
+      <h1>Saiba quanto sobra no mês. E <em>quando você fica livre</em> das dívidas.</h1>
+      <p class="lead">O Quita junta sua renda, suas contas fixas e suas parcelas num lugar só. Você vê, mês a mês, o que entra, o que sai, o que sobra e a data em que a última parcela acaba.</p>
+      <div class="ctas">
+        <a class="btn btn-pri" href="#comprar">Quero organizar meu mês<svg class="ic"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-sec" href="#telas">Ver as telas</a>
+      </div>
+      <div class="trust">
+        <span><svg class="ic"><use href="#i-cloud"/></svg>Backup automático no Google</span>
+        <span><svg class="ic"><use href="#i-lock"/></svg>Só você vê seus dados</span>
+        <span><svg class="ic"><use href="#i-check"/></svg>Sem planilha para montar</span>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="stage">
+        <div class="glow" style="inset:-60px -80px;background:radial-gradient(closest-side,rgba(143,217,174,.13),transparent)"></div>
+        <div class="phone"><img src="img/painel.webp" alt="Painel do Quita mostrando a sobra do mês" width="390" height="844" fetchpriority="high"></div>
+        <div class="float f1" aria-hidden="true">
+          <div class="f-k">Sobra de outubro</div>
+          <div class="f-v">R$ 1.600,00</div>
+          <div class="f-bar"><i></i></div>
+          <div class="f-s">56% da renda comprometida</div>
+        </div>
+        <div class="float f2" aria-hidden="true">
+          <span class="f-ic"><svg class="ic"><use href="#i-cal"/></svg></span>
+          <span><span class="f-k" style="display:block">Livre das dívidas em</span><span class="f-t">abril de 2027</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="recursos">
+  <div class="wrap pad">
+    <div class="head rv">
+      <div class="eyebrow">Como funciona</div>
+      <h2 class="h2">Cadastre uma vez. O Quita monta todos os meses para você.</h2>
+    </div>
+    <div class="steps">
+      <div class="step rv"><span class="n">1</span><div><b>Sua renda</b><p>Salário, contratos e extras. A renda fixa entra sozinha todo mês.</p></div></div>
+      <div class="step rv"><span class="n">2</span><div><b>Suas contas fixas</b><p>Aluguel, luz, internet, com o dia de cada vencimento.</p></div></div>
+      <div class="step rv"><span class="n">3</span><div><b>Suas parcelas</b><p>Cartão, empréstimo, compras a prazo. O app sabe em que mês cai cada uma.</p></div></div>
+    </div>
+    <div class="feats">
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-chart"/></svg></span><h3>O mês inteiro numa tela</h3><p>Quanto entrou, quanto saiu e quanto sobra, com o percentual da renda já comprometido.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-card"/></svg></span><h3>Dívidas parcela por parcela</h3><p>Informe valor, nº de parcelas e mês da 1ª. O app mostra saldo, atrasos e a data em que termina.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-bell"/></svg></span><h3>Avisos de vencimento</h3><p>Lembretes antes das contas e parcelas vencerem, no horário que você escolher.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-sort"/></svg></span><h3>Ordem para quitar</h3><p>Sugere qual dívida pagar primeiro e calcula quanto você economiza ao antecipar parcelas.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-target"/></svg></span><h3>Metas e reserva</h3><p>Reserva de emergência e objetivos com prazo, mostrando quanto guardar por mês.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-future"/></svg></span><h3>Previsão de 6 meses</h3><p>Veja a sobra dos próximos meses antes de assumir uma compra nova.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="telas" style="overflow:hidden">
+  <div class="glow" style="left:50%;top:200px;width:900px;height:900px;margin-left:-450px;opacity:.6"></div>
+  <div class="wrap pad" style="position:relative">
+    <div class="head c rv">
+      <div class="eyebrow">Por dentro do app</div>
+      <h2 class="h2">Tudo claro, em poucas telas.</h2>
+      <p class="lead">Arraste, toque nas setas ou nos nomes para conhecer cada parte do Quita.</p>
+    </div>
+    <div class="chips" role="tablist" aria-label="Telas do app" id="chips"></div>
+    <div class="car" id="car" tabindex="0" aria-roledescription="carrossel" aria-label="Telas do Quita">
+      <button class="arw l" id="prev" type="button" aria-label="Tela anterior"><svg class="ic"><use href="#i-l"/></svg></button>
+      <button class="arw r" id="next" type="button" aria-label="Próxima tela"><svg class="ic"><use href="#i-r"/></svg></button>
+    </div>
+    <div class="cap" aria-live="polite"><b id="capT"></b><p id="capD"></p></div>
+    <div class="dots" id="dots"></div>
+  </div>
+</section>
+
+<section class="band alt" id="seguranca">
+  <div class="wrap pad split">
+    <div class="rv">
+      <div class="eyebrow">Seus dados, sua conta</div>
+      <h2 class="h2">Trocou de celular? Entre com a mesma conta e tudo volta.</h2>
+      <p class="lead" style="margin:18px 0 0;max-width:520px">Você entra com a sua conta Google. A cada alteração, o Quita guarda uma cópia numa planilha que fica no seu próprio Google Drive. Ninguém mais tem acesso.</p>
+    </div>
+    <div class="mini">
+      <div class="card rv"><svg class="ic"><use href="#i-cloudok"/></svg><b>Backup automático</b><p>Feito a cada alteração, sem você lembrar.</p></div>
+      <div class="card rv"><svg class="ic"><use href="#i-lock"/></svg><b>Só você vê</b><p>Os dados ficam na sua conta, não num servidor nosso.</p></div>
+      <div class="card rv"><svg class="ic"><use href="#i-eye"/></svg><b>Esconder valores</b><p>Um toque no olho e os números somem da tela.</p></div>
+      <div class="card rv"><svg class="ic"><use href="#i-sync"/></svg><b>Sempre atualizado</b><p>O próprio app avisa e instala a versão nova.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="duvidas">
+  <div class="wrap pad faq-wrap">
+    <div class="faq-side rv">
+      <div class="eyebrow">Dúvidas</div>
+      <h2 class="h2">Perguntas frequentes</h2>
+      <p class="lead" style="margin:16px 0 0;max-width:360px">Não achou a sua? Fale direto com o suporte.</p>
+      <a class="btn btn-sec wa" style="margin-top:22px" href="https://wa.me/5582998108786?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Quita." target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>Suporte no WhatsApp</a>
+    </div>
+    <div class="faq" id="faq"></div>
+  </div>
+  <div class="wrap" id="comprar" style="padding-bottom:var(--sec);scroll-margin-top:80px">
+    <div class="buy rv">
+      <div class="glow" style="right:-160px;top:-160px;width:480px;height:480px;background:radial-gradient(circle,rgba(143,217,174,.18),transparent 65%)"></div>
+      <div class="buy-tx">
+        <h2>Comece hoje a ver o seu mês por inteiro.</h2>
+        <p class="lead">Depois da compra, baixe o app e entre com o mesmo e-mail Google usado no pagamento. Seu acesso é liberado.</p>
+      </div>
+      <div class="price">
+        <div class="k">Acesso ao Quita</div>
+        <div class="v">[PREÇO]</div>
+        <div class="s">[forma de pagamento]</div>
+        <a class="btn btn-pri" href="#comprar" id="buyBtn">Quero o Quita<svg class="ic"><use href="#i-arrow"/></svg></a>
+        <div class="ok"><svg class="ic"><use href="#i-check"/></svg>Para celulares e tablets Android</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><span class="logo"><svg><use href="#qm"/></svg></span>© 2026 Quita · Willams Dantas</span>
+    <nav aria-label="Links">
+      <a href="privacidade.html">Privacidade</a>
+      <a href="termos.html">Termos de uso</a>
+      <a href="mailto:willamsdanttas@gmail.com">willamsdanttas@gmail.com</a>
+      <a href="https://wa.me/5582998108786" target="_blank" rel="noopener">(82) 99810-8786</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="mbar" id="mbar"><a class="btn btn-pri" href="#comprar">Quero o Quita<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+
+<script>
+(function(){
+  var top=document.getElementById('top'),mbar=document.getElementById('mbar'),buy=document.getElementById('comprar');
+  function onScroll(){
+    var y=window.scrollY;top.classList.toggle('sc',y>8);
+    var r=buy.getBoundingClientRect();mbar.classList.toggle('on',y>520&&r.top>window.innerHeight*.9);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  var io=null;
+  if('IntersectionObserver' in window){
+    io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+  }
+  function reveal(el,i){if(io){el.style.transitionDelay=((i||0)%3)*70+'ms';io.observe(el)}else el.classList.add('in')}
+  [].forEach.call(document.querySelectorAll('.rv'),reveal);
+
+  /* carrossel de telas */
+  var S=[
+    ['Painel','painel','A sobra do mês em destaque, o quanto da renda está comprometido, atalhos rápidos e as contas do mês em lista ou calendário.'],
+    ['Dívidas','dividas','Cada dívida com saldo, parcelas restantes, próximo vencimento e o mês em que termina. Atrasos aparecem na hora.'],
+    ['Relatório','relatorio','Um diagnóstico do mês em linguagem simples e a previsão dos próximos 6 meses: receita, despesas, parcelas e sobra.'],
+    ['Receitas','receitas','Renda fixa que entra sozinha todo mês e receitas avulsas, separadas e somadas para você.'],
+    ['Despesas','despesas','Contas fixas com o dia do vencimento. Marque como paga com um toque e veja quanto ainda falta.'],
+    ['Metas e reserva','painel2','Reserva de emergência e sonhos com valor, prazo e quanto guardar por mês para chegar lá.']
+  ];
+  var n=S.length,idx=0,car=document.getElementById('car'),chips=document.getElementById('chips'),dots=document.getElementById('dots');
+  var slides=S.map(function(s,i){
+    var d=document.createElement('div');d.className='slide';d.setAttribute('role','group');d.setAttribute('aria-label',(i+1)+' de '+n+': '+s[0]);
+    d.innerHTML='<div class="phone"><img src="img/'+s[1]+'.webp" alt="Tela '+s[0]+' do Quita" width="390" height="844" loading="lazy" draggable="false"></div>';
+    d.addEventListener('click',function(){if(!moved&&i!==idx){stop();go(i)}});
+    car.insertBefore(d,car.firstChild);
+    var c=document.createElement('button');c.className='chip';c.type='button';c.setAttribute('role','tab');c.textContent=s[0];
+    c.addEventListener('click',function(){stop();go(i)});chips.appendChild(c);
+    var b=document.createElement('button');b.type='button';b.setAttribute('aria-label',s[0]);
+    b.addEventListener('click',function(){stop();go(i)});dots.appendChild(b);
+    return d;
+  });
+  var capT=document.getElementById('capT'),capD=document.getElementById('capD');
+  function render(drag){
+    var small=window.innerWidth<=860;
+    slides.forEach(function(el,i){
+      var off=i-idx;if(off>n/2)off-=n;if(off<-n/2)off+=n;
+      var a=Math.abs(off),x=off*(small?92:112)+(drag||0);
+      el.style.transform='translateX('+x+'%) scale('+(off===0?1:.82)+')';
+      el.style.opacity=off===0?1:(a>1?0:.38);
+      el.style.filter=off===0?'none':'blur(1px) saturate(.7)';
+      el.style.zIndex=10-a;
+      el.style.cursor=off===0?'grab':'pointer';
+      el.style.pointerEvents=a>1?'none':'auto';
+    });
+    [].forEach.call(chips.children,function(c,i){c.setAttribute('aria-selected',i===idx)});
+    [].forEach.call(dots.children,function(b,i){b.setAttribute('aria-current',i===idx)});
+    capT.textContent=S[idx][0];capD.textContent=S[idx][2];
+  }
+  function go(i){idx=((i%n)+n)%n;render()}
+  var timer=null,visible=false;
+  function start(){if(!timer&&visible&&!matchMedia('(prefers-reduced-motion: reduce)').matches)timer=setInterval(function(){go(idx+1)},4500)}
+  function stop(){clearInterval(timer);timer=null}
+  document.getElementById('prev').addEventListener('click',function(){stop();go(idx-1)});
+  document.getElementById('next').addEventListener('click',function(){stop();go(idx+1)});
+  car.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'){stop();go(idx-1)}else if(e.key==='ArrowRight'){stop();go(idx+1)}});
+  /* arrastar com o dedo ou o mouse */
+  var sx=null,sy=null,dx=0,dragging=false,moved=false;
+  car.addEventListener('pointerdown',function(e){if(e.target.closest('.arw'))return;sx=e.clientX;sy=e.clientY;dx=0;dragging=false;moved=false});
+  car.addEventListener('pointermove',function(e){
+    if(sx===null)return;dx=e.clientX-sx;
+    if(!dragging&&Math.abs(dx)>8&&Math.abs(dx)>Math.abs(e.clientY-sy)){dragging=true;moved=true;stop();slides.forEach(function(s){s.style.transition='none'})}
+    if(dragging){var w=slides[0].offsetWidth||280;render(dx/w*100)}
+  });
+  function end(){
+    if(sx===null)return;
+    slides.forEach(function(s){s.style.transition=''});
+    if(dragging){if(dx<-50)go(idx+1);else if(dx>50)go(idx-1);else render()}
+    sx=null;dragging=false;setTimeout(function(){moved=false},50);
+  }
+  car.addEventListener('pointerup',end);car.addEventListener('pointercancel',end);car.addEventListener('pointerleave',end);
+  window.addEventListener('resize',function(){render()});
+  render();
+  if('IntersectionObserver' in window){new IntersectionObserver(function(es){es.forEach(function(e){visible=e.isIntersecting;visible?start():stop()})},{threshold:.3}).observe(car)}else{visible=true;start()}
+
+  /* perguntas frequentes */
+  var F=[
+    ['Funciona no iPhone?','Por enquanto o Quita é para celulares e tablets Android.'],
+    ['Como recebo o app depois da compra?','Você recebe o link para baixar o app. Ao abrir, entre com a conta Google do mesmo e-mail usado na compra e o acesso é liberado.'],
+    ['Onde ficam guardados os meus dados?','No seu celular e numa planilha dentro do seu próprio Google Drive. O backup é feito sozinho a cada alteração, e só você tem acesso.'],
+    ['Se eu trocar de celular, perco tudo?','Não. Instale o Quita no celular novo, entre com a mesma conta Google e seus dados voltam.'],
+    ['Preciso saber mexer com planilha?','Não. Você só preenche os campos do app: renda, contas e parcelas. O Quita calcula o resto.'],
+    ['Ele mostra quando eu termino de pagar as dívidas?','Sim. Cada dívida mostra o mês da última parcela, e o relatório mostra quando você fica livre de todas.'],
+    ['E se eu precisar de ajuda?','O suporte é feito pelo WhatsApp (82) 99810-8786 e pelo e-mail willamsdanttas@gmail.com.']
+  ];
+  var faq=document.getElementById('faq');
+  F.forEach(function(f,i){
+    var q=document.createElement('div');q.className='q rv'+(i===0?' on':'');
+    q.innerHTML='<button type="button" aria-expanded="'+(i===0)+'" aria-controls="r'+i+'" id="q'+i+'"><span></span><svg class="ic"><use href="#i-plus"/></svg></button><div class="ans" id="r'+i+'" role="region" aria-labelledby="q'+i+'"><div><p></p></div></div>';
+    q.querySelector('span').textContent=f[0];q.querySelector('p').textContent=f[1];
+    q.querySelector('button').addEventListener('click',function(){
+      var on=!q.classList.contains('on');
+      [].forEach.call(faq.children,function(o){o.classList.remove('on');o.querySelector('button').setAttribute('aria-expanded','false')});
+      if(on){q.classList.add('on');this.setAttribute('aria-expanded','true')}
+    });
+    faq.appendChild(q);reveal(q,i);
+  });
+})();
+</script>
+</body>
+</html>
