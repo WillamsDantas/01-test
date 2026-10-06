@@ -2492,7 +2492,7 @@ function updSyncDot(state){
   var on=temPlanilha();
   i.className=!on?'':state==='run'?'pend':a.erro?'err':a.pendente?'pend':'ok';
   $('#btnSync').hidden=!on;
-  $('#topSub').textContent=!on?'Controle financeiro':googleOn()?(state==='run'?'Atualizando dados…':a.erro?'Erro na cópia de segurança':a.pendente?'Cópia pendente':'Dados protegidos'):state==='run'?'Sincronizando…':a.erro?'Planilha: erro na sincronização':a.pendente?'Planilha: alterações pendentes':'Planilha sincronizada';
+  $('#topSub').textContent=!on?'Controle financeiro':googleOn()?(state==='run'?'Sincronizando…':a.erro?'Erro ao sincronizar':a.pendente?'Sincronização pendente':'Dados protegidos'):state==='run'?'Sincronizando…':a.erro?'Planilha: erro na sincronização':a.pendente?'Planilha: alterações pendentes':'Planilha sincronizada';
 }
 
 /* ---------------- tema ---------------- */
