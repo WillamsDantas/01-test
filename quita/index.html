@@ -220,9 +220,9 @@ footer nav a:hover{color:var(--ink)}
 .f1{animation:fIn .8s cubic-bezier(.2,.9,.3,1.2) 1.35s both,float 6s ease-in-out 2.15s infinite}
 .f2{animation:fIn .8s cubic-bezier(.2,.9,.3,1.2) 1.6s both,float 7s ease-in-out 2.4s infinite}
 @keyframes fIn{from{opacity:0;transform:translateY(24px) scale(.88)}}
-.f-bar i{width:0;transition:width 1.4s cubic-bezier(.2,.7,.2,1) 1.6s}
+.f-bar i{width:0;transition:width 2s cubic-bezier(.2,.7,.2,1) var(--bd,1.6s)}
 .f-bar.go i{width:56%}
-.stage.wait>.phone,.stage.wait>.glow,.stage.wait>.float,.stage.wait>.phone::after{animation-play-state:paused}
+.stage.wait>.phone,.stage.wait>.glow,.stage.wait>.float,.stage.wait>.phone::after,.float.fwait{animation-play-state:paused}
 
 .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
@@ -489,7 +489,7 @@ footer nav a:hover{color:var(--ink)}
   function contar(atraso){
     if(bar)bar.classList.add('go');
     if(!val||reduz)return;
-    var alvo=1600,t0=null,dur=1300;
+    var alvo=1600,t0=null,dur=2000;
     setTimeout(function(){requestAnimationFrame(function step(ts){
       if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur),e=1-Math.pow(1-p,3);
       val.textContent=fmt(Math.round(alvo*e));if(p<1)requestAnimationFrame(step);
@@ -501,9 +501,19 @@ footer nav a:hover{color:var(--ink)}
   var r0=stage&&stage.getBoundingClientRect();
   if(stage&&!reduz&&'IntersectionObserver' in window&&r0.top>window.innerHeight*.75){
     stage.classList.add('wait');
+    /* os cartões só entram (e a sobra só conta) quando cada um aparece inteiro na tela, uma vez só */
+    var fl=[].slice.call(stage.querySelectorAll('.float'));
+    fl.forEach(function(el){el.classList.add('fwait')});
     var so=new IntersectionObserver(function(es){if(es[0].isIntersecting){so.disconnect();
-      [].forEach.call(stage.querySelectorAll('.phone,.glow,.float'),function(el){el.style.animationDelay=el.classList.contains('f2')?'.85s, 1.65s':el.classList.contains('f1')?'.6s, 1.4s':'0s'});
-      stage.classList.remove('wait');contar(800)}},{threshold:.25});
+      [].forEach.call(stage.querySelectorAll('.phone,.glow'),function(el){el.style.animationDelay='0s'});
+      stage.classList.remove('wait');
+      var fo=new IntersectionObserver(function(es2){es2.forEach(function(e){
+        if(!e.isIntersecting)return;var el=e.target;fo.unobserve(el);
+        el.style.animationDelay='.15s, .95s';el.classList.remove('fwait');
+        if(el.classList.contains('f1')){if(bar)bar.style.setProperty('--bd','.6s');contar(550)}
+      })},{threshold:.9});
+      fl.forEach(function(el){fo.observe(el)});
+    }},{threshold:.25});
     so.observe(stage);
   } else requestAnimationFrame(function(){contar(1500)});
 
