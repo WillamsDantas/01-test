@@ -361,6 +361,16 @@ footer nav a:hover{color:var(--ink)}
 .tl-div span{display:inline-block;margin-left:0;padding:6px 12px;border-radius:99px;border:1px solid #2f2f35;background:#131316;color:var(--ink);font-size:13px;font-weight:600}
 @media (max-width:700px){.dvmock{margin:24px calc(var(--gut) * -1) 0}.tl{padding-left:34px}.tl-track{left:7px}.tl-dot{left:-33px}.tl-i{grid-template-columns:76px 1fr;gap:16px;padding-bottom:30px}.tl-cv{width:76px}.tl-t h3{font-size:18px;margin-top:4px}.tl-t p{font-size:14.5px}.tl-t ul{margin-top:12px}.tl-t li{font-size:14px}.tl-div{margin-left:-34px}}
 .plan li .dash{width:8px;height:1.5px;background:#52525B;flex:none;margin:0 4px}
+
+/* v11 */
+.plans-g{text-align:center;margin:26px auto 0;max-width:520px;color:var(--ink-2);font-size:15px;line-height:1.5;text-wrap:balance}.plans-g b{color:var(--ink);font-weight:600}
+.plans-g+.plans-note{margin-top:8px}
+@media (min-width:560px) and (max-width:1023px){.steps{grid-template-columns:1fr}.mini{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1024px){
+ .plans{height:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:center;max-width:1100px;margin-left:auto;margin-right:auto;padding-top:18px}
+ .plans .plan{position:relative;left:auto;top:auto;width:auto;margin-left:0;transform:none!important;opacity:1!important;filter:none!important;pointer-events:auto!important;z-index:auto!important}
+ #planos .seg,#planos .p-nav{display:none}
+}
 </style>
 </head>
 <body>
@@ -369,7 +379,7 @@ footer nav a:hover{color:var(--ink)}
   <symbol id="qm" viewBox="1 1 106 106"><path d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z" fill="#F4F4F5"/><path d="M56.87 63.00 L64.87 71.00 L78.37 57.50" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
   <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
-  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol><symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></symbol>
   <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
@@ -404,17 +414,16 @@ footer nav a:hover{color:var(--ink)}
   <div class="glow" style="width:620px;height:620px;right:-140px;top:40px"></div>
   <div class="wrap">
     <div class="hero-tx">
-      <span class="pill ha" style="--d:.15s"><span class="dot"></span><b>App para Android · finanças e dívidas</b></span>
-      <h1 id="heroH">Saiba quanto sobra no mês. E <em>quando você fica livre</em> das dívidas.</h1>
-      <p class="lead ha" style="--d:.95s">O Quita junta sua renda, suas contas fixas e suas parcelas num lugar só. Você vê, mês a mês, o que entra, o que sai, o que sobra e a data em que a última parcela acaba.</p>
+            <h1 id="heroH">Descubra o mês exato em que você <em>sai das dívidas.</em></h1>
+      <p class="lead ha" style="--d:.95s">Coloque suas parcelas, contas e renda no Quita uma vez. Ele mostra quanto sobra este mês, o que vence esta semana e quando a última parcela acaba.</p>
       <div class="ctas ha" style="--d:1.1s">
-        <a class="btn btn-pri" href="#comprar">Quero organizar meu mês<svg class="ic"><use href="#i-arrow"/></svg></a>
-        <a class="btn btn-sec" href="#telas">Ver as telas</a>
+        <a class="btn btn-pri" href="#comprar">Quero ver quando fico livre<svg class="ic"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-sec" href="#telas">Ver o app por dentro</a>
       </div>
       <div class="trust ha" style="--d:1.25s">
-        <span><svg class="ic"><use href="#i-cloud"/></svg>Backup automático no Google</span>
-        <span><svg class="ic"><use href="#i-lock"/></svg>Só você vê seus dados</span>
-        <span><svg class="ic"><use href="#i-check"/></svg>Sem planilha para montar</span>
+        <span><svg class="ic"><use href="#i-lock"/></svg>Não pede senha de banco</span>
+        <span><svg class="ic"><use href="#i-cloud"/></svg>Tudo salvo na sua conta Google</span>
+        <span><svg class="ic"><use href="#i-bell"/></svg>Avisa antes de vencer</span>
       </div>
     </div>
     <div class="hero-art">
@@ -447,12 +456,12 @@ footer nav a:hover{color:var(--ink)}
       <div class="step rv"><span class="n">3</span><div><b>Suas parcelas</b><p>Cartão, empréstimo, compras a prazo. O app sabe em que mês cai cada uma.</p></div></div>
     </div>
     <div class="feats">
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-chart"/></svg></span><h3>O mês inteiro numa tela</h3><p>Quanto entrou, quanto saiu e quanto sobra, com o percentual da renda já comprometido.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-card"/></svg></span><h3>Dívidas parcela por parcela</h3><p>Informe valor, nº de parcelas e mês da 1ª. O app mostra saldo, atrasos e a data em que termina.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-bell"/></svg></span><h3>Avisos de vencimento</h3><p>Lembretes antes das contas e parcelas vencerem, no horário que você escolher.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-sort"/></svg></span><h3>Ordem para quitar</h3><p>Sugere qual dívida pagar primeiro e calcula quanto você economiza ao antecipar parcelas.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-target"/></svg></span><h3>Metas e reserva</h3><p>Reserva de emergência e objetivos com prazo, mostrando quanto guardar por mês.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-future"/></svg></span><h3>Previsão de 6 meses</h3><p>Veja a sobra dos próximos meses antes de assumir uma compra nova.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-chart"/></svg></span><h3>Saiba se o mês fecha antes de ele começar</h3><p>Quanto entrou, quanto saiu e quanto sobra, com o percentual da renda já comprometido.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-card"/></svg></span><h3>Cada parcela no lugar, com data para acabar</h3><p>Informe valor, nº de parcelas e mês da 1ª. O app mostra saldo, atrasos e a data em que termina.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-bell"/></svg></span><h3>Pare de pagar multa por esquecer um boleto</h3><p>Lembretes antes das contas e parcelas vencerem, no horário que você escolher.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-sort"/></svg></span><h3>Saiba qual dívida atacar primeiro</h3><p>Sugere qual dívida pagar primeiro e calcula quanto você economiza ao antecipar parcelas.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-target"/></svg></span><h3>Junte sua reserva sem adivinhar quanto</h3><p>Reserva de emergência e objetivos com prazo, mostrando quanto guardar por mês.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-future"/></svg></span><h3>Antes de parcelar algo novo, veja se cabe</h3><p>Veja a sobra dos próximos meses antes de assumir uma compra nova.</p></article>
     </div>
   </div>
 </section>
@@ -477,14 +486,15 @@ footer nav a:hover{color:var(--ink)}
 <section class="band alt" id="seguranca">
   <div class="wrap pad split">
     <div class="rv">
-      <h2 class="h2">Trocou de celular? Entre com a mesma conta e tudo volta.</h2>
-      <p class="lead" style="margin:18px 0 0;max-width:520px">Você entra com a sua conta Google. A cada alteração, o Quita guarda uma cópia numa planilha que fica no seu próprio Google Drive. Ninguém mais tem acesso.</p>
+      <h2 class="h2">Sem senha de banco. Seus dados ficam com você.</h2>
+      <p class="lead" style="margin:18px 0 0;max-width:520px">O Quita não se conecta à sua conta bancária. Você digita o que quer acompanhar, e tudo fica salvo na sua própria conta Google. Trocou de celular? Entre com a mesma conta e tudo volta.</p>
     </div>
     <div class="mini">
+      <div class="card rv"><svg class="ic"><use href="#i-lock"/></svg><b>Sem senha de banco</b><p>Nada de conectar conta: você cadastra só o que quer acompanhar.</p></div>
       <div class="card rv"><svg class="ic"><use href="#i-cloudok"/></svg><b>Backup automático</b><p>Feito a cada alteração, sem você lembrar.</p></div>
-      <div class="card rv"><svg class="ic"><use href="#i-lock"/></svg><b>Só você vê</b><p>Os dados ficam na sua conta, não num servidor nosso.</p></div>
+      <div class="card rv"><svg class="ic"><use href="#i-shield"/></svg><b>Só você vê</b><p>Os dados ficam na sua conta, não num servidor nosso.</p></div>
       <div class="card rv"><svg class="ic"><use href="#i-eye"/></svg><b>Esconder valores</b><p>Um toque no olho e os números somem da tela.</p></div>
-      <div class="card rv"><svg class="ic"><use href="#i-sync"/></svg><b>Sempre atualizado</b><p>O próprio app avisa e instala a versão nova.</p></div>
+      
     </div>
   </div>
 </section>
@@ -518,8 +528,8 @@ footer nav a:hover{color:var(--ink)}
 <section class="band alt" id="planos" style="overflow:hidden">
   <div class="wrap" id="comprar" style="padding-top:var(--sec);padding-bottom:var(--sec);scroll-margin-top:80px">
     <div class="buy-head rv">
-      <h2 class="h2">Comece hoje a ver o seu mês por inteiro.</h2>
-      <p class="lead">Escolha o plano, baixe o app e entre com o mesmo e-mail Google usado no pagamento. Seu acesso é liberado.</p>
+      <h2 class="h2">Menos de R$ 0,41 por dia para ter o controle de volta.</h2>
+      <p class="lead">É o que custa o plano Anual: R$ 147 por ano. Escolha o plano, baixe o app e entre com o mesmo <span style="white-space:nowrap">e-mail</span> Google usado no pagamento.</p>
     </div>
     <div class="seg rv"><div class="seg-in" role="tablist" aria-label="Escolha o plano" id="pSeg">
       <button type="button" role="tab">Mensal</button><button type="button" role="tab">Anual<i>-59%</i></button><button type="button" role="tab">Semestral<i>-46%</i></button>
@@ -558,6 +568,7 @@ footer nav a:hover{color:var(--ink)}
       <div class="p-dots" id="pDots"><button type="button" aria-label="Mensal"></button><button type="button" aria-label="Anual"></button><button type="button" aria-label="Semestral"></button></div>
       <button class="arw" id="pNext" type="button" aria-label="Próximo plano"><svg class="ic"><use href="#i-r"/></svg></button>
     </div>
+    <p class="plans-g"><b>7 dias de garantia.</b> Se não gostar, pede o reembolso e recebe seu dinheiro de volta.</p>
     <p class="plans-note">Para Android · pagamento seguro</p>
   </div>
 </section>
@@ -784,12 +795,14 @@ footer nav a:hover{color:var(--ink)}
 
   /* perguntas frequentes */
   var F=[
+    ['Preciso dar a senha do meu banco?','Não. O Quita não se conecta a nenhum banco. Você mesmo cadastra a renda, as contas e as parcelas que quer acompanhar.'],
+    ['Estou endividado. Vale pagar por um app?','O plano Anual sai por menos de R$ 0,41 por dia. Uma única multa por atraso de boleto já costuma custar mais que isso, e o Quita te avisa antes de cada vencimento.'],
+    ['E se eu não gostar?','Você tem 7 dias de garantia. Se não gostar, pede o reembolso e recebe seu dinheiro de volta.'],
+    ['Tenho muitas dívidas. Funciona pra mim?','É justamente para isso. Quanto mais parcelas, mais o Quita ajuda a enxergar o que pagar primeiro e o mês em que tudo termina.'],
     ['Funciona no iPhone?','Por enquanto o Quita é para celulares e tablets Android.'],
     ['Como recebo o app depois da compra?','Você recebe o link para baixar o app. Ao abrir, entre com a conta Google do mesmo e-mail usado na compra e o acesso é liberado.'],
-    ['Onde ficam guardados os meus dados?','No seu celular e numa planilha dentro do seu próprio Google Drive. O backup é feito sozinho a cada alteração, e só você tem acesso.'],
     ['Se eu trocar de celular, perco tudo?','Não. Instale o Quita no celular novo, entre com a mesma conta Google e seus dados voltam.'],
-    ['Preciso saber mexer com planilha?','Não. Você só preenche os campos do app: renda, contas e parcelas. O Quita calcula o resto.'],
-    ['Ele mostra quando eu termino de pagar as dívidas?','Sim. Cada dívida mostra o mês da última parcela, e o relatório mostra quando você fica livre de todas.'],
+    ['É difícil de usar?','Não. Você só preenche renda, contas e parcelas, e o Quita faz as contas por você.'],
     ['E se eu precisar de ajuda?','O suporte é feito pelo WhatsApp (82) 99810-8786 e pelo e-mail willamsdanttas@gmail.com.']
   ];
   var faq=document.getElementById('faq');
