@@ -1,3 +1,5 @@
 # Novidades da versão (uma por linha). Aparecem no aviso de nova versão do app.
-Verificação de acesso logo após entrar, sem mostrar a tela principal antes
-Área do administrador para liberar e bloquear acessos
+Entrada sem piscar: uma tela de carregamento acompanha cada etapa até a configuração
+Cadastro de dívida completo também na configuração inicial (data da compra e mês da 1ª parcela)
+Botão para solicitar acesso ou desbloqueio direto pelo app
+Avisos maiores e mais fáceis de ler
