@@ -914,7 +914,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "2.0.10";
+            return "2.0.11";
         }
 
         /* ---------- atualização dentro do app ---------- */

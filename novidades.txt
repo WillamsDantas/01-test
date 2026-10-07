@@ -1,4 +1,3 @@
 # Novidades da versão (uma por linha). Aparecem no aviso de nova versão do app.
-Novo seletor de mês e de data no cadastro de dívida, no visual do app
-Mês da 1ª parcela aparece completo (ex.: Out/2026) em qualquer celular
-Data da compra mais clara: toque em "Escolher" para preencher
+Nova tela de abertura com a logo do Quita
+A abertura segue o tema escolhido: escuro ou claro
