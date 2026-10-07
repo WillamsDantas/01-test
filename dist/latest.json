@@ -1,10 +1,9 @@
 {
- "versao": "2.0.10",
- "codigo": 44,
- "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.10.apk",
+ "versao": "2.0.11",
+ "codigo": 45,
+ "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.11.apk",
  "novidades": [
-  "Novo seletor de mês e de data no cadastro de dívida, no visual do app",
-  "Mês da 1ª parcela aparece completo (ex.: Out/2026) em qualquer celular",
-  "Data da compra mais clara: toque em \"Escolher\" para preencher"
+  "Nova tela de abertura com a logo do Quita",
+  "A abertura segue o tema escolhido: escuro ou claro"
  ]
 }
