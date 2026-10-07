@@ -1,9 +1,6 @@
 {
- "versao": "2.0.13",
- "codigo": 47,
- "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.13.apk",
- "novidades": [
-  "Logo igual em todo o app: abertura, topo e ícone",
-  "Nome Meu Quita no ícone e nas telas de entrada e Sobre"
- ]
+ "versao": "2.0.14",
+ "codigo": 48,
+ "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.14.apk",
+ "novidades": []
 }
