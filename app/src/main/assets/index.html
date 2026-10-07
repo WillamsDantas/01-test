@@ -818,13 +818,13 @@ body.gated main,body.gated nav.bottom,body.gated .top{visibility:hidden}
 #splash{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .45s ease,visibility .45s}
 #splash.out{opacity:0;visibility:hidden}
 #splash .sp-w{display:flex;align-items:baseline;line-height:1;font-family:var(--f-disp);font-size:46px;font-weight:600;letter-spacing:-.04em;color:var(--ink)}
-#splash .sp-m{font-size:24px;font-weight:500;color:var(--ink-3);letter-spacing:0;margin-right:10px;animation:spL .45s 1.12s cubic-bezier(.2,.8,.2,1) both}
-#splash svg{width:46px;height:44px;margin:0 3px 0 0;position:relative;top:0;z-index:1;transform-origin:50% 50%;animation:spQ 1.45s cubic-bezier(.65,0,.25,1) both}
+#splash .sp-m{font-size:24px;font-weight:500;color:var(--ink-3);letter-spacing:0;margin-right:4px;animation:spL .45s 1.12s cubic-bezier(.2,.8,.2,1) both}
+#splash svg{width:.834em;height:.806em;margin:0 -.02em 0 .02em;position:relative;top:.035em;z-index:1;transform-origin:50% 50%;animation:spQ 1.45s cubic-bezier(.65,0,.25,1) both}
 #splash .sp-q{fill:var(--ink)}
 #splash .sp-c{fill:none;stroke:var(--pos);stroke-width:8.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:32;stroke-dashoffset:32;animation:spCheck .4s .38s ease-out forwards}
 #splash b{font-weight:600;animation:spR .45s 1.12s cubic-bezier(.2,.8,.2,1) both}
 #splash small{position:absolute;left:0;right:0;bottom:calc(36px + env(safe-area-inset-bottom));text-align:center;font-size:12.5px;color:var(--ink-3);animation:spUp .6s .3s ease both}
-@keyframes spQ{0%{opacity:0;transform:translateX(var(--dx,0)) scale(1.7)}22%{opacity:1;transform:translateX(var(--dx,0)) scale(2.1)}58%{transform:translateX(var(--dx,0)) scale(2.1)}100%{opacity:1;transform:none}}
+@keyframes spQ{0%{opacity:0;transform:translateX(var(--dx,0)) scale(2)}22%{opacity:1;transform:translateX(var(--dx,0)) scale(2.5)}58%{transform:translateX(var(--dx,0)) scale(2.5)}100%{opacity:1;transform:none}}
 @keyframes spL{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
 @keyframes spR{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
 @keyframes spUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -956,7 +956,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '2.0.13';
+var VERSION = '2.0.14';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -2856,7 +2856,7 @@ function checkUpdate(manual){
 }
 function updBannerHTML(){
   if(!UPD||S.ajustes.updDispensada===UPD.versao)return '';
-  return '<div class="upd-ban"><span class="ab-ic">'+IC_AB.spark+'</span><span class="ab-tx"><b>Nova versão</b><span>Quita '+esc(UPD.versao)+' disponível</span></span><button class="btn pri" data-upd="ver">Ver</button><button class="upd-x" data-upd="x" aria-label="Dispensar">'+ICON.x+'</button></div>';
+  return '<div class="upd-ban"><span class="ab-ic">'+IC_AB.spark+'</span><span class="ab-tx"><b>Nova versão</b><span>Meu Quita '+esc(UPD.versao)+' disponível</span></span><button class="btn pri" data-upd="ver">Ver</button><button class="upd-x" data-upd="x" aria-label="Dispensar">'+ICON.x+'</button></div>';
 }
 document.addEventListener('click',function(e){
   var b=e.target&&e.target.closest?e.target.closest('[data-upd]'):null;if(!b)return;
@@ -2865,10 +2865,8 @@ document.addEventListener('click',function(e){
 });
 function openUpdate(){
   if(!UPD)return;
-  var nov=(UPD.novidades||[]).map(function(t){return '<li>'+IC_AB.ok+'<span>'+esc(t)+'</span></li>'}).join('');
   var h=head('Atualização disponível')+
     '<div class="upd-vp"><s>'+esc(appVer())+'</s>'+IC_AB.arrow+'<em>'+esc(UPD.versao)+'</em></div>'+
-    (nov?'<ul class="upd-news">'+nov+'</ul>':'')+
     '<div id="updProg" style="display:none"><b style="font-size:13.5px" id="updSt">Baixando…</b><div class="upd-prog"><span id="updBar"></span></div><div class="upd-pl"><span id="updPct">0%</span><span id="updKb"></span></div></div>'+
     '<div class="note" style="margin-top:14px">Seus dados continuam no app. A atualização instala por cima, sem apagar nada.</div>'+
     '<div class="btn-row" style="margin-top:16px"><button class="btn ghost" data-close>Depois</button><button class="btn pri" id="updGo">'+IC_AB.down+'Baixar e instalar</button></div>';

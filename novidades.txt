@@ -1,3 +1,1 @@
-# Novidades da versão (uma por linha). Aparecem no aviso de nova versão do app.
-Logo igual em todo o app: abertura, topo e ícone
-Nome Meu Quita no ícone e nas telas de entrada e Sobre
+# Não listar mudanças: o app mostra só "nova atualização".
