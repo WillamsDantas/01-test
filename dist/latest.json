@@ -1,9 +1,9 @@
 {
- "versao": "2.0.11",
- "codigo": 45,
- "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.11.apk",
+ "versao": "2.0.12",
+ "codigo": 46,
+ "apk": "https://github.com/WillamsDantas/01-test/raw/quita-app/dist/Quita-v2.0.12.apk",
  "novidades": [
-  "Nova tela de abertura com a logo do Quita",
-  "A abertura segue o tema escolhido: escuro ou claro"
+  "Nova abertura animada: o Q do app vira \"Meu Quita\"",
+  "Novo nome no topo do app: meu Quita"
  ]
 }
