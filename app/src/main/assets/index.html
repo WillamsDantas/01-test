@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Quita</title>
+<title>Meu Quita</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/Inter-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Inter";src:url("fonts/Inter-Medium.woff2") format("woff2");font-weight:500;font-display:swap}
@@ -836,7 +836,7 @@ body.gated main,body.gated nav.bottom,body.gated .top{visibility:hidden}
 <div id="splash" aria-hidden="true"><div class="sp-w"><span class="sp-m">Meu</span><svg viewBox="24 25 57 58"><path class="sp-q" d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z"/><path class="sp-c" d="M56.87 63.00 L64.87 71.00 L78.37 57.50"/></svg><b>uita</b></div><small>Seus dados ficam na sua conta Google</small></div>
 <script>(function(){var sp=document.getElementById('splash'),q=sp&&sp.querySelector('svg');if(!q)return;var r=q.getBoundingClientRect();sp.style.setProperty('--dx',(innerWidth/2-(r.left+r.width/2))+'px')})();</script>
 <header class="top" id="top">
-  <div class="brand"><div class="logo"><svg class="qmark" viewBox="1 1 106 106"><path d="M57.38 80.25 L41.50 80.25 A19.25 19.25 0 0 1 22.25 61.00 L22.25 47.00 A19.25 19.25 0 0 1 41.50 27.75 L55.50 27.75 A19.25 19.25 0 0 1 74.59 44.54 L66.25 52.88 L66.25 47.00 A10.75 10.75 0 0 0 55.50 36.25 L41.50 36.25 A10.75 10.75 0 0 0 30.75 47.00 L30.75 61.00 A10.75 10.75 0 0 0 41.50 71.75 L48.88 71.75 Z" fill="#F4F4F5"/><path d="M52.50 63.00 L60.50 71.00 L81.50 50.00" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1><span class="bm">meu</span>Quita</h1><small id="topSub">Controle financeiro</small></div></div>
+  <div class="brand"><div class="logo"><svg class="qmark" viewBox="1 1 106 106"><path d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z" fill="#F4F4F5"/><path d="M56.87 63.00 L64.87 71.00 L78.37 57.50" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1><span class="bm">meu</span>Quita</h1><small id="topSub">Controle financeiro</small></div></div>
   <span class="sp"></span>
   <button class="icon-btn" id="btnEye" aria-label="Ocultar valores"></button>
   <button class="icon-btn sync-dot" id="btnSync" aria-label="Sincronizar planilha"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" /> <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" /></svg><i id="syncDot"></i></button>
@@ -956,7 +956,7 @@ function appendHistorico(ss, h) {
 
 /* ---------------- utilidades ---------------- */
 var HAS_NATIVE = typeof window.Android !== 'undefined';
-var VERSION = '2.0.12';
+var VERSION = '2.0.13';
 var BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1919,7 +1919,7 @@ function openCarregando(passo){
   var g=document.getElementById('gate');if(!g){g=document.createElement('div');g.id='gate';document.body.appendChild(g)}
   gIntroAberto=false;carregAberto=true;
   if(!$('#ldWrap',g)){
-    g.innerHTML='<div class="gt-wrap ac-center" id="ldWrap"><div class="gt-top"><div class="gt-logo">'+QMARK+'</div><div class="gt-brand">Quita</div><h1 id="ldT"></h1><p class="gt-lead" id="ldL"></p>'+
+    g.innerHTML='<div class="gt-wrap ac-center" id="ldWrap"><div class="gt-top"><div class="gt-logo">'+QMARK+'</div><div class="gt-brand"><span class="bm">meu</span>Quita</div><h1 id="ldT"></h1><p class="gt-lead" id="ldL"></p>'+
       '<div class="ld-bar"><i id="ldB"></i></div><div class="ld-done">'+ICON.check+'</div><div class="ld-steps">'+
       ['Conta Google','Seus dados','Liberação de acesso'].map(function(t){return '<div class="ld-s"><span class="d">'+ICON.check+'</span>'+t+'</div>'}).join('')+'</div></div></div>';
   }
@@ -1984,7 +1984,7 @@ function depoisDoGoogle(){if(precisaOnboard())setTimeout(function(){openOnboardi
 function openGoogleIntro(){
   gIntroAberto=true;
   var g=document.getElementById('gate');if(!g){g=document.createElement('div');g.id='gate';document.body.appendChild(g)}
-  g.innerHTML='<div class="gt-wrap"><div class="gt-top"><div class="gt-logo">'+QMARK+'</div><div class="gt-brand">Quita</div>'+
+  g.innerHTML='<div class="gt-wrap"><div class="gt-top"><div class="gt-logo">'+QMARK+'</div><div class="gt-brand"><span class="bm">meu</span>Quita</div>'+
     '<h1>Seus dados protegidos na sua conta Google</h1><p class="gt-lead">Trocou de celular? Entre com a mesma conta e tudo&nbsp;volta.</p></div>'+
     '<div class="gt-peek"><span class="gt-pk">'+ICON.shieldOk+'</span><span class="gt-pt"><b>Backup automático</b><span>'+ICON.check+'Feito a cada alteração</span></span></div>'+
     '<div class="gt-list">'+
@@ -2655,7 +2655,7 @@ function openSobre(){
     ass=em?abItem('abAss',IC_AB.star,true,'Quita Premium',em,'<span class="ab-badge">'+st+'</span>')
     :abItem('abAss',IC_AB.star,false,'Entre com sua conta Google','Para ativar e ver sua assinatura');
   var h=head('Sobre e suporte')+
-    '<div class="card ab-hero"><div class="ab-logo">'+QMARK+'</div><b>Quita</b><p class="muted">Versão '+esc(appVer())+'</p>'+sel+'</div>'+
+    '<div class="card ab-hero"><div class="ab-logo">'+QMARK+'</div><b><span class="bm">meu</span>Quita</b><p class="muted">Versão '+esc(appVer())+'</p>'+sel+'</div>'+
     '<div class="sec-title">Sua assinatura</div><div class="ab-list">'+ass+'</div>'+
     '<div class="sec-title">Precisa de ajuda?</div><div class="ab-list">'+
       abItem('abWa',IC_AB.wa,true,'Falar no WhatsApp',SUP_WA_TX)+abItem('abMail',IC_AB.mail,false,'Enviar e-mail',SUP_MAIL)+'</div>'+
@@ -2702,7 +2702,7 @@ function openAcesso(modo,r){
   carregAberto=false;
   var g=document.getElementById('gate');if(!g){g=document.createElement('div');g.id='gate';document.body.appendChild(g)}
   var em=emailConta(),encerrado=r&&r.status==='inativo',top,meio='',bot;
-  var logo='<div class="gt-logo">'+QMARK+'</div><div class="gt-brand">Quita</div>';
+  var logo='<div class="gt-logo">'+QMARK+'</div><div class="gt-brand"><span class="bm">meu</span>Quita</div>';
   if(modo==='verificando'){
     top=logo+'<h1>Verificando seu acesso</h1><p class="gt-lead">Só um instante…</p><div class="ac-spin"></div>';bot='';
   } else if(modo==='erro'){
