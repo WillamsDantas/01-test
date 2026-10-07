@@ -61,6 +61,7 @@ svg{display:block;flex-shrink:0}
 .logo{width:30px;height:30px;border-radius:9px;background:#141416;border:1px solid var(--border);display:grid;place-items:center;flex:0 0 30px}
 .logo svg{width:17px;height:17px;stroke-width:2}
 .logo svg.qmark{width:30px;height:30px}
+.bm{font-weight:400;color:var(--ink-3);margin-right:.22em}
 .brand h1{margin:0;font:600 15px/1.15 var(--f-disp);letter-spacing:-.1px;white-space:nowrap}
 .brand small{display:block;font:400 12px/1.2 var(--f-text);color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand>div{min-width:0}
@@ -816,10 +817,12 @@ body.gated main,body.gated nav.bottom,body.gated .top{visibility:hidden}
 /* abertura */
 #splash{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .45s ease,visibility .45s}
 #splash.out{opacity:0;visibility:hidden}
-#splash svg{width:92px;height:92px;animation:spIn .7s cubic-bezier(.2,.8,.2,1) both}
+#splash .sp-w{display:flex;align-items:center;font-family:var(--f-disp);font-size:46px;font-weight:600;letter-spacing:-.04em;color:var(--ink)}
+#splash .sp-m{font-size:24px;font-weight:500;color:var(--ink-3);letter-spacing:0;margin-right:10px;animation:spUp .6s .1s ease both}
+#splash svg{width:47px;height:47px;margin-right:-1px;position:relative;top:2px;animation:spIn .7s cubic-bezier(.2,.8,.2,1) both}
 #splash .sp-q{fill:var(--ink)}
 #splash .sp-c{fill:none;stroke:var(--pos);stroke-width:8.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:32;stroke-dashoffset:32;animation:spCheck .45s .45s ease-out forwards}
-#splash b{font-family:var(--f-disp);font-size:32px;font-weight:600;letter-spacing:-.04em;color:var(--ink);animation:spUp .6s .15s ease both}
+#splash b{font-weight:600;animation:spUp .6s .15s ease both}
 #splash small{position:absolute;left:0;right:0;bottom:calc(36px + env(safe-area-inset-bottom));text-align:center;font-size:12.5px;color:var(--ink-3);animation:spUp .6s .3s ease both}
 @keyframes spIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
 @keyframes spUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -828,9 +831,9 @@ body.gated main,body.gated nav.bottom,body.gated .top{visibility:hidden}
 </style>
 </head>
 <body>
-<div id="splash" aria-hidden="true"><svg viewBox="20 20 68 68"><path class="sp-q" d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z"/><path class="sp-c" d="M56.87 63.00 L64.87 71.00 L78.37 57.50"/></svg><b>Quita</b><small>Seus dados ficam na sua conta Google</small></div>
+<div id="splash" aria-hidden="true"><div class="sp-w"><span class="sp-m">Meu</span><svg viewBox="24 25 57 58"><path class="sp-q" d="M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z"/><path class="sp-c" d="M56.87 63.00 L64.87 71.00 L78.37 57.50"/></svg><b>uita</b></div><small>Seus dados ficam na sua conta Google</small></div>
 <header class="top" id="top">
-  <div class="brand"><div class="logo"><svg class="qmark" viewBox="1 1 106 106"><path d="M57.38 80.25 L41.50 80.25 A19.25 19.25 0 0 1 22.25 61.00 L22.25 47.00 A19.25 19.25 0 0 1 41.50 27.75 L55.50 27.75 A19.25 19.25 0 0 1 74.59 44.54 L66.25 52.88 L66.25 47.00 A10.75 10.75 0 0 0 55.50 36.25 L41.50 36.25 A10.75 10.75 0 0 0 30.75 47.00 L30.75 61.00 A10.75 10.75 0 0 0 41.50 71.75 L48.88 71.75 Z" fill="#F4F4F5"/><path d="M52.50 63.00 L60.50 71.00 L81.50 50.00" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1>Quita</h1><small id="topSub">Controle financeiro</small></div></div>
+  <div class="brand"><div class="logo"><svg class="qmark" viewBox="1 1 106 106"><path d="M57.38 80.25 L41.50 80.25 A19.25 19.25 0 0 1 22.25 61.00 L22.25 47.00 A19.25 19.25 0 0 1 41.50 27.75 L55.50 27.75 A19.25 19.25 0 0 1 74.59 44.54 L66.25 52.88 L66.25 47.00 A10.75 10.75 0 0 0 55.50 36.25 L41.50 36.25 A10.75 10.75 0 0 0 30.75 47.00 L30.75 61.00 A10.75 10.75 0 0 0 41.50 71.75 L48.88 71.75 Z" fill="#F4F4F5"/><path d="M52.50 63.00 L60.50 71.00 L81.50 50.00" fill="none" stroke="#8FD9AE" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1><span class="bm">meu</span>Quita</h1><small id="topSub">Controle financeiro</small></div></div>
   <span class="sp"></span>
   <button class="icon-btn" id="btnEye" aria-label="Ocultar valores"></button>
   <button class="icon-btn sync-dot" id="btnSync" aria-label="Sincronizar planilha"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" /> <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" /></svg><i id="syncDot"></i></button>
