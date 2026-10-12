@@ -775,7 +775,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
     <div class="hero-art">
       <div class="stage">
         <div class="glow" style="inset:-60px -80px;background:radial-gradient(closest-side,rgba(143,217,174,.13),transparent)"></div>
-        <div class="phone"><img src="../img/painel.webp" alt="Painel do Meu Quita mostrando a sobra do mês (dados de exemplo)" width="390" height="844" fetchpriority="high"></div>
+        <div class="phone"><img src="../img/app/painel.webp" alt="Painel do Meu Quita mostrando a sobra do mês (dados de exemplo)" width="390" height="844" fetchpriority="high"></div>
         <div class="float f1" aria-hidden="true">
           <div class="f-k">Sobra de outubro</div>
           <div class="f-v">R$ 1.600,00</div>
@@ -1090,7 +1090,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
   var n=S.length,idx=0,car=document.getElementById('car'),chips=document.getElementById('chips'),dots=document.getElementById('dots');
   var slides=S.map(function(s,i){
     var d=document.createElement('div');d.className='slide';d.setAttribute('role','group');d.setAttribute('aria-label',(i+1)+' de '+n+': '+s[0]);
-    d.innerHTML='<div class="phone"><img src="../img/'+s[1]+'.webp" alt="Tela '+s[0]+' do Meu Quita" width="390" height="844" loading="lazy" draggable="false"></div>';
+    d.innerHTML='<div class="phone"><img src="../img/app/'+s[1]+'.webp" alt="Tela '+s[0]+' do Meu Quita" width="390" height="844" loading="lazy" draggable="false"></div>';
     d.addEventListener('click',function(){if(!moved&&i!==idx){stop();go(i)}});
     car.insertBefore(d,car.firstChild);
     var c=document.createElement('button');c.className='chip';c.type='button';c.setAttribute('role','tab');c.textContent=s[0];
