@@ -732,6 +732,11 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
 .gar .gar-t{opacity:0;transform:translateY(10px);transition:opacity .6s ease .45s,transform .7s cubic-bezier(.2,.7,.2,1) .45s}
 .gar.in .gar-t{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.gar .seal,.gar .gar-t{opacity:1;transform:none;transition:none}}
+
+/* seta inclinada nos botões */
+.btn .arr{transform:rotate(-35deg);transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+.btn:hover .arr{transform:rotate(-35deg) translateX(2px)}
+@media (prefers-reduced-motion:reduce){.btn .arr{transition:none}}
 </style>
 </head>
 <body>
@@ -778,7 +783,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
       <h1 id="heroH">Saiba quanto sobra do seu salário e <em>quando suas parcelas vão terminar.</em></h1>
       <p class="lead ha" style="--d:.95s">Cadastre sua renda, contas e compras parceladas. O Meu Quita organiza os vencimentos, mostra quanto ainda falta pagar e ajuda você a planejar os próximos meses sem fazer contas de cabeça.</p>
       <div class="ctas ha" style="--d:1.1s">
-        <a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic arr"><use href="#i-arrow"/></svg></a>
         <a class="btn btn-sec" href="#demo">Ver o app por dentro</a>
       </div>
       <div class="trust ha" style="--d:1.25s">
@@ -861,7 +866,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
     </div>
     <div class="cap" aria-live="polite"><b id="capT"></b><p id="capD"></p></div>
     <div class="dots" id="dots"></div>
-    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a><p>Pagamento único · 7 dias de garantia</p></div>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic arr"><use href="#i-arrow"/></svg></a><p>Pagamento único · 7 dias de garantia</p></div>
   </div>
 </section>
 
@@ -933,7 +938,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
 <figcaption><span class="dp-av">M</span><span><b>Mariana S.</b><small>Maceió, AL · <span class="nw">usa o Quita há 2&nbsp;meses</span></small></span></figcaption></figure><figure class="dp"><svg class="dp-q" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 11H6.2c.3-2.6 1.6-4 3.8-4.6V4C5.9 4.7 4 7.5 4 12v6h6zm10 0h-3.8c.3-2.6 1.6-4 3.8-4.6V4c-4.1.7-6 3.5-6 8v6h6z"/></svg>
 <blockquote>Eu tinha vontade de&nbsp;adiantar algumas parcelas, mas não sabia por onde começar. Ter as&nbsp;dívidas organizadas e&nbsp;uma ordem para analisar me&nbsp;ajudou a&nbsp;tomar decisões com muito mais segurança.</blockquote><p class="dp-r">Passou a priorizar melhor quais dívidas&nbsp;atacar</p>
 <figcaption><span class="dp-av">A</span><span><b>André F.</b><small>Fortaleza, CE · <span class="nw">usa o Quita há 5&nbsp;meses</span></small></span></figcaption></figure></div>
-    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a><p>Pagamento único · 7 dias de garantia</p></div>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic arr"><use href="#i-arrow"/></svg></a><p>Pagamento único · 7 dias de garantia</p></div>
   </div>
 </section>
 
@@ -947,7 +952,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
     <figure class="dvmock rv"><img src="../img/colecao-devices.webp" alt="Os guias da Coleção Meu Quita no notebook e no celular" width="1400" height="869" loading="lazy"></figure>
     <ol class="tl" id="tl"><span class="tl-track"><i id="tlFill"></i></span><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa1.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 1 de 3</div><h3>Plano de 6 meses para organizar a saída das dívidas</h3><p>Um roteiro em seis etapas para entender o que você deve, priorizar o que pagar primeiro e acompanhar o avanço mês a mês. O resultado depende da sua situação financeira e das ações que você colocar em prática.</p></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa2.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 2 de 3</div><h3>Guia prático de renegociação</h3><p>O que levantar antes de conversar, o que comparar entre as propostas e como conduzir a negociação com mais segurança.</p></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa3.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 3 de 3</div><h3>Controle de gastos em 21 dias</h3><p>Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real, com acompanhamento no Meu Quita.</p></div></li></ol>
     <p class="bfech rv">Consulte uma tarefa do guia e aplique o acompanhamento no Meu Quita.</p>
-    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Meu Quita + 3 guias<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Meu Quita + 3 guias<svg class="ic arr"><use href="#i-arrow"/></svg></a></div>
   </div>
 </section>
 
@@ -964,7 +969,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
         <div class="pl-p"><span class="cur">R$</span>47<span class="ct">,00</span><span class="per">uma vez</span></div>
         <div class="pl-eq">Sem mensalidade, <b>sem renovação</b></div>
         <div class="pl-chips"><span>3 guias incluídos</span></div>
-        <a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic arr"><use href="#i-arrow"/></svg></a>
         <p class="pl-sec">Pagamento seguro · Para Android</p>
         <ul><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>3 guias práticos em PDF</b></span></li><li><span class="dash"></span>Acesso vitalício ao aplicativo</li><li><span class="dash"></span>Renda, contas, parcelas e metas</li><li><span class="dash"></span>Backup na sua conta Google</li><li><span class="dash"></span>Suporte pelo WhatsApp</li></ul>
       </article>
@@ -1020,7 +1025,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
       <h2 class="h2">Saiba quanto sobra antes de o mês acabar.</h2>
       <p class="lead">Renda, contas e parcelas no mesmo lugar, em um pagamento único.</p>
     </div>
-    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a><p>R$ 47,00 · Pagamento único · 7 dias de garantia</p></div>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic arr"><use href="#i-arrow"/></svg></a><p>R$ 47,00 · Pagamento único · 7 dias de garantia</p></div>
   </div>
 </section>
 </main>
@@ -1037,7 +1042,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
   </div>
 </footer>
 
-<div class="mbar" id="mbar"><a class="btn btn-pri" href="#comprar">Quero o Meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+<div class="mbar" id="mbar"><a class="btn btn-pri" href="#comprar">Quero o Meu Quita<svg class="ic arr"><use href="#i-arrow"/></svg></a></div>
 <a class="wa" id="wa" href="https://wa.me/5582998108786?text=Ol%C3%A1!%20Vi%20a%20p%C3%A1gina%20do%20Meu%20Quita%20e%20fiquei%20com%20uma%20d%C3%BAvida." target="_blank" rel="noopener" aria-label="Tirar dúvidas no WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4.6A11.4 11.4 0 0 0 6.2 21.8L4.6 27.4l5.8-1.5A11.4 11.4 0 1 0 16 4.6z" fill="none" stroke="#fff" stroke-width="2.3" stroke-linejoin="round"/><path fill="#fff" d="M12.4 10.4c-.3-.6-.6-.6-.9-.6h-.8c-.3 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.1s1.4 3.6 1.5 3.9c.2.2 2.6 4.2 6.5 5.7 3.2 1.3 3.9 1 4.6.9.7-.1 2.3-.9 2.6-1.8.3-.9.3-1.7.2-1.8-.1-.2-.3-.3-.7-.5l-2.4-1.2c-.3-.1-.6-.2-.8.2-.2.4-.9 1.2-1.1 1.4-.2.2-.4.3-.8.1-.4-.2-1.6-.6-3-1.9-1.1-1-1.9-2.2-2.1-2.6-.2-.4 0-.6.2-.8l.6-.7c.2-.2.3-.4.4-.7.1-.3 0-.5 0-.7z"/></svg></a>
 
 <script>
