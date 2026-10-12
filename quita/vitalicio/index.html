@@ -509,7 +509,15 @@ footer nav a:hover{color:var(--ink)}
 .cst-i p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)}
 .cst-end{margin:30px auto 0;max-width:560px;text-align:center;font-size:17px;line-height:1.55;color:var(--ink-2)}
 .cst-end b{color:var(--pos)}
-@media(max-width:820px){.cst{grid-template-columns:1fr}}
+@media(max-width:640px){.cst{grid-template-columns:1fr}}
+
+/* quebras de linha equilibradas */
+h1,h2,h3,.pl-n,.pl-s,.cst-i b,.q button span,.cap b,.tl-v{text-wrap:balance}
+p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{text-wrap:pretty}
+.h2{max-width:20ch}
+.head.c .h2,.buy-head .h2{margin-left:auto;margin-right:auto}
+.head.c .lead,.buy-head .lead{max-width:34em;margin-left:auto;margin-right:auto}
+@media(max-width:480px){.h2{max-width:none}}
 </style>
 </head>
 <body>
@@ -650,21 +658,10 @@ footer nav a:hover{color:var(--ink)}
   </div>
 </section>
 
-<section class="band" id="duvidas" style="overflow:hidden">
-  <div class="wrap pad faq-wrap">
-    <div class="faq-side rv">
-      <h2 class="h2">Perguntas frequentes</h2>
-      <p class="lead" style="margin:16px 0 0;max-width:360px">Não achou a sua? Fale direto com o suporte.</p>
-      <a class="btn btn-sec wa" style="margin-top:22px" href="https://wa.me/5582998108786?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Meu%20Quita." target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>Suporte no WhatsApp</a>
-    </div>
-    <div class="faq" id="faq"></div>
-  </div>
-</section>
-
 <section class="band alt" id="custo" style="overflow:hidden">
   <div class="wrap pad">
     <div class="head c rv">
-      <h2 class="h2">Continuar sem controle também custa. <em class="hl">E costuma custar mais que R$&nbsp;47.</em></h2>
+      <h2 class="h2">Continuar sem controle também custa.</h2>
       <p class="lead">Quase ninguém se endivida de uma vez. Acontece aos poucos, em coisas pequenas que ninguém está vendo.</p>
     </div>
     <div class="cst rv">
@@ -672,7 +669,7 @@ footer nav a:hover{color:var(--ink)}
       <div class="cst-i"><b>A parcela que parecia caber</b><p>Sem ver a sobra dos próximos meses, cada compra nova vira mais uma dívida.</p></div>
       <div class="cst-i"><b>O mês que nunca acaba</b><p>Pagar no escuro significa não saber quando a última parcela termina. E continuar pagando.</p></div>
     </div>
-    <p class="cst-end rv">O Meu Quita custa <b>R$&nbsp;47, uma única vez</b>. Sem mensalidade, sem renovação, com 7 dias de garantia.</p>
+    <p class="cst-end rv">Com o Meu Quita, você vê tudo isso <b>antes de acontecer</b>. Sem mensalidade e com 7 dias de garantia.</p>
   </div>
 </section>
 
@@ -686,7 +683,7 @@ footer nav a:hover{color:var(--ink)}
     <p class="bnote rv">Os 3 guias vêm incluídos na sua compra, sem custo extra.</p>
     <figure class="dvmock rv"><img src="../img/colecao-devices.webp" alt="Os guias da Coleção Meu Quita no notebook e no celular" width="1400" height="869" loading="lazy"></figure>
     <ol class="tl" id="tl"><span class="tl-track"><i id="tlFill"></i></span><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa1.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 1 de 3</div><h3>Plano de 6 meses para sair das dívidas</h3><p>Um degrau por mês: parar de afundar, quitar o que custa mais caro e voltar a ter sobra.</p><ul><li>Os 6 passos, um por mês</li><li>Exemplos com contas reais, mês a mês</li><li>Checklists e "Faça no Quita"</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa2.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 2 de 3</div><h3>Guia de renegociação</h3><p>O que pedir, o que comparar e o que nunca aceitar para baixar juros e parcelas.</p><ul><li>Roteiros prontos para falar com o banco</li><li>Seus direitos: rotativo e portabilidade</li><li>Quando quitar à vista compensa</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa3.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 3 de 3</div><h3>Controle de gastos em 21 dias</h3><p>Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real.</p><ul><li>Uma tarefa curta por dia</li><li>Enxergar, cortar e manter</li><li>Checklist diário no app</li></ul></div></li></ol>
-    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Meu Quita + 3 guias<svg class="ic"><use href="#i-arrow"/></svg></a><p>R$ 47 uma única vez. Acesso vitalício.</p></div>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Meu Quita + 3 guias<svg class="ic"><use href="#i-arrow"/></svg></a><p>Pagamento único, sem mensalidade.</p></div>
     
   </div>
 </section>
@@ -713,6 +710,17 @@ footer nav a:hover{color:var(--ink)}
   </div>
 </section>
 
+<section class="band" id="duvidas" style="overflow:hidden">
+  <div class="wrap pad faq-wrap">
+    <div class="faq-side rv">
+      <h2 class="h2">Perguntas frequentes</h2>
+      <p class="lead" style="margin:16px 0 0;max-width:360px">Não achou a sua? Fale direto com o suporte.</p>
+      <a class="btn btn-sec wa" style="margin-top:22px" href="https://wa.me/5582998108786?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Meu%20Quita." target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>Suporte no WhatsApp</a>
+    </div>
+    <div class="faq" id="faq"></div>
+  </div>
+</section>
+
 <section class="band" id="planos" style="overflow:hidden">
   <div class="wrap" id="comprar" style="padding-top:var(--sec);padding-bottom:var(--sec);scroll-margin-top:80px">
     <div class="buy-head rv">
@@ -724,11 +732,10 @@ footer nav a:hover{color:var(--ink)}
         <span class="pl-b">Acesso vitalício</span><div class="pl-n">Meu Quita</div>
         <div class="pl-s">Um pagamento, para sempre</div>
         <div class="pl-p"><span class="cur">R$</span>47<span class="ct">,00</span><span class="per">uma vez</span></div>
-        <div class="pl-eq">Sem mensalidade e <b>sem renovação</b></div>
+        <div class="pl-eq">Sem mensalidade, sem renovação</div>
         <div class="pl-an">Menos que uma multa por atraso de boleto</div>
         <a class="btn btn-pri" href="#comprar">Quero o Meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a>
         <ul><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>+ 3 guias bônus</b> (1, 2 e 3)</span></li><li><span class="dash"></span>Acesso vitalício ao app</li><li><span class="dash"></span>Todos os recursos do app</li><li><span class="dash"></span>Backup automático no Google</li><li><span class="dash"></span>Suporte pelo WhatsApp</li></ul>
-        <p class="offer-bump">Na hora de pagar, você pode incluir as <b>atualizações futuras</b> por R$&nbsp;19,99.</p>
       </article>
     </div>
     <p class="plans-g"><b>7 dias de garantia.</b> Se não gostar, pede o reembolso e recebe seu dinheiro de volta.</p>
@@ -914,12 +921,11 @@ footer nav a:hover{color:var(--ink)}
   /* perguntas frequentes */
   var F=[
     ['Preciso dar a senha do meu banco?','Não. O Meu Quita não se conecta a nenhum banco. Você mesmo cadastra a renda, as contas e as parcelas que quer acompanhar.'],
-    ['Tenho muitas dívidas. Vale pagar por um app?','Vale, e é justamente para quem tem várias parcelas. São R$ 47 uma única vez, com acesso vitalício, menos do que uma multa por atraso de boleto. E quanto mais dívidas, mais o Meu Quita ajuda a ver o que pagar primeiro e o mês em que tudo termina.'],
+    ['Tenho muitas dívidas. Vale pagar por um app?','Vale, e é justamente para quem tem várias parcelas. É um pagamento único, menos do que uma multa por atraso de boleto. E quanto mais dívidas, mais o Meu Quita ajuda a ver o que pagar primeiro e o mês em que tudo termina.'],
     ['Tem período de teste?','Teste grátis não tem, mas você compra sem risco: são 7 dias de garantia. Usou, não gostou, pede o reembolso e recebe seu dinheiro de volta.'],
-    ['Por que pagar se existem planilhas e apps grátis?','Planilha grátis você monta, formata e atualiza sozinho, e quase todo mundo larga no segundo mês. Aqui você cadastra uma vez e o Meu Quita repete as contas, avisa os vencimentos e mostra o mês em que você fica livre. São R$ 47 uma vez, menos do que uma multa e juros de um boleto atrasado costumam custar.'],
+    ['Por que pagar se existem planilhas e apps grátis?','Planilha grátis você monta, formata e atualiza sozinho, e quase todo mundo larga no segundo mês. Aqui você cadastra uma vez e o Meu Quita repete as contas, avisa os vencimentos e mostra o mês em que você fica livre.'],
     ['Vitalício é até quando?','Você paga uma vez e não é cobrado de novo, nunca. Seus dados ficam na sua própria conta Google, então continuam sendo seus, aconteça o que acontecer.'],
-    ['Preciso pagar mensalidade?','Não. Você paga R$ 47 uma única vez e o acesso é vitalício. Não existe renovação nem cobrança todo mês.'],
-    ['O que são as atualizações futuras de R$ 19,99?','Correções importantes chegam para todos. Já os novos recursos e melhorias que forem lançados depois chegam para quem adicionou as atualizações futuras na hora da compra, por R$ 19,99, uma única vez.'],
+    ['Preciso pagar mensalidade?','Não. Você paga uma única vez e o acesso é vitalício. Não existe renovação nem cobrança todo mês.'],
     ['O Meu Quita me avisa quando uma conta vai vencer?','Sim. Ele te lembra antes de cada vencimento, para você pagar em dia e fugir de multa e juros.'],
     ['Ele controla parcelas e contas que se repetem todo mês?','Sim. Você cadastra uma vez e ele leva a parcela e a conta fixa pelos meses seguintes, até a última parcela. Dá para ver mês a mês o que vence e quanto sobra.'],
     ['Preciso digitar tudo? É difícil de usar?','Só uma vez: renda, contas e parcelas. Depois o Meu Quita repete os meses e faz as contas por você. É simples, sem planilha e sem fórmula.'],
