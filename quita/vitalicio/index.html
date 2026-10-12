@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex"><title>Meu Quita · Saiba quanto sobra no mês e quando suas dívidas acabam</title>
-<meta name="description" content="O Meu Quita junta sua renda, suas contas fixas e suas parcelas num lugar só. Veja o que entra, o que sai, o que sobra e quando você fica livre das dívidas.">
+<meta name="robots" content="noindex"><title>Meu Quita · Saiba quanto sobra do salário e quando suas parcelas terminam</title>
+<meta name="description" content="Cadastre renda, contas e parcelas. O Meu Quita organiza vencimentos, mostra quanto sobra e quando cada parcela termina. Acesso vitalício, pagamento único.">
 <meta name="theme-color" content="#0B0B0C">
-<meta property="og:title" content="Meu Quita · Seu mês e suas dívidas sob controle">
-<meta property="og:description" content="Saiba quanto sobra no mês e quando você fica livre das dívidas.">
+<meta property="og:title" content="Meu Quita · Saiba quanto sobra do seu salário">
+<meta property="og:description" content="Renda, contas e parcelas no mesmo lugar. Acesso vitalício por R$ 47,00.">
 <meta property="og:image" content="https://willamsdantas.github.io/01-test/quita/img/og.jpg">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1 1 106 106'%3E%3Crect x='1' y='1' width='106' height='106' rx='26' fill='%23141416'/%3E%3Cpath d='M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z' fill='%23F4F4F5'/%3E%3Cpath d='M56.87 63.00 L64.87 71.00 L78.37 57.50' fill='none' stroke='%238FD9AE' stroke-width='8.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -518,6 +518,36 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
 .head.c .h2,.buy-head .h2{margin-left:auto;margin-right:auto}
 .head.c .lead,.buy-head .lead{max-width:34em;margin-left:auto;margin-right:auto}
 @media(max-width:480px){.h2{max-width:none}}
+
+/* ===== briefing ===== */
+.hero .ctas .btn,.plan .btn,#final .bcta .btn{white-space:normal!important;text-align:center;height:auto;min-height:54px;padding-top:12px;padding-bottom:12px;line-height:1.25}
+.pl-p .per{white-space:nowrap}
+.hero-price{margin:16px 0 0;font-size:15px;color:var(--ink-2)}.hero-price b{color:var(--ink);font-weight:600}
+.ex-note{position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);margin:0;font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.stage{margin-bottom:34px}
+.h3{margin:0;font-size:clamp(20px,2.6vw,24px);line-height:1.3;letter-spacing:-.02em;font-weight:600}
+.head.c.aud-h{margin-top:56px;margin-bottom:0}.aud{margin-top:22px}
+.aud .card b{margin-top:0}
+@media (min-width:1024px){.aud{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.prec{max-width:620px;margin:14px auto 0;text-align:center;color:var(--ink-3);font-size:14.5px;line-height:1.55}
+.sim{max-width:520px;margin:40px auto 0;padding:24px;border-radius:22px;border:1px solid var(--border);background:linear-gradient(180deg,#151518,#111113)}
+.sim-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.sim-h b{font-size:16.5px;font-weight:600}.sim-h span{font-size:13px;color:var(--ink-3)}
+.sim-r{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);font-size:15.5px;color:var(--ink-2)}
+.sim-r b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sim-t{border-bottom:0;padding-bottom:6px;color:var(--ink);font-weight:600}.sim-t b{color:var(--pos);font-size:19px}
+.sim-s{margin:14px 0 0;padding-top:14px;border-top:1px solid var(--border);font-size:14px;line-height:1.55;color:var(--ink-3)}
+.more{max-width:720px;margin:56px auto 0;text-align:center}
+.mlist{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:12px;text-align:left}
+.mlist li{display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:16px;border:1px solid var(--border);background:var(--surface);font-size:15.5px;line-height:1.5;color:var(--ink-2)}
+.mlist .ic{flex:none;width:20px;height:20px;margin-top:1px;color:var(--pos)}
+@media (min-width:760px){.mlist{grid-template-columns:1fr 1fr}}
+.vid{max-width:980px;margin:36px auto 0}
+.vid video{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:18px;border:1px solid var(--border);background:#000}
+.vid figcaption{margin-top:12px;text-align:center;font-size:13.5px;color:var(--ink-3)}
+.bfech{max-width:520px;margin:6px auto 0;text-align:center;color:var(--ink-2);font-size:16px;line-height:1.55}
+.tl-t h3{margin-bottom:6px}
+#final .bcta{margin-top:30px}
 </style>
 </head>
 <body>
@@ -549,9 +579,9 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
   <div class="wrap">
     <a class="brand" href="#inicio" aria-label="Meu Quita, início"><span class="logo"><svg><use href="#qm"/></svg></span><span><span class="bm">meu</span>Quita</span></a>
     <nav class="nav" aria-label="Seções">
-      <a href="#recursos">Recursos</a><a href="#telas">Telas</a><a href="#seguranca">Segurança</a><a href="#duvidas">Dúvidas</a>
+      <a href="#demo">Como funciona</a><a href="#telas">Telas</a><a href="#seguranca">Segurança</a><a href="#duvidas">Dúvidas</a>
     </nav>
-    <a class="btn btn-pri btn-sm" href="#comprar">Quero o app</a>
+    <a class="btn btn-pri btn-sm" href="#comprar">Quero o Meu Quita</a>
   </div>
 </header>
 
@@ -561,22 +591,23 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
   <div class="glow" style="width:620px;height:620px;right:-140px;top:40px"></div>
   <div class="wrap">
     <div class="hero-tx">
-            <h1 id="heroH">Descubra o mês exato em que você <em>sai das dívidas.</em></h1>
-      <p class="lead ha" style="--d:.95s">Coloque suas parcelas, contas e renda no Quita uma vez. Ele mostra quanto sobra este mês, o que vence esta semana e quando a última parcela acaba.</p>
+      <h1 id="heroH">Saiba quanto sobra do seu salário e <em>quando suas parcelas vão terminar.</em></h1>
+      <p class="lead ha" style="--d:.95s">Cadastre sua renda, contas e compras parceladas. O Meu Quita organiza os vencimentos, mostra quanto ainda falta pagar e ajuda você a planejar os próximos meses sem fazer contas de cabeça.</p>
       <div class="ctas ha" style="--d:1.1s">
-        <a class="btn btn-pri" href="#comprar">Quero ver quando fico livre<svg class="ic"><use href="#i-arrow"/></svg></a>
-        <a class="btn btn-sec" href="#telas">Ver o app por dentro</a>
+        <a class="btn btn-pri" href="#comprar">Quero organizar minhas contas<svg class="ic"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-sec" href="#demo">Ver o app por dentro</a>
       </div>
-      <div class="trust ha" style="--d:1.25s">
-        <span><svg class="ic"><use href="#i-lock"/></svg>Não pede senha de banco</span>
-        <span><svg class="ic"><use href="#i-cloud"/></svg>Tudo salvo na sua conta Google</span>
-        <span><svg class="ic"><use href="#i-bell"/></svg>Avisa antes de vencer</span>
+      <p class="hero-price ha" style="--d:1.2s"><b>Acesso vitalício por R$&nbsp;47,00.</b> Pagamento único. Sem mensalidade. Para Android.</p>
+      <div class="trust ha" style="--d:1.3s">
+        <span><svg class="ic"><use href="#i-lock"/></svg>Sem conectar sua conta bancária</span>
+        <span><svg class="ic"><use href="#i-shield"/></svg>7 dias de garantia</span>
+        <span><svg class="ic"><use href="#i-cloud"/></svg>Backup na sua conta Google</span>
       </div>
     </div>
     <div class="hero-art">
       <div class="stage">
         <div class="glow" style="inset:-60px -80px;background:radial-gradient(closest-side,rgba(143,217,174,.13),transparent)"></div>
-        <div class="phone"><img src="../img/painel.webp" alt="Painel do Meu Quita mostrando a sobra do mês" width="390" height="844" fetchpriority="high"></div>
+        <div class="phone"><img src="../img/painel.webp" alt="Painel do Meu Quita mostrando a sobra do mês (dados de exemplo)" width="390" height="844" fetchpriority="high"></div>
         <div class="float f1" aria-hidden="true">
           <div class="f-k">Sobra de outubro</div>
           <div class="f-v">R$ 1.600,00</div>
@@ -585,42 +616,66 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
         </div>
         <div class="float f2" aria-hidden="true">
           <span class="f-ic"><svg class="ic"><use href="#i-cal"/></svg></span>
-          <span><span class="f-k" style="display:block">Livre das dívidas em</span><span class="f-t">abril de 2027</span></span>
+          <span><span class="f-k" style="display:block">Previsão da última parcela</span><span class="f-t">abril de 2027</span></span>
         </div>
+        <p class="ex-note">Dados de exemplo</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="band alt" id="recursos">
+<section class="band alt" id="dor">
   <div class="wrap pad">
     <div class="head c rv">
-      <h2 class="h2">Cadastre uma vez. O Quita organiza os próximos meses para você.</h2>
-      <p class="lead">Não precisa conectar conta de banco nem entender de finanças.</p>
+      <h2 class="h2">O problema começa quando você assume parcelas sem saber quanto já está comprometido.</h2>
+      <p class="lead">Cada compra parece pequena sozinha. O aperto aparece quando tudo cai no mesmo mês.</p>
     </div>
-    <div class="steps">
-      <div class="step rv"><span class="n">1</span><div><b>Sua renda</b><p>Salário, renda fixa ou extras. O&nbsp;que se repete entra sozinho todo mês.</p></div></div>
-      <div class="step rv"><span class="n">2</span><div><b>Suas contas fixas</b><p>Aluguel, luz, internet, cartão, com o dia de cada vencimento. Você vê o que já pagou e o que falta.</p></div></div>
-      <div class="step rv"><span class="n">3</span><div><b>Suas parcelas</b><p>Valor, quantidade e quando começou. O&nbsp;app mostra em que mês cai cada uma e quando termina.</p></div></div>
-    </div>
-    <p class="guia">No primeiro acesso, o app guia você por esses três passos.</p>
     <div class="feats">
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-chart"/></svg></span><h3>Saiba se o mês fecha antes de ele começar</h3><p>Quanto entrou, quanto saiu e quanto sobra, com o percentual da renda já comprometido.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-card"/></svg></span><h3>Cada parcela no lugar, com data para acabar</h3><p>Informe valor, nº de parcelas e mês da 1ª. O&nbsp;app mostra saldo, atrasos e a data em que termina.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-bell"/></svg></span><h3>Pare de pagar multa por esquecer um boleto</h3><p>Lembretes antes das contas e parcelas vencerem, no horário que você escolher.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-sort"/></svg></span><h3>Saiba qual dívida atacar primeiro</h3><p>Sugere qual dívida pagar primeiro e calcula quanto você economiza ao antecipar parcelas.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-target"/></svg></span><h3>Junte sua reserva sem adivinhar quanto</h3><p>Reserva de emergência e objetivos com prazo, mostrando quanto guardar por mês.</p></article>
-      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-future"/></svg></span><h3>Antes de parcelar algo novo, veja se cabe</h3><p>Veja a sobra dos próximos meses antes de assumir uma compra nova.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-card"/></svg></span><h3>Você sabe o valor da parcela, mas não o peso dela</h3><p>Sem somar renda, contas e parcelas no mesmo lugar, fica difícil saber quanto realmente sobra.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-future"/></svg></span><h3>Uma compra nova parece caber, até o mês fechar</h3><p>Sem enxergar os próximos meses, cada parcela a mais entra no escuro.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-bell"/></svg></span><h3>Vencimentos espalhados são fáceis de esquecer</h3><p>Cartão, boleto, financiamento e carnê em datas diferentes. Esquecer um é questão de tempo.</p></article>
+    </div>
+    <div class="head c rv aud-h"><h3 class="h3">O Meu Quita é para quem…</h3></div>
+    <div class="mini aud">
+      <div class="card rv"><b>Recebe salário e perde o controle do saldo</b><p>Quer entender, no meio do mês, quanto ainda pode gastar.</p></div>
+      <div class="card rv"><b>Acumula parcelas</b><p>Quer ver todas juntas e saber quando cada uma termina.</p></div>
+      <div class="card rv"><b>Esquece vencimentos</b><p>Quer um aviso antes da data, não depois da multa.</p></div>
+      <div class="card rv"><b>Já abandonou cadernos e planilhas</b><p>Quer algo pronto, sem montar fórmula nem tabela.</p></div>
     </div>
   </div>
 </section>
 
-<section class="band" id="telas" style="overflow:hidden">
+<section class="band" id="demo">
+  <div class="wrap pad">
+    <div class="head c rv">
+      <h2 class="h2">Veja seu dinheiro organizado em poucos passos.</h2>
+      <p class="lead">Sem conectar conta de banco e sem entender de finanças.</p>
+    </div>
+    <div class="steps">
+      <div class="step rv"><span class="n">1</span><div><b>Cadastre sua renda</b><p>Salário, renda fixa ou extras. O que se repete entra sozinho todo mês.</p></div></div>
+      <div class="step rv"><span class="n">2</span><div><b>Informe contas e vencimentos</b><p>Aluguel, luz, internet e cartão, com o dia de cada vencimento.</p></div></div>
+      <div class="step rv"><span class="n">3</span><div><b>Adicione suas parcelas</b><p>Valor, quantidade e mês da primeira. O app mostra em que mês cai cada uma e quando termina.</p></div></div>
+    </div>
+    <p class="guia">No primeiro acesso, o app guia você por esses três passos.</p>
+    <p class="prec rv">Contas e parcelas recorrentes se repetem a cada mês a partir do cadastro. Pagamentos pontuais ou valores que mudam você ajusta e marca manualmente.</p>
+    <div class="sim rv" role="group" aria-label="Simulação ilustrativa de sobra do mês">
+      <div class="sim-h"><b>Simulação ilustrativa</b><span>Valores de exemplo</span></div>
+      <div class="sim-r"><span>Renda</span><b>R$ 2.800,00</b></div>
+      <div class="sim-r"><span>Contas fixas</span><b>− R$ 1.000,00</b></div>
+      <div class="sim-r"><span>Gastos variáveis</span><b>− R$ 700,00</b></div>
+      <div class="sim-r"><span>Parcelas</span><b>− R$ 800,00</b></div>
+      <div class="sim-r sim-t"><span>Sobra estimada</span><b>R$ 300,00</b></div>
+      <p class="sim-s">Quando você cadastra renda, contas e parcelas, o Meu Quita mostra a diferença entre o que entra e o que já está comprometido. O resultado real depende dos dados que você informar.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="telas" style="overflow:hidden">
   <div class="glow" style="left:50%;top:200px;width:900px;height:900px;margin-left:-450px;opacity:.6"></div>
   <div class="wrap pad" style="position:relative">
     <div class="head c rv">
-      <h2 class="h2">Tudo claro, em poucas telas.</h2>
-      <p class="lead">Arraste, toque nas setas ou nos nomes para conhecer cada parte do Meu Quita.</p>
+      <h2 class="h2">Cada tela responde a uma pergunta do seu mês.</h2>
+      <p class="lead">Arraste, toque nas setas ou nos nomes para conhecer cada parte do Meu Quita. Telas com dados de exemplo.</p>
     </div>
     <div class="chips" role="tablist" aria-label="Telas do app" id="chips"></div>
     <div class="car" id="car" tabindex="0" aria-roledescription="carrossel" aria-label="Telas do Meu Quita">
@@ -632,66 +687,59 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
   </div>
 </section>
 
+<section class="band" id="beneficios">
+  <div class="wrap pad">
+    <div class="head c rv">
+      <h2 class="h2">O que muda quando suas contas ficam no mesmo lugar.</h2>
+    </div>
+    <div class="feats">
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-chart"/></svg></span><h3>Veja quanto realmente sobra do salário</h3><p>Renda, contas e parcelas somadas, com o percentual da renda já comprometido.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-card"/></svg></span><h3>Acompanhe quando cada parcela termina</h3><p>Saldo, parcelas restantes e o mês previsto para a última de cada dívida.</p></article>
+      <article class="card rv"><span class="ib"><svg class="ic"><use href="#i-bell"/></svg></span><h3>Lembre das contas antes do vencimento</h3><p>Avisos antes de contas e parcelas vencerem, no horário que você escolher.</p></article>
+    </div>
+    <div class="more rv">
+      <h3 class="h3">Mais recursos para planejar o que vem pela frente.</h3>
+      <ul class="mlist">
+        <li><svg class="ic"><use href="#i-check"/></svg>Veja a sobra dos próximos meses antes de assumir uma compra parcelada.</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Compare dívidas e veja qual pode fazer sentido pagar primeiro.</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Simule o efeito de antecipar parcelas.</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Crie reserva de emergência e objetivos com prazo.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <section class="band alt" id="seguranca">
   <div class="wrap pad split">
     <div class="rv">
-      <h2 class="h2">Sem senha de banco. Seus dados ficam com você.</h2>
-      <p class="lead" style="margin:18px 0 0;max-width:520px">O Quita não se conecta à sua conta bancária. Você digita o que quer acompanhar, e tudo fica salvo na sua própria conta Google. Trocou de celular? Entre com a mesma conta e tudo volta.</p>
+      <h2 class="h2">Organize suas contas sem informar a senha do banco.</h2>
+      <p class="lead" style="margin:18px 0 0;max-width:520px">O Meu Quita não se conecta à sua conta bancária. Você cadastra o que quer acompanhar e entra com sua conta Google. Trocou de celular? Entre com a mesma conta e restaure seus dados.</p>
     </div>
     <div class="mini">
-      <div class="card rv"><svg class="ic"><use href="#i-lock"/></svg><b>Sem senha de banco</b><p>Nada de conectar conta: você cadastra só o que quer acompanhar.</p></div>
-      <div class="card rv"><svg class="ic"><use href="#i-cloudok"/></svg><b>Backup automático</b><p>Feito a cada alteração, sem você lembrar.</p></div>
-      <div class="card rv"><svg class="ic"><use href="#i-shield"/></svg><b>Só você vê</b><p>Os dados ficam na sua conta, não num servidor nosso.</p></div>
+      <div class="card rv"><svg class="ic"><use href="#i-lock"/></svg><b>Sem senha de banco</b><p>Você cadastra só o que quer acompanhar.</p></div>
+      <div class="card rv"><svg class="ic"><use href="#i-cloudok"/></svg><b>Login e backup com Google</b><p>Seus dados podem ser restaurados em outro celular.</p></div>
       <div class="card rv"><svg class="ic"><use href="#i-eye"/></svg><b>Esconder valores</b><p>Um toque no olho e os números somem da tela.</p></div>
-      
     </div>
   </div>
 </section>
 
-<section class="band" id="praquem" style="overflow:hidden">
+<section class="band" id="prova" style="overflow:hidden">
   <div class="wrap pad">
     <div class="head c rv">
-      <h2 class="h2">O Quita é para você se…</h2>
-      <p class="lead">Se você se reconheceu em pelo menos um destes, ele foi feito para você.</p>
+      <h2 class="h2">Veja o Meu Quita funcionando antes de decidir.</h2>
+      <p class="lead">Uma gravação real do aplicativo, do cadastro à sobra do mês.</p>
     </div>
-    <ol class="tl pq" id="pq"><span class="tl-track"><i id="pqFill"></i></span><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Paga várias parcelas e não sabe quando elas acabam</h3><p>O Quita mostra cada parcela mês a mês e o mês exato em que a última termina. Você para de pagar no escuro.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Fecha o mês no cheque especial</h3><p>Antes de o mês começar, você vê se a renda cobre tudo. Se não cobre, enxerga onde está o furo e quanto falta.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Já pagou multa por esquecer um boleto</h3><p>O app avisa antes de cada conta e parcela vencer, no horário que você escolher. Uma multa evitada já paga o mês.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Já tentou planilha ou caderno e largou</h3><p>Você cadastra uma vez e o Quita repete as contas fixas e calcula tudo sozinho, todo mês. Sem fórmula e sem montar nada.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Não entende de finanças e nem quer entender</h3><p>A linguagem é simples: entrou, saiu, sobrou. Nada de termos difíceis nem gráficos complicados.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Não quer dar a senha do banco para nenhum app</h3><p>O Quita não se conecta a banco. Você cadastra só o que quer acompanhar, e tudo fica salvo na sua conta Google.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Tem muitas dívidas e não sabe por onde começar</h3><p>Ele mostra qual dívida atacar primeiro e quanto você economiza antecipando parcelas. Você sai da paralisia e começa.</p></div></li><li class="tl-i"><span class="tl-dot"></span><div class="pq-t"><h3>Quer sair do vermelho e começar uma reserva</h3><p>Crie metas com valor e prazo e veja quanto guardar por mês. O próximo imprevisto não vira dívida nova.</p></div></li></ol>
-  </div>
-</section>
-
-<section class="band alt" id="custo" style="overflow:hidden">
-  <div class="wrap pad">
-    <div class="head c rv">
-      <h2 class="h2">Continuar sem controle também custa.</h2>
-      <p class="lead">Quase ninguém se endivida de uma vez. Acontece aos poucos, em coisas pequenas que ninguém está vendo.</p>
-    </div>
-    <div class="cst rv">
-      <div class="cst-i"><b>O boleto que passou do dia</b><p>Multa e juros por um esquecimento. E no mês seguinte acontece de novo.</p></div>
-      <div class="cst-i"><b>A parcela que parecia caber</b><p>Sem ver a sobra dos próximos meses, cada compra nova vira mais uma dívida.</p></div>
-      <div class="cst-i"><b>O mês que nunca acaba</b><p>Pagar no escuro significa não saber quando a última parcela termina. E continuar pagando.</p></div>
-    </div>
-    <p class="cst-end rv">Com o Meu Quita, você vê tudo isso <b>antes de acontecer</b>. Sem mensalidade e com 7 dias de garantia.</p>
-  </div>
-</section>
-
-<section class="band" id="bonus" style="overflow:hidden">
-  <div class="glow" style="left:50%;top:160px;width:1000px;height:700px;margin-left:-500px;opacity:.7"></div>
-  <div class="wrap pad" style="position:relative">
-    <div class="head c rv">
-      <h2 class="h2">Três guias de presente para você sair do vermelho <em class="hl">mais rápido.</em></h2>
-      <p class="lead">Junto com o app, você leva a Coleção Quita: guias práticos, no mesmo visual do app, para ler no celular e aplicar no mesmo dia.</p>
-    </div>
-    <p class="bnote rv">Os 3 guias vêm incluídos na sua compra, sem custo extra.</p>
-    <figure class="dvmock rv"><img src="../img/colecao-devices.webp" alt="Os guias da Coleção Meu Quita no notebook e no celular" width="1400" height="869" loading="lazy"></figure>
-    <ol class="tl" id="tl"><span class="tl-track"><i id="tlFill"></i></span><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa1.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 1 de 3</div><h3>Plano de 6 meses para sair das dívidas</h3><p>Um degrau por mês: parar de afundar, quitar o que custa mais caro e voltar a ter sobra.</p><ul><li>Os 6 passos, um por mês</li><li>Exemplos com contas reais, mês a mês</li><li>Checklists e "Faça no Quita"</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa2.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 2 de 3</div><h3>Guia de renegociação</h3><p>O que pedir, o que comparar e o que nunca aceitar para baixar juros e parcelas.</p><ul><li>Roteiros prontos para falar com o banco</li><li>Seus direitos: rotativo e portabilidade</li><li>Quando quitar à vista compensa</li></ul></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa3.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 3 de 3</div><h3>Controle de gastos em 21 dias</h3><p>Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real.</p><ul><li>Uma tarefa curta por dia</li><li>Enxergar, cortar e manter</li><li>Checklist diário no app</li></ul></div></li></ol>
-    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Meu Quita + 3 guias<svg class="ic"><use href="#i-arrow"/></svg></a><p>Pagamento único, sem mensalidade.</p></div>
-    
+    <figure class="vid rv">
+      <video controls preload="none" playsinline poster="meu-quita-demo.jpg" width="1280" height="720"><source src="meu-quita-demo.mp4" type="video/mp4">Seu navegador não reproduz este vídeo.</video>
+      <figcaption>Gravação real do aplicativo. Os valores mostrados são dados demonstrativos.</figcaption>
+    </figure>
   </div>
 </section>
 
 <section class="band alt" id="depoimentos" style="overflow:hidden">
   <div class="wrap pad">
     <div class="head c rv">
-      <h2 class="h2">Quem já organizou o mês com o Quita conta como foi.</h2>
+      <h2 class="h2">Quem já organizou o mês com o Meu Quita conta como foi.</h2>
       <p class="lead">Pessoas comuns, com parcela, cartão e conta para pagar.</p>
     </div>
     <div class="dps"><figure class="dp"><svg class="dp-q" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 11H6.2c.3-2.6 1.6-4 3.8-4.6V4C5.9 4.7 4 7.5 4 12v6h6zm10 0h-3.8c.3-2.6 1.6-4 3.8-4.6V4c-4.1.7-6 3.5-6 8v6h6z"/></svg>
@@ -710,6 +758,40 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
   </div>
 </section>
 
+<section class="band" id="bonus" style="overflow:hidden">
+  <div class="glow" style="left:50%;top:160px;width:1000px;height:700px;margin-left:-500px;opacity:.7"></div>
+  <div class="wrap pad" style="position:relative">
+    <div class="head c rv">
+      <h2 class="h2">Além do aplicativo, receba três guias práticos para cuidar melhor das suas contas.</h2>
+    </div>
+    <p class="bnote rv">Os três guias estão incluídos na compra, sem custo extra.</p>
+    <figure class="dvmock rv"><img src="../img/colecao-devices.webp" alt="Os guias da Coleção Meu Quita no notebook e no celular" width="1400" height="869" loading="lazy"></figure>
+    <ol class="tl" id="tl"><span class="tl-track"><i id="tlFill"></i></span><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa1.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 1 de 3</div><h3>Plano de 6 meses para organizar a saída das dívidas</h3><p>Um roteiro em seis etapas para entender o que você deve, priorizar o que pagar primeiro e acompanhar o avanço mês a mês. O resultado depende da sua situação financeira e das ações que você colocar em prática.</p></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa2.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 2 de 3</div><h3>Guia prático de renegociação</h3><p>O que levantar antes de conversar, o que comparar entre as propostas e como conduzir a negociação com mais segurança.</p></div></li><li class="tl-i"><span class="tl-dot"></span><img class="tl-cv" src="../img/capa3.webp" alt="" width="240" height="339" loading="lazy"><div class="tl-t"><div class="tl-v">Guia 3 de 3</div><h3>Controle de gastos em 21 dias</h3><p>Uma tarefa curta por dia para criar o hábito de saber para onde vai cada real, com acompanhamento no Meu Quita.</p></div></li></ol>
+    <p class="bfech rv">Consulte uma tarefa do guia e aplique o acompanhamento no Meu Quita.</p>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" id="bCta">Quero o Meu Quita + 3 guias<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+  </div>
+</section>
+
+<section class="band alt" id="planos" style="overflow:hidden">
+  <div class="wrap" id="comprar" style="padding-top:var(--sec);padding-bottom:var(--sec);scroll-margin-top:80px">
+    <div class="buy-head rv">
+      <h2 class="h2">Pague uma vez. Tenha acesso ao Meu Quita sem mensalidade.</h2>
+      <p class="lead">Organize contas, renda e parcelas no aplicativo e receba os três guias complementares na mesma compra.</p>
+    </div>
+    <div class="plans rv" id="plans">
+      <article class="plan hot">
+        <span class="pl-b">Acesso vitalício</span><div class="pl-n">Meu Quita</div>
+        <div class="pl-p"><span class="cur">R$</span>47<span class="ct">,00</span><span class="per">pagamento único</span></div>
+        <div class="pl-eq">Sem mensalidade, sem renovação</div>
+        <a class="btn btn-pri" href="#comprar" data-buy>Quero garantir meu acesso ao Meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a>
+        <ul><li><span class="dash"></span>Acesso vitalício ao aplicativo</li><li><span class="dash"></span>Recursos de renda, contas, parcelas e metas</li><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>3 guias práticos em PDF</b></span></li><li><span class="dash"></span>Suporte pelo WhatsApp</li><li><span class="dash"></span>7 dias de garantia</li></ul>
+      </article>
+    </div>
+    <p class="plans-g"><b>7 dias de garantia.</b> Se não gostar, peça o reembolso dentro do prazo e receba seu dinheiro de volta.</p>
+    <p class="plans-note">Sem mensalidade. Para Android. Pagamento seguro. Acesso vinculado ao e-mail Google utilizado na compra.</p>
+  </div>
+</section>
+
 <section class="band" id="duvidas" style="overflow:hidden">
   <div class="wrap pad faq-wrap">
     <div class="faq-side rv">
@@ -721,25 +803,13 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
   </div>
 </section>
 
-<section class="band" id="planos" style="overflow:hidden">
-  <div class="wrap" id="comprar" style="padding-top:var(--sec);padding-bottom:var(--sec);scroll-margin-top:80px">
-    <div class="buy-head rv">
-      <h2 class="h2"><span class="nw">Pague uma vez.</span> <span class="nw">Use para sempre.</span></h2>
-      <p class="lead">Sem mensalidade e sem renovação. Baixe o app e entre com o mesmo <span style="white-space:nowrap">e-mail</span> Google usado no pagamento. Seu acesso é liberado.</p>
+<section class="band alt" id="final" style="overflow:hidden">
+  <div class="wrap pad">
+    <div class="head c rv">
+      <h2 class="h2">Comece a acompanhar seu dinheiro com mais organização.</h2>
+      <p class="lead">Renda, contas e parcelas no mesmo lugar, pelo preço de um pagamento único.</p>
     </div>
-    <div class="plans rv" id="plans">
-      <article class="plan hot">
-        <span class="pl-b">Acesso vitalício</span><div class="pl-n">Meu Quita</div>
-        <div class="pl-s">Um pagamento, para sempre</div>
-        <div class="pl-p"><span class="cur">R$</span>47<span class="ct">,00</span><span class="per">uma vez</span></div>
-        <div class="pl-eq">Sem mensalidade, sem renovação</div>
-        <div class="pl-an">Menos que uma multa por atraso de boleto</div>
-        <a class="btn btn-pri" href="#comprar">Quero o Meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a>
-        <ul><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>+ 3 guias bônus</b> (1, 2 e 3)</span></li><li><span class="dash"></span>Acesso vitalício ao app</li><li><span class="dash"></span>Todos os recursos do app</li><li><span class="dash"></span>Backup automático no Google</li><li><span class="dash"></span>Suporte pelo WhatsApp</li></ul>
-      </article>
-    </div>
-    <p class="plans-g"><b>7 dias de garantia.</b> Se não gostar, pede o reembolso e recebe seu dinheiro de volta.</p>
-    <p class="plans-note">Para Android · pagamento seguro</p>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" data-buy>Quero meu acesso ao Meu Quita<svg class="ic"><use href="#i-arrow"/></svg></a><p>R$ 47,00 · Pagamento único · 7 dias de garantia</p></div>
   </div>
 </section>
 </main>
@@ -824,6 +894,9 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
     so.observe(stage);
   } else requestAnimationFrame(function(){contar(1500)});
 
+  /* link do checkout: preencha aqui quando tiver */
+  var CHECKOUT='';
+  if(CHECKOUT)[].forEach.call(document.querySelectorAll('[data-buy]'),function(a){a.href=CHECKOUT});
   var top=document.getElementById('top'),mbar=document.getElementById('mbar'),buy=document.getElementById('comprar');
   function onScroll(){
     var y=window.scrollY;top.classList.toggle('sc',y>8);
@@ -840,12 +913,12 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
 
   /* carrossel de telas */
   var S=[
-    ['Painel','painel','A sobra do mês em destaque, o quanto da renda está comprometido, atalhos rápidos e as contas do mês em lista ou calendário.'],
-    ['Dívidas','dividas','Cada dívida com saldo, parcelas restantes, próximo vencimento e o mês em que termina. Atrasos aparecem na hora.'],
-    ['Relatório','relatorio','Um diagnóstico do mês em linguagem simples e a previsão dos próximos 6 meses: receita, despesas, parcelas e sobra.'],
-    ['Receitas','receitas','Renda fixa que entra sozinha todo mês e receitas avulsas, separadas e somadas para você.'],
-    ['Despesas','despesas','Contas fixas com o dia do vencimento. Marque como paga com um toque e veja quanto ainda falta.'],
-    ['Metas e reserva','painel2','Reserva de emergência e sonhos com valor, prazo e quanto guardar por mês para chegar lá.']
+    ['Quanto sobra?','painel','A sobra do mês em destaque, quanto da renda já está comprometido, atalhos rápidos e as contas do mês em lista ou calendário.'],
+    ['Quando termina?','dividas','Cada dívida com saldo, parcelas restantes, próximo vencimento e o mês previsto para terminar. Atrasos aparecem na hora.'],
+    ['E nos próximos meses?','relatorio','Um resumo do mês em linguagem simples e a previsão dos próximos 6 meses: receita, despesas, parcelas e sobra.'],
+    ['O que entra?','receitas','Renda fixa que se repete todo mês e receitas avulsas, separadas e somadas para você.'],
+    ['O que vence?','despesas','Contas fixas com o dia do vencimento. Marque como paga com um toque e veja quanto ainda falta.'],
+    ['Quanto guardar?','painel2','Reserva de emergência e objetivos com valor, prazo e quanto separar por mês para chegar lá.']
   ];
   var n=S.length,idx=0,car=document.getElementById('car'),chips=document.getElementById('chips'),dots=document.getElementById('dots');
   var slides=S.map(function(s,i){
@@ -921,17 +994,13 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
   /* perguntas frequentes */
   var F=[
     ['Preciso dar a senha do meu banco?','Não. O Meu Quita não se conecta a nenhum banco. Você mesmo cadastra a renda, as contas e as parcelas que quer acompanhar.'],
-    ['Tenho muitas dívidas. Vale pagar por um app?','Vale, e é justamente para quem tem várias parcelas. É um pagamento único, menos do que uma multa por atraso de boleto. E quanto mais dívidas, mais o Meu Quita ajuda a ver o que pagar primeiro e o mês em que tudo termina.'],
-    ['Tem período de teste?','Teste grátis não tem, mas você compra sem risco: são 7 dias de garantia. Usou, não gostou, pede o reembolso e recebe seu dinheiro de volta.'],
-    ['Por que pagar se existem planilhas e apps grátis?','Planilha grátis você monta, formata e atualiza sozinho, e quase todo mundo larga no segundo mês. Aqui você cadastra uma vez e o Meu Quita repete as contas, avisa os vencimentos e mostra o mês em que você fica livre.'],
-    ['Vitalício é até quando?','Você paga uma vez e não é cobrado de novo, nunca. Seus dados ficam na sua própria conta Google, então continuam sendo seus, aconteça o que acontecer.'],
-    ['Preciso pagar mensalidade?','Não. Você paga uma única vez e o acesso é vitalício. Não existe renovação nem cobrança todo mês.'],
-    ['O Meu Quita me avisa quando uma conta vai vencer?','Sim. Ele te lembra antes de cada vencimento, para você pagar em dia e fugir de multa e juros.'],
-    ['Ele controla parcelas e contas que se repetem todo mês?','Sim. Você cadastra uma vez e ele leva a parcela e a conta fixa pelos meses seguintes, até a última parcela. Dá para ver mês a mês o que vence e quanto sobra.'],
-    ['Preciso digitar tudo? É difícil de usar?','Só uma vez: renda, contas e parcelas. Depois o Meu Quita repete os meses e faz as contas por você. É simples, sem planilha e sem fórmula.'],
-    ['Eu e meu marido ou minha esposa podemos usar?','Podem. Cada pessoa usa com a própria conta Google e tem o seu próprio controle. Para liberar uma segunda conta, é só chamar o suporte no WhatsApp.'],
-    ['Como recebo o app? Funciona no iPhone?','Depois da compra você recebe o link para baixar. Ao abrir, entre com a conta Google do mesmo e-mail da compra e o acesso é liberado. Por enquanto o app é só para Android.'],
-    ['Se eu trocar de celular, perco tudo?','Não. Instale o Meu Quita no celular novo, entre com a mesma conta Google e seus dados voltam.']
+    ['Preciso pagar todo mês?','Não. O acesso custa R$ 47,00 em pagamento único, sem mensalidade e sem renovação. É vitalício, conforme os termos de uso.'],
+    ['Preciso registrar cada pagamento?','Contas e parcelas recorrentes se repetem a cada mês a partir do cadastro. Pagamentos pontuais ou valores que mudam você ajusta e marca manualmente.'],
+    ['Por que pagar se existem planilhas grátis?','Uma planilha funciona se você montar e manter. O Meu Quita já vem pronto: avisos de vencimento, parcelas mês a mês e a sobra calculada, sem fórmulas.'],
+    ['Funciona no iPhone?','Não. Por enquanto o Meu Quita é apenas para Android.'],
+    ['Se eu trocar de celular, perco meus dados?','Instale o Meu Quita no celular novo e entre com a mesma conta Google. Os dados salvos no backup podem ser restaurados.'],
+    ['Como funciona o reembolso?','Você tem 7 dias de garantia. Se não gostar, peça o reembolso dentro do prazo, pelo suporte, e receba seu dinheiro de volta.'],
+    ['Posso usar com outra pessoa?','O acesso fica vinculado ao e-mail Google usado na compra. Se outra pessoa quiser usar com a própria conta Google, fale com o suporte pelo WhatsApp.']
   ];
   var faq=document.getElementById('faq');
   F.forEach(function(f,i){
