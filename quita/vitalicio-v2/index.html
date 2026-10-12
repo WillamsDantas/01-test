@@ -640,6 +640,22 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
 .faq-side .lead{margin-left:auto!important;margin-right:auto!important}
 .faq{max-width:760px;margin:36px auto 0}
 
+/* simulação: barra do salário dividida */
+.sim-sal{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:22px}
+.sim-sal span{font-size:14px;color:var(--ink-2)}
+.sim-sal b{font-size:26px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sim-bar{display:flex;gap:4px;height:16px;margin-top:14px}
+.sim-bar i{display:block;border-radius:6px;min-width:6px}
+.sim-bar .c1,.sim .d.c1{background:#5B6472}
+.sim-bar .c2,.sim .d.c2{background:#8A93A3}
+.sim-bar .c3,.sim .d.c3{background:#B9C0CC}
+.sim-bar .c4,.sim .d.c4{background:var(--pos)}
+.sim-lg{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:2px}
+.sim-lg li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:15px;color:var(--ink-2)}
+.sim-lg li:last-child{border-bottom:0}
+.sim-lg .d{flex:none;width:10px;height:10px;border-radius:3px}
+.sim-lg b{margin-left:auto;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sim-f{margin-top:12px;padding:18px 18px 18px;border:1px solid rgba(143,217,174,.28);border-radius:16px;background:linear-gradient(180deg,rgba(143,217,174,.10),rgba(143,217,174,.04))}
 /* ===== padrão da página de assinatura: títulos centralizados ===== */
 .pl-chips{flex-wrap:wrap}
 @media(min-width:560px){.hcta{max-width:380px}}
@@ -682,6 +698,24 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
  .dm-r .sim{max-width:none}
 }
 @media(max-width:340px){.bcta .btn{font-size:14px;padding:0 12px;gap:6px}}
+/* simulação larga no desktop */
+@media (min-width:1024px){
+ .sim{max-width:920px;padding:36px 40px 40px;margin-top:44px}
+ .sim-t1{font-size:26px}
+ .sim-sal{margin-top:30px}
+ .sim-sal span{font-size:15.5px}
+ .sim-sal b{font-size:34px}
+ .sim-bar{height:22px;gap:5px;margin-top:18px}
+ .sim-bar i{border-radius:8px}
+ .sim-lg{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+ .sim-lg li{flex-direction:column;align-items:flex-start;gap:4px;padding:20px 22px 22px;border:1px solid var(--border);border-radius:16px;background:#1B1B1E;position:relative}
+ .sim-lg li:last-child{border-bottom:1px solid var(--border)}
+ .sim-lg .d{position:static;width:32px;height:6px;border-radius:4px;margin-bottom:8px}
+ .sim-lg b{margin-left:0;font-size:24px;letter-spacing:-.01em}
+ .sim-f{margin-top:16px;padding:24px 28px}
+ .sim-f b{font-size:19px}.sim-f span{font-size:14.5px}
+ .sim-f strong{font-size:52px}
+}
 </style>
 </head>
 <body>
@@ -798,12 +832,15 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
     <div class="sim rv" role="group" aria-label="Simulação ilustrativa de sobra do mês">
       <div class="sim-k">Simulação ilustrativa</div>
       <div class="sim-t1">O dinheiro do mês, organizado</div>
-      <div class="sim-g">
-        <div><span>Salário</span><b>R$ 2.800</b></div>
-        <div><span>Contas fixas</span><b>R$ 1.000</b></div>
-        <div><span>Gastos variáveis</span><b>R$ 700</b></div>
-        <div><span>Parcelas</span><b>R$ 800</b></div>
+      <div class="sim-sal"><span>Salário do mês</span><b>R$ 2.800</b></div>
+      <div class="sim-bar" role="img" aria-label="Divisão do salário: contas fixas R$ 1.000, gastos variáveis R$ 700, parcelas R$ 800 e sobra de R$ 300">
+        <i style="flex:1000" class="c1"></i><i style="flex:700" class="c2"></i><i style="flex:800" class="c3"></i><i style="flex:300" class="c4"></i>
       </div>
+      <ul class="sim-lg">
+        <li><span class="d c1"></span>Contas fixas<b>R$ 1.000</b></li>
+        <li><span class="d c2"></span>Gastos variáveis<b>R$ 700</b></li>
+        <li><span class="d c3"></span>Parcelas<b>R$ 800</b></li>
+      </ul>
       <div class="sim-f"><div><b>Sobra prevista do mês</b><span>Após as despesas cadastradas</span></div><strong>R$ 300</strong></div>
     </div>
     <p class="sim-s2 rv">Quando você cadastra renda, contas e parcelas, o Meu Quita mostra a diferença entre o que entra e o que já está comprometido. O resultado real depende dos dados que você informar.</p>
