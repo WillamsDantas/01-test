@@ -618,13 +618,53 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
  .head .lead{margin-top:18px}
  .head+.feats,.head+.steps{margin-top:44px}
 }
-@media (min-width:1024px){
- #seguranca .mini{grid-template-columns:1fr;gap:12px}
- #seguranca .mini .card{display:grid;grid-template-columns:28px 1fr;column-gap:16px;align-items:start}
- #seguranca .mini .card>.ic{grid-row:1/3}
- #seguranca .mini .card b{margin-top:0}
-}
 @media(max-width:400px){.top .btn-sm{font-size:13.5px;padding-left:12px;padding-right:12px;white-space:nowrap}.top .wrap{gap:10px}}
+
+/* ===== alinhamento único: títulos de seção sempre centralizados ===== */
+@media (max-width:1023px){
+ .hero-tx{text-align:center}
+ .hero .lead{margin-left:auto;margin-right:auto}
+ .hcta{margin-left:auto;margin-right:auto}
+ .htrust{width:max-content;max-width:100%;margin-left:auto;margin-right:auto;justify-items:start;text-align:left}
+}
+#seguranca .split{display:block}
+#seguranca .split>div:first-child{max-width:680px;margin:0 auto;text-align:center}
+#seguranca .split>div:first-child .lead{margin-left:auto!important;margin-right:auto!important}
+#seguranca .mini{margin-top:40px;grid-template-columns:1fr;max-width:1000px;margin-left:auto;margin-right:auto}
+@media (min-width:860px){#seguranca .mini{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#seguranca .mini .card{display:block}
+#seguranca .mini .card>.ic{display:block;grid-row:auto}
+#seguranca .mini .card b{margin-top:14px}
+.faq-wrap{display:block}
+.faq-side{text-align:center;max-width:620px;margin:0 auto}
+.faq-side .lead{margin-left:auto!important;margin-right:auto!important}
+.faq{max-width:760px;margin:36px auto 0}
+
+/* ===== tudo alinhado à esquerda ===== */
+.head.c,.buy-head,.faq-side,.more,.bcta,.vid figcaption,.hero-tx,.cap,.prec,.sim-i,.sim-s2,.bfech,.bnote,.hmi,.plans-note,.pl-sec,.aud-h,#seguranca .split>div:first-child{text-align:left}
+.head.c,.buy-head,.faq-side,.more,#seguranca .split>div:first-child{margin-left:0;margin-right:0}
+.head.c .h2,.buy-head .h2,.head.c .lead,.buy-head .lead,.faq-side .lead,#seguranca .split>div:first-child .lead,.hero .lead,.bfech,.prec,.sim-i,.sim-s2,.plans-note,.hcta,.vid,.sim,.gar,.faq,.more,.dps{margin-left:0!important;margin-right:0!important}
+.hero .lead{margin-left:0!important}
+.hcta,.htrust{margin-left:0!important}
+.htrust{width:auto;justify-items:start}
+.chips,.dots{justify-content:flex-start}
+.chips{margin-left:0!important}
+@media(max-width:700px){.chips{max-width:none}}
+#planos .plans{justify-content:flex-start}
+#planos .plans .plan{margin-left:0}
+.plans{margin-left:0}
+.mini,#seguranca .mini{margin-left:0!important;margin-right:0!important}
+.sim{max-width:520px}
+.faq{max-width:760px}
+.vid{max-width:980px}
+.cap{margin-left:0}
+.mlist{margin-left:0}
+.tl-t,.pq-t,.guia{text-align:left;margin-left:0}
+.pl-b{left:24px;transform:none}
+.bcta .btn,#final .bcta .btn{margin-left:0}
+@media(min-width:560px){.hcta{max-width:380px}.bcta .btn{width:auto}}
+@media(max-width:560px){#planos .plans{--pw:100%}#planos .plans .plan{width:100%}}
+.pl-chips{flex-wrap:wrap}
 </style>
 </head>
 <body>
