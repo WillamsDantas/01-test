@@ -7,7 +7,7 @@
 <meta name="description" content="Cadastre renda, contas e parcelas. O Meu Quita organiza vencimentos, mostra quanto sobra e quando cada parcela termina. Acesso vitalício, pagamento único.">
 <meta name="theme-color" content="#0B0B0C">
 <meta property="og:title" content="Meu Quita · Saiba quanto sobra do seu salário">
-<meta property="og:description" content="Renda, contas e parcelas no mesmo lugar. Acesso vitalício por R$ 47,00.">
+<meta property="og:description" content="Renda, contas e parcelas no mesmo lugar. Acesso vitalício por R$ 57,00, com todas as atualizações.">
 <meta property="og:image" content="https://willamsdantas.github.io/01-test/quita/img/og.jpg">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1 1 106 106'%3E%3Crect x='1' y='1' width='106' height='106' rx='26' fill='%23141416'/%3E%3Cpath d='M61.75 80.25 L45.87 80.25 A19.25 19.25 0 0 1 26.62 61.00 L26.62 47.00 A19.25 19.25 0 0 1 45.87 27.75 L59.87 27.75 A19.25 19.25 0 0 1 78.96 44.54 L70.62 52.88 L70.62 47.00 A10.75 10.75 0 0 0 59.87 36.25 L45.87 36.25 A10.75 10.75 0 0 0 35.12 47.00 L35.12 61.00 A10.75 10.75 0 0 0 45.87 71.75 L53.25 71.75 Z' fill='%23F4F4F5'/%3E%3Cpath d='M56.87 63.00 L64.87 71.00 L78.37 57.50' fill='none' stroke='%238FD9AE' stroke-width='8.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -737,6 +737,10 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
 .btn .arr{transform:rotate(-35deg);transition:transform .25s cubic-bezier(.2,.7,.2,1)}
 .btn:hover .arr{transform:rotate(-35deg) translateX(2px)}
 @media (prefers-reduced-motion:reduce){.btn .arr{transition:none}}
+.ofe{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:6px 12px;border-radius:99px;background:rgba(143,217,174,.14);color:var(--pos);font-size:12.5px;font-weight:600}
+.ofe i{width:7px;height:7px;border-radius:50%;background:var(--pos);display:block}
+.de{margin-top:14px;font-size:15px;color:var(--ink-3)}.de s{text-decoration-thickness:1.5px}
+#planos .pl-p{margin-top:6px}
 </style>
 </head>
 <body>
@@ -966,12 +970,14 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
       <article class="plan hot">
         <span class="pl-b">Acesso vitalício</span><div class="pl-n">Meu Quita</div>
         <div class="pl-s">Um pagamento, para sempre</div>
-        <div class="pl-p"><span class="cur">R$</span>47<span class="ct">,00</span><span class="per">uma vez</span></div>
+        <span class="ofe"><i></i>Oferta de lançamento</span>
+        <div class="de">De <s>R$ 97,00</s> por</div>
+        <div class="pl-p"><span class="cur">R$</span>57<span class="ct">,00</span><span class="per">uma vez</span></div>
         <div class="pl-eq">Sem mensalidade, <b>sem renovação</b></div>
-        <div class="pl-chips"><span>3 guias incluídos</span></div>
+        <div class="pl-chips"><span>3 guias incluídos</span><span>Atualizações incluídas</span></div>
         <a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic arr"><use href="#i-arrow"/></svg></a>
         <p class="pl-sec">Pagamento seguro · Para Android</p>
-        <ul><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>3 guias práticos em PDF</b></span></li><li><span class="dash"></span>Acesso vitalício ao aplicativo</li><li><span class="dash"></span>Renda, contas, parcelas e metas</li><li><span class="dash"></span>Backup na sua conta Google</li><li><span class="dash"></span>Suporte pelo WhatsApp</li></ul>
+        <ul><li class="gift"><svg class="ic"><use href="#i-gift"/></svg><span><b>3 guias práticos em PDF</b></span></li><li><span class="dash"></span>Acesso vitalício e todas as atualizações</li><li><span class="dash"></span>Renda, contas, parcelas e metas</li><li><span class="dash"></span>Backup na sua conta Google</li><li><span class="dash"></span>Suporte pelo WhatsApp</li></ul>
       </article>
     </div>
     <div class="gar rv">
@@ -1025,7 +1031,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
       <h2 class="h2">Saiba quanto sobra antes de o mês acabar.</h2>
       <p class="lead">Renda, contas e parcelas no mesmo lugar, em um pagamento único.</p>
     </div>
-    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic arr"><use href="#i-arrow"/></svg></a><p>R$ 47,00 · Pagamento único · 7 dias de garantia</p></div>
+    <div class="bcta rv"><a class="btn btn-pri" href="#comprar" data-buy>Quero meu Quita<svg class="ic arr"><use href="#i-arrow"/></svg></a><p>R$ 57,00 · Pagamento único · 7 dias de garantia</p></div>
   </div>
 </section>
 </main>
@@ -1210,7 +1216,8 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
   /* perguntas frequentes */
   var F=[
     ['Preciso dar a senha do meu banco?','Não. O Meu Quita não se conecta a nenhum banco. Você mesmo cadastra a renda, as contas e as parcelas que quer acompanhar.'],
-    ['Preciso pagar todo mês?','Não. O acesso custa R$ 47,00 em pagamento único, sem mensalidade e sem renovação. É vitalício, conforme os termos de uso.'],
+    ['Preciso pagar todo mês?','Não. O acesso custa R$ 57,00 em pagamento único, sem mensalidade e sem renovação. É vitalício, conforme os termos de uso.'],
+    ['Vou ter que pagar pelas atualizações?','Não. Todas as atualizações do aplicativo estão incluídas no acesso vitalício. Quando sair uma nova versão, o próprio app avisa, e você atualiza sem custo extra.'],
     ['Preciso registrar cada pagamento?','Contas e parcelas recorrentes se repetem a cada mês a partir do cadastro. Pagamentos pontuais ou valores que mudam você ajusta e marca manualmente.'],
     ['Por que pagar se existem planilhas grátis?','Uma planilha funciona se você montar e manter. O Meu Quita já vem pronto: avisos de vencimento, parcelas mês a mês e a sobra calculada, sem fórmulas.'],
     ['Funciona no iPhone?','Não. Por enquanto o Meu Quita é apenas para Android.'],
