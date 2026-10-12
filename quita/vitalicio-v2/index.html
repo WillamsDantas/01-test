@@ -640,37 +640,30 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
 .faq-side .lead{margin-left:auto!important;margin-right:auto!important}
 .faq{max-width:760px;margin:36px auto 0}
 
-/* ===== tudo alinhado à esquerda ===== */
-.head.c,.buy-head,.faq-side,.more,.bcta,.vid figcaption,.hero-tx,.cap,.prec,.sim-i,.sim-s2,.bfech,.bnote,.hmi,.plans-note,.pl-sec,.aud-h,#seguranca .split>div:first-child{text-align:left}
-.head.c,.buy-head,.faq-side,.more,#seguranca .split>div:first-child{margin-left:0;margin-right:0}
-.head.c .h2,.buy-head .h2,.head.c .lead,.buy-head .lead,.faq-side .lead,#seguranca .split>div:first-child .lead,.hero .lead,.bfech,.prec,.sim-i,.sim-s2,.plans-note,.hcta,.vid,.sim,.gar,.faq,.more,.dps{margin-left:0!important;margin-right:0!important}
-.hero .lead{margin-left:0!important}
-.hcta,.htrust{margin-left:0!important}
-.htrust{width:auto;justify-items:start}
-.chips,.dots{justify-content:flex-start}
-.chips{margin-left:0!important}
-@media(max-width:700px){.chips{max-width:none}}
-#planos .plans{justify-content:flex-start}
-#planos .plans .plan{margin-left:0}
-.plans{margin-left:0}
-.mini,#seguranca .mini{margin-left:0!important;margin-right:0!important}
-.sim{max-width:520px}
-.faq{max-width:760px}
-.vid{max-width:980px}
-.cap{margin-left:0}
-.mlist{margin-left:0}
-.tl-t,.pq-t,.guia{text-align:left;margin-left:0}
-.pl-b{left:24px;transform:none}
-.bcta .btn,#final .bcta .btn{margin-left:0}
-@media(min-width:560px){.hcta{max-width:380px}.bcta .btn{width:auto}}
-@media(max-width:560px){#planos .plans{--pw:100%}#planos .plans .plan{width:100%}}
+/* ===== padrão da página de assinatura: títulos centralizados ===== */
 .pl-chips{flex-wrap:wrap}
+@media(min-width:560px){.hcta{max-width:380px}}
+@media(max-width:560px){#planos .plans{--pw:100%}#planos .plans .plan{width:100%}}
+.sim{max-width:520px}.faq{max-width:760px}.vid{max-width:980px}
+.vid figcaption{text-align:center}
+.head.c .h2,.buy-head .h2{margin-left:auto;margin-right:auto}
+.head.c .lead,.buy-head .lead,.faq-side .lead{margin-left:auto;margin-right:auto}
+.hmi,.htrust{margin-left:0}
+@media (max-width:1023px){.hmi{text-align:center}}
 
+@media (min-width:1024px){
+ .hcta{max-width:none;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+ .hcta .btn{width:auto;padding-left:24px;padding-right:24px}
+ .hcta .hmi{flex:1 0 100%;margin:4px 0 0}
+ .htrust{display:flex;flex-wrap:wrap;gap:12px 22px}
+}
 /* ===== tablet: aproveitar a largura (700–1023px) ===== */
-.cap p{margin-left:0;margin-right:0}
 @media (min-width:700px) and (max-width:1023px){
  .hero .wrap{flex-wrap:nowrap;gap:32px;align-items:center}
- .hero-tx{flex:1 1 0}
+ .hero-tx{flex:1 1 0;text-align:left}
+ .hero .lead,.hcta{margin-left:0;margin-right:0}
+ .htrust{margin-left:0;width:auto}
+ .hmi{text-align:left}
  .hero-art{flex:0 0 270px}
  .stage{width:250px}
  .hero h1{font-size:clamp(34px,5vw,44px)}
@@ -683,19 +676,10 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
  #dor .feats,#beneficios .feats{grid-template-columns:repeat(3,minmax(0,1fr))}
  .dm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:start;margin-top:40px}
  .dm .steps{margin-top:0}
- .dm-r .sim-i{margin-top:0}
+ .dm-r .sim-i{margin-top:0;text-align:left}
+ .dm-r .sim-s2{text-align:left}
+ .dm-r .sim,.dm-r .sim-i,.dm-r .sim-s2{margin-left:0;margin-right:0}
  .dm-r .sim{max-width:none}
- #seguranca .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:start}
- #seguranca .mini{margin-top:0}
- #seguranca .split>div:first-child{max-width:none}
- .faq-wrap{display:grid;grid-template-columns:240px minmax(0,1fr);gap:40px;align-items:start}
- .faq{margin-top:0;max-width:none}
- #planos .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);grid-template-areas:"head plans" "gar plans" "note plans";grid-template-rows:auto auto 1fr;column-gap:44px;align-items:start}
- #planos .buy-head{grid-area:head;max-width:none}
- #planos .plans{grid-area:plans;height:auto;display:block;margin:0;padding-top:18px;max-width:none}
- #planos .plans .plan{position:relative;left:auto;top:auto;width:auto;margin:0;transform:none!important;opacity:1!important;filter:none!important;pointer-events:auto!important;z-index:auto!important}
- #planos .gar{grid-area:gar;width:auto;max-width:none;margin-top:26px}
- #planos .plans-note{grid-area:note;justify-content:flex-start}
 }
 @media(max-width:340px){.bcta .btn{font-size:14px;padding:0 12px;gap:6px}}
 </style>
@@ -934,7 +918,7 @@ p,.lead,li,.ans p,.cap p,blockquote,.cst-end,.plans-g,.pl-eq,.pl-an,.cst-i p{tex
 
 <section class="band" id="criador">
   <div class="wrap pad">
-    <div class="head rv">
+    <div class="head c rv">
       <h2 class="h2">Quem está por trás do Meu Quita.</h2>
       <p class="lead">O Meu Quita é criado por Willams Dantas, designer e gestor de tráfego em Maceió (AL). Se tiver qualquer dúvida antes ou depois da compra, você fala direto comigo pelo WhatsApp.</p>
     </div>
