@@ -93,8 +93,11 @@ button{font:inherit;color:inherit}
 .f-t{font-size:16px;font-weight:600;white-space:nowrap}
 
 section{position:relative}
-.band{border-top:1px solid var(--line)}
-.alt{background:var(--bg)}
+.band{border-top:0}
+.alt{background:transparent}
+/* página contínua: sem linhas entre dobras e sem corte do brilho/sombra nas bordas das seções */
+section.hero,section.band{overflow:visible!important}
+@supports (overflow:clip){section.hero,section.band{overflow-x:clip!important;overflow-y:visible!important}}
 .pad{padding-top:var(--sec);padding-bottom:var(--sec)}
 .head{max-width:640px}
 .head.c{text-align:center;margin:0 auto}
@@ -194,7 +197,7 @@ section{position:relative}
 .plans-note{display:flex;align-items:center;justify-content:center;gap:8px;margin:24px 0 0;font-size:13.5px;color:var(--ink-3);text-align:center}
 .plans-note .ic{width:15px;height:15px;color:var(--pos)}
 
-footer{border-top:1px solid var(--line)}
+footer{border-top:0}
 footer .wrap{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;justify-content:space-between;padding-top:26px;padding-bottom:calc(26px + env(safe-area-inset-bottom));font-size:14px;color:var(--ink-3)}
 footer .brand{font-size:14px;font-weight:400;color:var(--ink-3)}
 footer .logo{width:28px;height:28px;border-radius:9px}
